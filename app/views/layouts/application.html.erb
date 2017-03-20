@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+  </head>
+
+  <body>
+<%= params.keys.map {|k| "#{k}: #{params[k]}"} if false %>
+    <div id="holdorrery">
+      <%= link_to image_tag('logo', class: 'logo'), 'https://www.library.upenn.edu' %>
+      <div id="title"><%= title %></div>
+    </div>
+
+    <div id="content">
+      <%= yield %>
+    </div>
+  </body>
+</html>

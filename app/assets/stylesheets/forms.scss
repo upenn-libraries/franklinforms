@@ -1,0 +1,23 @@
+div.section {
+  border: 1px solid black;
+  padding: 5px;
+  margin: 10px auto;
+  width: 67%;
+}
+
+div.section-heading {
+  font-weight: bold;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+p#help {
+  width: 67%;
+  margin: auto;
+}
+
+span.site-name {
+  float: none;
+  font-family: inherit;
+}

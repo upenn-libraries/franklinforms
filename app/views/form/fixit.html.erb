@@ -1,0 +1,31 @@
+<% @page_title = "Fix OPAC Request" %>
+
+<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10' do |f| %>
+  <%= f.hidden_field(:bibid, {id: 'bibid', value: record.bibid}) %>
+  <div class="section">
+    <div class="section-heading">
+      <h1>Requestor information</h1>
+    </div>
+    <div class='section-body'>
+      <%= f.static_control(label: 'Name') { user.name } %>
+      <%= f.static_control(label: 'Email') { user.data['email']} %>
+      <%= f.static_control(label: 'Affiliation') { user.affiliation} %>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">
+      <h1>Report an error in this cataloging record</h1>
+    </div>
+    <div class="section-body">
+      <%= f.static_control(label: 'Title') { record.title } %>
+      <%= f.static_control(label: 'Author') { record.author } %>
+      <%= f.static_control(label: 'Call Number') { record.call_number } %>
+      <%= f.text_area(:comments, label: 'Comments<br />(max 256 chars)'.html_safe, maxlength: 256) %>
+      <%= f.submit('Submit Request', id: 'submit') %>  
+    </div>
+  </div>
+
+  <p id="help">If you have questions or problems, please contact us at <%= mail_to('fixopac@pobox.upenn.edu') %></p>
+
+<% end %>
