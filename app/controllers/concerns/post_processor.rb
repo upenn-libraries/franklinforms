@@ -1,6 +1,6 @@
-module MailHelper
+module PostProcessor
 
-  def send_emails_for_form(form_id, vars)
+  def post_process(form_id, vars)
     user = vars[:user]
     bib = vars[:record]
     values = vars[:params]

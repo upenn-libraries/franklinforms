@@ -1,5 +1,5 @@
 class FormController < ApplicationController
-  include MailHelper
+  include PostProcessor
 
   def view
     #begin
@@ -10,16 +10,15 @@ class FormController < ApplicationController
   end
 
   def submit
-    send_emails_for_form(params[:id], locals)
+    post_process(params[:id], locals)
     render :confirmation
   end
 
   def locals
     username, _ = ActionController::HttpAuthentication::Basic::user_name_and_password(request)
-
-    {record: AlmaBib.getBibRecord(params[:bibid]),
+    record = Alma::Bib.find([params[:bibid]], {expand: :p_avail})
+    {record: BibRecord.new((record.first.response unless record.has_error?)),
      user: User.new(username),
-     title: "Fix OPAC Request",
      params: params}
   end
 
