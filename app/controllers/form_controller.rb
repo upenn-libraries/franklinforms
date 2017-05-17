@@ -1,8 +1,10 @@
 class FormController < ApplicationController
+  include PreProcessor
   include PostProcessor
 
   def view
     #begin
+      locals = pre_process(params[:id], params)
       render params[:id], locals: locals
     #rescue
       #render 'error'
@@ -10,16 +12,9 @@ class FormController < ApplicationController
   end
 
   def submit
+    locals = pre_process(params[:id], params)
     post_process(params[:id], locals)
     render :confirmation
-  end
-
-  def locals
-    username, _ = ActionController::HttpAuthentication::Basic::user_name_and_password(request)
-    record = Alma::Bib.find([params[:bibid]], {expand: :p_avail})
-    {record: BibRecord.new((record.first.response unless record.has_error?)),
-     user: User.new(username),
-     params: params}
   end
 
 end
