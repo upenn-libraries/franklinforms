@@ -1,7 +1,7 @@
 class PennCommunity
 
   def self.getUser(id = nil)
- 
+
     # *** Determine if a credential is supplied, and what type it is *** 
     raise "ERROR: No ID provided" if id.nil?
  
@@ -10,7 +10,6 @@ class PennCommunity
     raise "ERROR: Invalid ID provided" if limit.nil?
 
     #   *** Get a database connection to PennCommunity ***
-    #dbh = DBI.connect('DBI:OCI8:PCOM.ISC-AIT.UPENN.EDU', 'pennlibr', 'P3nnL1Br') or raise "ERROR: Unable to establish a connection to the database server"
     dbh = DBI.connect(ENV['PCOM_DBI'], ENV['PCOM_USERNAME'], ENV['PCOM_PASSWORD']) or raise "ERROR: Unable to establish a connection to the database server"
     
     # *** Retrieve the record(s) for this PennKey or PennID ***

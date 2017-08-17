@@ -3,10 +3,14 @@ class User
   attr_accessor :data
 
   def initialize(id, proxy_id = nil)
-    @data = PennCommunity.getUser(id)
-    @data['proxied_by'] = id
-    @data['proxied_for'] = proxy_id || id
-    setStatus
+    begin
+      @data = PennCommunity.getUser(proxy_id || id)
+      @data['proxied_by'] = id
+      @data['proxied_for'] = proxy_id || id
+      setStatus
+    rescue
+      @data = Hash.new
+    end
   end
 
   def setStatus
@@ -26,6 +30,8 @@ class User
         end
       end
 
+      @data['status'] = 'StandingFaculty' if PennLdap.isStandingFaculty(@data['proxied_for'])
+
       @data['status'] ||= ''
     }
   end
@@ -38,37 +44,4 @@ class User
     return [@data['dept'], @data['status']].join(' ').squeeze(' ').strip()
   end
 
-<<DOC
-sub getUserStatus
-{
-    my @affls_active = split /\|/, $userInfo{'affiliation_active_code'};
-    my @affls        = split /\|/, $userInfo{'affiliation'};
-
-    for ( my $i = 0; $i < scalar(@affls); $i++ ) {
-
-        if ( $affls_active[$i] eq 'A' ) {
-
-            if ( $affls[$i] eq 'FAC' ) {
-                $userInfo{'status'} = 'Faculty';
-
-            } elsif ( $affls[$i] eq 'STU'  and !$userInfo{'status'} ) {
-                $userInfo{'status'} = 'Student';
-
-            } elsif ( $affls[$i] eq 'STAF' and !$userInfo{'status'} ) {
-                $userInfo{'status'} = 'Staff';
-
-            } else {
-                $userInfo{'status'} = $affls[$i];
-            }
-
-        }
-
-    }
-
-
-    $userInfo{'status'} = 'StandingFaculty' if $userInfo{'proxiedby'} eq 'schultz2';
-
-}
-DOC
-  
 end

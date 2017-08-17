@@ -27,14 +27,12 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'web-console'
   gem 'listen', '~> 3.0.5'
   gem 'pry-rails'
   gem 'pry-byebug'
 end
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data'
 
 gem 'bootstrap-sass'
 gem 'bootstrap_form'
@@ -44,3 +42,5 @@ gem 'rails-dbi'
 gem 'ruby-oci8'
 gem 'blacklight'
 gem 'alma'
+gem 'nokogiri'
+gem 'tiny_tds'

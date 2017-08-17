@@ -1,4 +1,5 @@
 FROM codeforkjeff/passenger-ruby23:0.9.19-ruby-build
+#FROM pennlib/passenger-ruby23:0.9.23-ruby-build
 
 MAINTAINER Christopher Clement <clemenc@upenn.edu>
 
@@ -16,7 +17,8 @@ COPY oracle/instantclient-* /opt/oracle/
 
 RUN mkdir -p /home/app/webapp
 
-COPY . /home/app/webapp
+#COPY . /home/app/webapp
+COPY Gemfile* /home/app/webapp/
 
 WORKDIR /opt/oracle/
 
@@ -30,10 +32,21 @@ RUN mkdir -p network/admin
 
 WORKDIR /home/app/webapp
 
-RUN chown -R app.app .
-
 RUN bundle install
 
+COPY app/ /home/app/webapp/app
+COPY bin/ /home/app/webapp/bin
+COPY config/ /home/app/webapp/config
+COPY config.ru /home/app/webapp/
+COPY lib/ /home/app/webapp/lib
+COPY log/ /home/app/webapp/log
+COPY public/ /home/app/webapp/public
+COPY Rakefile /home/app/webapp/
+COPY tmp/ /home/app/webapp/tmp
+COPY vendor/ /home/app/webapp/vendor
+
+RUN chown -R app.app .
+ 
 # Enable Nginx and Passenger
 RUN rm -f /etc/service/nginx/down
 

@@ -19,8 +19,10 @@
 # Ignore config yml files
 config/*.yml
 
-# Ignore containerizing ENV file
-.env
+# Ignore ENV files
+.env*
+!.env.example
 
 # Ignore bash scripts
+buildtagpush.sh
 clean.sh

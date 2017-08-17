@@ -10,7 +10,9 @@ class FormMailerPreview < ActionMailer::Preview
   end
 
   def confirm_fixopac_email
-    FormMailer.confirm_fixopac_email
+    user = User.new('')
+    params = {}
+    FormMailer.confirm_fixopac_email(user, BibRecord.new(nil), params)
   end
   
   def send_enhanced_email

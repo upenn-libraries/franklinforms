@@ -1,0 +1,61 @@
+<% @page_title = "Put on Course Reserve" %>
+
+<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10' do |f| %>
+  <%= f.hidden_field(:bibid, {id: 'bibid', value: record.bibid}) %>
+  <div class="section">
+    <div class="section-heading">
+      <h1>Requestor information</h1>
+    </div>
+    <div class='section-body'>
+      <%= f.static_control(label: 'Name') { user.name } %>
+      <%= f.text_field(:email, label: 'Email', value: user.data['email']) %>
+      <%= f.static_control(lael: 'Affiliation') { user.affiliation} %>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">
+      <h1>Course Information</h1>
+    </div>
+    <div class="section-body">
+      <%= f.text_field(:coursenum, {label: 'Course Number'}) { } %>
+      <span>Put on reserve at:</span>
+      <%= f.select(:reserveloc, [
+            '',
+            'Rosengarten',
+            'Annenberg',
+            'Biomed',
+            'Chemistry',
+            'Dental',
+            'Fine Arts',
+            'Lippincott',
+            'Math/Physics/Astronomy',
+            'Music Study',
+            'Museum',
+            'Ormandy Center',
+            'New Bolton',
+            'South Asia',
+            'Vet (main Campus'
+          ], {label: 'Put on reserve at'}, {class: 'form-control'}) %>
+      <%= f.text_field(:enddate, {label: 'Not needed after (date)', value: Date.today }) %>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">
+      <h1>Bibliographic Information</h1>
+    </div>
+    <div class="section-body">
+      <%= f.static_control(label: 'Title') { record.title } %>
+      <%= f.static_control(label: 'Author') { record.author } %>
+      <%= f.static_control(label: 'Publication') {} %>
+      <%= f.static_control(label: 'Call Number') { record.call_number } %>
+      <%= f.static_control(label: 'Volume') {} %>
+      <%= f.text_area(:comments, label: 'Comments<br />(max 256 chars)'.html_safe, maxlength: 256) %>
+      <%= f.submit('Submit Request', id: 'submit') %>  
+    </div>
+  </div>
+
+  <p id="help">If you have questions or problems, please contact us at <%= mail_to('vpreserv@pobox.upenn.edu') %></p>
+
+<% end %>

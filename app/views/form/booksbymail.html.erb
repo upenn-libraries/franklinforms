@@ -1,0 +1,37 @@
+<% @page_title = "Request Books by Mail" %>
+
+<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_ill()" } do |f| %>
+  <%= f.hidden_field(:bibid, {id: 'bibid', value: record.bibid}) %>
+
+  <div class="alert alert-warning" style="color: #000000">
+    <p><span class="bold">NOTE:</span> <span class="red">Registration is required</span> (click <%=link_to 'here', "http://www.library.upenn.edu/borrowing/booksbymail.html", target: '_blank' %> to register). Books by Mail delivers on-shelf Penn books to shipping addresses 75 miles or more from campus.</p>
+  </div>
+  <div class="section">
+    <div class="section-heading">
+      <h1>Requestor information</h1>
+    </div>
+    <div class='section-body'>
+      <%= f.static_control(label: 'Name') { user.name } %>
+      <%= f.text_field(:email, label: 'Email', value: user.data['email']) %>
+      <%= f.static_control(label: 'Affiliation') { user.affiliation} %>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">
+      <h1>Bibliographic Information</h1>
+    </div>
+    <div class="section-body">
+      <%= f.text_field(:title, label: 'Title', value: record.title) %>
+      <%= f.text_field(:author, label: 'Author', value: record.author) %>
+      <%= f.text_field(:publication, label: 'Publication') %>
+      <%= f.text_field(:call_no, label: 'Call Number', value: record.call_number) %>
+      <%= f.text_field(:volume, label: 'Volume') %>
+      <%= f.text_area(:comments, label: 'Comments<br />(max 256 chars)'.html_safe, maxlength: 256) %>
+      <%= f.submit('Submit Request', id: 'submit') %>  
+    </div>
+  </div>
+
+  <p id="help">If you have questions or problems, please contact us at <%= mail_to('bkbymail@pobox.upenn.edu') %></p>
+
+<% end %>

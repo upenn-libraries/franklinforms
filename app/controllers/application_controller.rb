@@ -7,12 +7,11 @@ class ApplicationController < ActionController::Base
   layout 'blacklight'
 
   protect_from_forgery with: :exception
-  before_action :authenticate
+  before_action :checkenv
 
-  # TODO: actually implement authentication
-  def authenticate
-    authenticate_or_request_with_http_basic {|user,pass|
-      ['test'].include?(user)
-    }
+  def checkenv
+    if Rails.env.development?
+      flash[:notice] = "TESTING: No emails will be sent"
+    end
   end
 end

@@ -1,0 +1,9 @@
+<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-10', control_col: 'col-sm-6 col-md-2', method: 'GET' do |f| %>
+  <% request.query_parameters.reject {|k,v| ['upennproxyid', 'utf8'].member?(k)} .each do |k,v| %>
+    <%= f.hidden_field(k.to_sym, {name: k, value: v}) %>
+  <% end %>
+  <div class="section noborder">
+  <%= f.text_field(:upennproxyid, label: 'Act as a proxy for') %>
+  </div>
+<% end %>
+

@@ -1,0 +1,30 @@
+<% @page_title = "Request Help" %>
+
+<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { onsubmit: "return submit_help()" } do |f| %>
+  <%= f.hidden_field(:referrer, {id: 'referrer', value: referrer}) %>
+
+  <div class="alert alert-warning" style="color: #000000">
+    <p><span class="bold">NOTE:</span> Please provide details about the resource you were trying to find.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">
+      <h1>Your Information</h1>
+    </div>
+    <div class='section-body'>
+      <%= f.text_field(:name, label: 'Name') %>
+      <%= f.text_field(:email, label: 'Email') %>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">
+      <h1>Your Question</h1>
+    </div>
+    <div class="section-body">
+      <%= f.text_area(:details, label: 'Details') %>
+      <%= f.submit('Submit Your Question', id: 'submit', data: { disable_with: false }) %>  
+    </div>
+  </div>
+
+<% end %>

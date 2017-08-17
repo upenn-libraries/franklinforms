@@ -1,0 +1,59 @@
+<% 
+  reqtype = user.data['status'] == 'StandingFaculty' ? "FacultyEXPRESS" : "InterLibrary Loan"
+  @page_title = "#{reqtype} #{record['requesttype']} Request"
+%>
+
+<%= render :partial => "form/proxy" %>
+
+<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_ill()" } do |f| %>
+  <%= f.hidden_field(:bibid, {id: 'bibid', value: record['bibid']}) %>
+  <% request.query_parameters.reject {|k,v| ['utf8'].member?(k)} .each do |k,v| %>
+    <%= f.hidden_field(k.to_sym, {name: k, value: v}) %>
+  <% end %>
+
+  <div class="section">
+    <div class="section-heading">
+      <h1>Requestor information</h1>
+    </div>
+    <div class='section-body'>
+      <%= f.static_control(label: 'Name') { user.name } %>
+      <%= f.text_field(:email, label: 'Email', value: user.data['email']) %>
+      <%= f.text_field(:phone, label: 'Phone', value: '') %>
+      <%= f.static_control(label: 'Affiliation') { user.affiliation } %>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">
+      <h1>Delivery Method</h1>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <div class="col-sm-12 col-md-12">
+          <p class="form-control-static"><%= delivery_method %></p>
+          <% if show_addr_message %>
+            <p class="form-control-static"> If your departmental address is wrong, please email us at <%= mail_to('pld@pobox.upenn.edu') %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-heading">
+      <h1>Bibliographic information for the item requested</h1>
+    </div>
+    <div class="section-body">
+      <% if record['requesttype'] == 'Book' %>
+        <%= render(:partial => "form/ill/book", :locals => {:f=>f, :record=>record}) %>
+      <% elsif record['requesttype'] == 'ScanDelivery'  %>
+        <%= render(:partial => "form/ill/scan", :locals => {:f=>f, :record=>record}) %>
+      <% else %>
+        <%= render(:partial => "form/ill/article", :locals => {:f=>f, :record=>record}) %>
+      <% end %>
+      <%= f.text_area(:comments, label: 'Comments<br />(max 256 chars)'.html_safe, maxlength: 256) %>
+      <%= f.submit('Submit Request', id: 'submit', data: { disable_with: false }) %>  
+    </div>
+  </div>
+
+<% end %>
