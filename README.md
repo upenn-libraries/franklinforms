@@ -23,6 +23,15 @@ Now you can run the Rails server to access the forms or execute the following to
 docker-compose up .
 ```
 
+## Deployment
+
+Execute the following commands to create the Docker image and push it to the local Docker hub:
+
+```bash
+docker build -t indexing-dev.library.upenn.int:5000/upenn-libraries/franklinforms:master .
+docker push indexing-dev.library.upenn.int:5000/upenn-libraries/franklinforms:master
+```
+
 ## Paths
 
 Franklin Forms has two top-level paths:
