@@ -6,6 +6,7 @@ class Aeon
   }
 
   @sublocNameMap = {
+    'finecage' => 'Fine Arts Cage',
     'finelock' => 'Fine Locked Case',
     'finemaps' => 'Fine Map Coll.',
     'finerare' => 'Fine Rare Book',
