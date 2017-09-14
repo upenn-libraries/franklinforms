@@ -11,11 +11,16 @@ class Illiad
     bib_data['author'] = nil
     bib_data['author'] = "#{params['rft.aulast']},#{params['rft.aufirst']}" unless params['rft.aulast'].presence.nil?
     bib_data['author'] = params['Author'].presence || params['author'].presence || params['aau'].presence || params['au'].presence || params['rft.au'].presence || bib_data['author'].presence || ''
-  
-    bib_data['requesttype'] = params['genre'].presence || params['Type'].presence || params['requesttype'].presence || params['rft.genre'].presence || 'Article'
-    bib_data['requesttype'] = 'Article' if bib_data['requesttype'] == 'issue'
-    bib_data['requesttype'].sub!(/^(journal|bookitem|book|conference|article|preprint|proceeding).*?$/i, '\1')
-    bib_data['requesttype'][0] = bib_data['requesttype'][0].upcase if ['article', 'book'].member?(bib_data['requesttype'])
+
+    # Use the book request form for unknown genre types
+    if (params['genre'].presence || params['rft.genre'].presence || '').downcase == 'unknown' then
+      bib_data['requesttype'] = 'Book'
+    else
+      bib_data['requesttype'] = params['genre'].presence || params['Type'].presence || params['requesttype'].presence || params['rft.genre'].presence || 'Article'
+      bib_data['requesttype'] = 'Article' if bib_data['requesttype'] == 'issue'
+      bib_data['requesttype'].sub!(/^(journal|bookitem|book|conference|article|preprint|proceeding).*?$/i, '\1')
+      bib_data['requesttype'][0] = bib_data['requesttype'][0].upcase if ['article', 'book'].member?(bib_data['requesttype'])
+    end
   
     bib_data['chaptitle'] = params['chaptitle'].presence || '';
     bib_data['booktitle'] = params['title'].presence     || params['Book'].presence        || params['bookTitle'].presence || params['booktitle'].presence || params['rft.title'].presence || '';
