@@ -88,16 +88,16 @@ class Illiad
 
   def self.getIlliadUserInfo(user, params)
 
+    db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
+
     tablename = Rails.env.production? ? 'usersall' : 'users'
 
     userinfo = user.data
 
     query = %Q{SELECT emailaddress,phone,department,nvtgc,address,address2,status,cleared
                FROM #{tablename}
-               WHERE username = '#{userinfo['proxied_for']}'
+               WHERE username = '#{db.escape userinfo['proxied_for']}'
     }
-
-    db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
     result = db.execute(query).entries.first || Hash.new
 
@@ -106,6 +106,7 @@ class Illiad
 
     userinfo['phone'] = result['phone'] || ''
     userinfo['cleared'] = result['cleared'] || ''
+    userinfo['delivery'] = ''
 
     if ['B', 'BO'].member?(userinfo['cleared'])
       redirect_to "http://www.library.upenn.edu/access/ill/ill_blocked.html"
@@ -187,32 +188,33 @@ class Illiad
 
   def self.addIlliadUser(user)
 
+    db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
+
     tablename = Rails.env.production? ? 'usersall' : 'users'
 
     userinfo = user.data
     department = userinfo['dept'].respond_to?(:join) ? userinfo['dept'].join('|') : userinfo['dept']
+    username = db.escape userinfo['proxied_for']
 
     query = %Q{INSERT INTO #{tablename}
                  (username, lastname, firstname, ssn, status, emailaddress, phone, department,
                   nvtgc, password, notificationmethod, deliverymethod, loandeliverymethod, cleared, web, address, authtype, articlebillingcategory, loanbillingcategory )
                  VALUES
-                 ('#{userinfo['proxied_for']}', '#{userinfo['last_name']}', '#{userinfo['first_name']}', '#{userinfo['penn_id']}', '#{userinfo['status']}', '#{userinfo['emailAddr']}', '#{userinfo['phone']}', '#{department}', '#{userinfo['illoffice']}', '#{ENV['ILLIAD_USER_PASSWORD_HASH']}', 'Electronic', 'Mail to Address','Hold for Pickup','Yes', 'Yes', '#{userinfo['delivery']}', 'ILLiad', 'Exempt', 'Exempt' )
+                 ('#{username}', '#{db.escape userinfo['last_name']}', '#{db.escape userinfo['first_name']}', '#{db.escape userinfo['penn_id']}', '#{db.escape userinfo['status']}', '#{db.escape userinfo['emailAddr']}', '#{db.escape userinfo['phone']}', '#{db.escape department}', '#{db.escape userinfo['illoffice']}', '#{ENV['ILLIAD_USER_PASSWORD_HASH']}', 'Electronic', 'Mail to Address','Hold for Pickup','Yes', 'Yes', '#{db.escape userinfo['delivery']}', 'ILLiad', 'Exempt', 'Exempt' )
     }
-
-    db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
     result = db.execute(query).do
 
     query = %Q{INSERT INTO usernotifications ( username, activitytype, notificationtype )
             VALUES
-            ('#{userinfo['proxied_for']}', 'ClearedUser', 'Email'),
-            ('#{userinfo['proxied_for']}', 'PasswordReset', 'Email'),
-            ('#{userinfo['proxied_for']}', 'RequestCancelled', 'Email'),
-            ('#{userinfo['proxied_for']}', 'RequestOther', 'Email'),
-            ('#{userinfo['proxied_for']}', 'RequestOverdue', 'Email'),
-            ('#{userinfo['proxied_for']}', 'RequestPickup', 'Email'),
-            ('#{userinfo['proxied_for']}', 'RequestShipped', 'Email'),
-            ('#{userinfo['proxied_for']}', 'RequestElectronicDelivery', 'Email')
+            ('#{username}', 'ClearedUser', 'Email'),
+            ('#{username}', 'PasswordReset', 'Email'),
+            ('#{username}', 'RequestCancelled', 'Email'),
+            ('#{username}', 'RequestOther', 'Email'),
+            ('#{username}', 'RequestOverdue', 'Email'),
+            ('#{username}', 'RequestPickup', 'Email'),
+            ('#{username}', 'RequestShipped', 'Email'),
+            ('#{username}', 'RequestElectronicDelivery', 'Email')
     }
 
     result = db.execute(query).do
@@ -221,22 +223,22 @@ class Illiad
   end
 
   def self.updateIlliadUser(user)
+    db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
+
     tablename = Rails.env.production? ? 'usersall' : 'users'
 
     userinfo = user.data
     department = userinfo['dept'].respond_to?(:join) ? userinfo['dept'].join('|') : userinfo['dept']
 
     query = %Q{UPDATE #{tablename}
-                SET    emailaddress = '#{userinfo['emailAddr']}',
-                       phone        = '#{userinfo['phone']}',
-                       department   = '#{department}',
-                       nvtgc        = '#{userinfo['illoffice']}',
-                       status       = '#{userinfo['status']}',
-                       address      = '#{userinfo['delivery']}'
-                WHERE  username = '#{userinfo['proxied_for']}'
+                SET    emailaddress = '#{db.escape userinfo['emailAddr']}',
+                       phone        = '#{db.escape userinfo['phone']}',
+                       department   = '#{db.escape department}',
+                       nvtgc        = '#{db.escape userinfo['illoffice']}',
+                       status       = '#{db.escape userinfo['status']}',
+                       address      = '#{db.escape userinfo['delivery']}'
+                WHERE  username = '#{db.escape userinfo['proxied_for']}'
     }
-
-    db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
     result = db.execute(query)
 
