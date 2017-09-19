@@ -228,7 +228,7 @@ class Illiad
     tablename = Rails.env.production? ? 'usersall' : 'users'
 
     userinfo = user.data
-    department = userinfo['dept'].respond_to?(:join) ? userinfo['dept'].join('|') : userinfo['dept']
+    department = userinfo['dept'].respond_to?(:join) ? userinfo['dept'].join('|') : (userinfo['dept'] || '')
 
     query = %Q{UPDATE #{tablename}
                 SET    emailaddress = '#{db.escape userinfo['emailAddr']}',
