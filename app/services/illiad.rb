@@ -152,6 +152,7 @@ class Illiad
   end
 
   def self.getILLOffice(userinfo)
+    office = nil
     active_i = userinfo['org_active_code'].each_with_index.select {|v,i| v != 'I'} .map {|v| v[1]}
     active_i.each do |i|
       org_code = userinfo['org_code'][i]
@@ -159,13 +160,13 @@ class Illiad
          !(org_code =~ /58\d\d/).nil? ||
          userinfo['emailAddr'].end_with?("@vet.upenn.edu"))
 
-         return 'VET'
+         office ||= 'VET'
       elsif(['5020','DEN','DPH'].member?(org_code) ||
             !(org_code =~ /51\d\d/).nil? ||
             userinfo['emailAddr'].end_with?("@dental.upenn.edu") ||
             userinfo['emailAddr'].end_with?("@biochem.dental.upenn.edu"))
 
-        return 'DENTAL'
+        office ||= 'DENTAL'
       elsif(['BFC','CCA','CCNJ','CNTRT','CORP',
              'CPUP','CPUPH','GAMBR','HUP','JRB',
              'MDPAH','MDPMC','MDUPM','MGMT','MHUP',
@@ -179,11 +180,11 @@ class Illiad
              userinfo['emailAddr'].ends_with?("uphs.upenn.edu") ||
              userinfo['emailAddr'].ends_with?("nursing.upenn.edu") ||
              userinfo['emailAddr'].ends_with?("email.chop.edu"))
-        return 'BIOMED'
-      else
-        return 'VPL'
+        office ||= 'BIOMED'
       end
     end
+
+    return office || 'VPL'
   end
 
   def self.addIlliadUser(user)
