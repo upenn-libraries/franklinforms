@@ -34,7 +34,7 @@ class Illiad
     bib_data['article']   = params['Article'].presence   || params['article'].presence     || params['atitle'].presence     || params['rft.atitle'].presence || '';
     bib_data['pmonth']    = params['pmonth'].presence    || params['rft.month'].presence   ||'';
     bib_data['rftdate']   = params['rftdate'].presence   || params['rft.date'].presence;
-    bib_data['year']      = params['Year'].presence      || params['year'].presence || params['rft.pubyear'].presence;
+    bib_data['year']      = params['Year'].presence      || params['year'].presence || params['rft.pubyear'].presence || params['rft.pubdate'].presence;
     bib_data['volume']    = params['Volume'].presence    || params['volume'].presence      || params['rft.volume'].presence || '';
     bib_data['issue']     = params['Issue'].presence     || params['issue'].presence       || params['rft.issue'].presence  || '';
     bib_data['issn']      = params['issn'].presence      || params['ISSN'].presence        || params['rft.issn'].presence   ||'';
