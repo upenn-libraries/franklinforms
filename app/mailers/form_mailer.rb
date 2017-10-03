@@ -149,6 +149,7 @@ class FormMailer < ApplicationMailer
       @title = bib['journal']
       @volume = bib['volume']
       @issue = bib['issue']
+      @pages = bib['pages']
       @year = bib['year'] || bib['rftdate']
       @articletitle = bib['article']
       template_name = 'confirmilljournal'

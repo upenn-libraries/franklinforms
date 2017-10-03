@@ -22,7 +22,7 @@ class Illiad
       bib_data['requesttype'][0] = bib_data['requesttype'][0].upcase if ['article', 'book'].member?(bib_data['requesttype'])
     end
   
-    bib_data['chaptitle'] = params['chaptitle'].presence || '';
+    bib_data['chaptitle'] = params['chaptitle'].presence;
     bib_data['booktitle'] = params['title'].presence     || params['Book'].presence        || params['bookTitle'].presence || params['booktitle'].presence || params['rft.title'].presence || '';
     bib_data['edition']   = params['edition'].presence   || params['rft.edition'].presence || '';
     bib_data['publisher'] = params['publisher'].presence || params['Publisher'].presence   || params['rft.pub'].presence   || '';
@@ -81,6 +81,8 @@ class Illiad
     else
       bib_data['pages'] = params['pages'].presence
     end
+
+    bib_data['pages'] = 'none specified' if bib_data['pages'].empty?
   
     return bib_data
   
@@ -276,7 +278,7 @@ class Illiad
               CitedIn: bib_data['sid'],
               SubmitButton: 'Submit Request'}
     elsif(bib_data['requesttype'] == 'ScanDelivery')
-      bib_data['chaptitle'] = 'none supplied' unless bib_data['chaptitle'].presence.nil?
+      bib_data['chaptitle'] = 'none supplied' if bib_data['chaptitle'].presence.nil?
 
       body = {IlliadForm: 'ArticleRequest',
               Username: userinfo['proxied_for'],
