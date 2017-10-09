@@ -26,3 +26,6 @@ config/*.yml
 # Ignore bash scripts
 buildtagpush.sh
 clean.sh
+
+# Ignore ctags file
+/tags
