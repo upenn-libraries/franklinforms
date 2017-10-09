@@ -43,7 +43,6 @@ class Illiad
     bib_data['pid']       = params['pid'].presence       || '';
     bib_data['source']    = params['source'].presence    || "direct";
     bib_data['comments']  = params['UserId'].presence    || params['comments'].presence    || '';
-    #bib_data['pmid']      = params['meduid'].presence    || params['pmid'].presence        || '';
     bib_data['bibid']     = params['record_id'].presence || params['id'].presence          || params['bibid'].presence      || '';
 
     # Handles IDs coming like pmid:numbersgohere
@@ -54,7 +53,6 @@ class Illiad
   
     # *** Relais/BD sends dates through as rft.date but it may be a book request ***
     if(bib_data['sid'] == 'BD' && bib_data['requesttype'] == 'Book')
-      #bib_data['year'] = params['date'].presence || params['rft.date'].presence;
       bib_data['year'] = params['date'].presence || bib_data['rftdate']
     end
   
@@ -176,7 +174,6 @@ class Illiad
              'PMC','SCON','TPHX','TPHXD','URSVC',
              '5019','BMP','MDP','MED','NRP',
              'NUG','NUR','NUP','PDM','CHOP'].member?(org_code) ||
-             #!(/4\d\d\d/.match(org_code).nil?) ||
              !(org_code =~ /4\d\d\d/).nil? ||
              userinfo['emailAddr'].ends_with?("mail.med.upenn.edu") ||
              userinfo['emailAddr'].ends_with?("uphs.upenn.edu") ||
