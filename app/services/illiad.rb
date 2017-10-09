@@ -260,7 +260,7 @@ class Illiad
 
     sessionid = /=(.*);/.match(res.headers['set-cookie'])[1]
     headers = {'Cookie' => "ILLiadSessionID=#{sessionid}"}
- 
+
     if(bib_data['requesttype'].downcase == 'book')
       body = {ILLiadForm: 'LoanRequest',
               Username: userinfo['proxied_for'],
@@ -309,7 +309,7 @@ class Illiad
               PhotoJournalVolume: bib_data['volume'],
               PhotoJournalIssue: bib_data['issue'],
               PhotoJournalMonth: bib_data['pmonth'],
-              PhotoJournalYear: bib_data['year'] || bib_data['rftdate'],
+              PhotoJournalYear: bib_data['rftdate'],
               PhotoJournalInclusivePages: bib_data['pages'],
               ISSN: bib_data['issn'],
               ESPNumber: bib_data['pmid'],
