@@ -34,7 +34,7 @@ class Illiad
     bib_data['article']   = params['Article'].presence   || params['article'].presence     || params['atitle'].presence     || params['rft.atitle'].presence || '';
     bib_data['pmonth']    = params['pmonth'].presence    || params['rft.month'].presence   ||'';
     bib_data['rftdate']   = params['rftdate'].presence   || params['rft.date'].presence;
-    bib_data['year']      = params['Year'].presence      || params['year'].presence || params['rft.pubyear'].presence || params['rft.pubdate'].presence;
+    bib_data['year']      = params['Year'].presence      || params['year'].presence || params['rft.year'] || params['rft.pubyear'].presence || params['rft.pubdate'].presence;
     bib_data['volume']    = params['Volume'].presence    || params['volume'].presence      || params['rft.volume'].presence || '';
     bib_data['issue']     = params['Issue'].presence     || params['issue'].presence       || params['rft.issue'].presence  || '';
     bib_data['issn']      = params['issn'].presence      || params['ISSN'].presence        || params['rft.issn'].presence   ||'';
@@ -96,7 +96,7 @@ class Illiad
 
     query = %Q{SELECT emailaddress,phone,department,nvtgc,address,address2,status,cleared
                FROM #{tablename}
-               WHERE username = '#{db.escape userinfo['proxied_for']}'
+               WHERE username = '#{db.escape(userinfo['proxied_for'] || '')}'
     }
 
     result = db.execute(query).entries.first || Hash.new
@@ -289,7 +289,7 @@ class Illiad
               ISSN: bib_data['issn'] || bib_data['isbn'],
               ESPNumber: bib_data['pmid'],
               PhotoArticleAuthor: bib_data['author'],
-              PhotoArticleTitle: bib_data['article'],
+              PhotoArticleTitle: bib_data['chaptitle'],
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
 	      CitedIn: bib_data['sid'],
