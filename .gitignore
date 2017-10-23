@@ -26,6 +26,7 @@ config/*.yml
 # Ignore bash scripts
 buildtagpush.sh
 clean.sh
+securestart.sh
 
 # Ignore ctags file
 /tags
