@@ -172,19 +172,15 @@ class FormMailer < ApplicationMailer
     @from = "#{user.name} <#{user.data['email']}>"
     @subject = "Books by Mail Request"
 
-    @title = bib.title
-    @bibid = bib.bibid
-    @mfhdid = values[:mfhdid]
-    @mfhdid_loc = values[:mfhdid_loc]
-    @author = bib.author
-    @edition = bib.data['edition']
-    @publication = bib.data['publication']
-    @callno = bib.call_number
-    #@notneededdate = values[:enddate]
-    #@pickuploc = values['']
+    @title = values['title']
+    @bibid = values['bibid']
+    @author = values['author']
+    @publication = values['publication']
+    @callno = values['call_no']
+    @volume = values['volume']
     @comments = values[:comments]
     @patronname = user.name 
-    @patronemail = user.data['email']
+    @patronemail = values['email']
     @pennid = user.data['penn_id']
 
     if Rails.env.development?

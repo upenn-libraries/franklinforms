@@ -1,6 +1,6 @@
 <% @page_title = "Request Books by Mail" %>
 
-<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_ill()" } do |f| %>
+<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_booksbymail()" } do |f| %>
   <%= f.hidden_field(:bibid, {id: 'bibid', value: record.bibid}) %>
 
   <div class="alert alert-warning" style="color: #000000">
@@ -28,7 +28,7 @@
       <%= f.text_field(:call_no, label: 'Call Number', value: record.call_number) %>
       <%= f.text_field(:volume, label: 'Volume') %>
       <%= f.text_area(:comments, label: 'Comments<br />(max 256 chars)'.html_safe, maxlength: 256) %>
-      <%= f.submit('Submit Request', id: 'submit') %>  
+      <%= f.submit('Submit Request', id: 'submit', data: { disable_with: false }) %>
     </div>
   </div>
 
