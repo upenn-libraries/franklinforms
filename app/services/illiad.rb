@@ -245,9 +245,14 @@ class Illiad
     db.close
   end
 
-  def self.submit(user, bib_data)
+  def self.submit(user, bib_data, params)
 
     userinfo = user.data
+
+    if bib_data['requesttype'] != 'ScanDelivery' && !params['bibid'].presence.nil?
+      bib_data['comments'] += "\n#{FranklinAvailability.getAvailabilityNotes(params['bibid'].presence)}\n"
+    end
+
     bib_data['comments'] += '  Proxied by ' + userinfo['proxied_by'] if userinfo['proxied_by'] != userinfo['proxied_for']
 
     illserver = "http://#{ENV['ILLIAD_DBHOST']}/illiad/illiad.dll"
@@ -319,6 +324,7 @@ class Illiad
     end
 
     res = HTTParty.post(illserver, body: body, headers: headers)
+    #/<span class="statusError">(.*)<\/span>/.match(res).nil? should be true unless error with values POSTed to ILLiad
     txnumber = /Transaction Number (\d+)\<\/span>/.match(res)[1]
 
     return txnumber

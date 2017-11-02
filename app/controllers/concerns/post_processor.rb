@@ -25,7 +25,7 @@ module PostProcessor
           Illiad.updateIlliadUser(user)
         end
 
-        txnumber = Illiad.submit(user, bib)
+        txnumber = Illiad.submit(user, bib, values)
         FormMailer.confirm_illiad_email(user, bib, txnumber, values).deliver_now
       when 'booksbymail'
         FormMailer.confirm_booksbymail_email(user, bib, values).deliver_now
