@@ -3,6 +3,12 @@
   @page_title = "#{reqtype} #{record['requesttype']} Request"
 %>
 
+  <% if(reqtype == "InterLibrary Loan" && record['requesttype'] != 'ScanDelivery') %>
+  <div class="alert alert-warning" style="color: #000000">
+    <p>Coming Soon! Your Interlibrary Loans will soon be on your main Penn library account and will have the same loan period and policies as Borrow Direct! We apologize in advance for any inconvenience during the transition when we will move all currently received loans onto library accounts.</p>
+  </div>
+  <% end %>
+
 <%= render :partial => "form/proxy" %>
 
 <%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_ill()" } do |f| %>
