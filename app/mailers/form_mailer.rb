@@ -137,7 +137,7 @@ class FormMailer < ApplicationMailer
       template_name = 'confirmillbook'
     elsif(bib['requesttype'] == 'ScanDelivery')
       @title = bib['title']
-      @chaptitle = bib['article']
+      @chaptitle = bib['chaptitle']
       @volume = bib['volume']
       @issue = bib['issue']
       @pages = bib['pages']
