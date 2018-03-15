@@ -109,9 +109,14 @@ class Aeon
 
   def self.getAdditionalParams(mmsid, hldid)
 
+    result = Alma::Bib.resources.almaws_v1_bibs.mms_id.get(Alma::Bib.query_merge(mms_id: mmsid))
+    xml = Nokogiri::XML(result.to_xml)
+
+    addl_params = {}
+    addl_params['ItemIssue'] = xml.xpath(".//datafield[tag=773]/subfield/subfield[code='g']/__content__/text()").to_s
+
     result = Alma::Bib.resources.almaws_v1_bibs.mms_id_holdings_holding_id.get(Alma::Bib.query_merge(mms_id: mmsid, holding_id: hldid))
     xml = Nokogiri::XML(result.to_xml)
-    addl_params = {}
 
     addl_params['CallNumber'] = ['k','h','i','j','l','m'].map { |code|
       xml.xpath(".//datafield[tag=852]/subfield/subfield[code='#{code}']/__content__/text()")
