@@ -16,7 +16,7 @@ class BibRecord
 
   def call_number
     cn = @data.dig('record','datafield')&.select {|k| k['tag'] == '050'}&.first
-    return cn.dig('subfield').reduce('') {|left,right| left + right['__content__']} unless cn.nil?
+    return [cn.dig('subfield')].flatten.reduce('') {|left,right| left + right['__content__']} unless cn.nil?
   end
 
   def bibid
