@@ -109,11 +109,6 @@ class Illiad
     userinfo['cleared'] = result['cleared'] || ''
     userinfo['delivery'] = ''
 
-    if ['B', 'BO'].member?(userinfo['cleared'])
-      redirect_to "http://www.library.upenn.edu/access/ill/ill_blocked.html"
-      exit
-    end
-
     if result['status'].nil?
       userinfo['illiadrecord'] = 'new'
       userinfo['illoffice'] = getILLOffice(userinfo)
