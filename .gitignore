@@ -30,3 +30,6 @@ securestart.sh
 
 # Ignore ctags file
 /tags
+
+# Ignore VSCode files
+/.vscode/
