@@ -44,11 +44,11 @@ class FormMailer < ApplicationMailer
     @from = user.data['email']
     @name = user.name
     @pennid = user.data['penn_id']
-    @title = bib.title
-    @bibid = bib.bibid
+    @title = values[:title]
+    @bibid = values[:bibid]
     @mfhdid = values[:mfhdid]
-    @author = bib.author
-    @callno = bib.call_number
+    @author = values[:author]
+    @callno = values[:call_number]
     @iteminfo = values[:iteminfo]
     @comments = values[:comments]
 
@@ -197,8 +197,8 @@ class FormMailer < ApplicationMailer
 
   def confirm_email(user, bib, values)
     @to = user.data['email']
-    @title = bib.title
-    @author = bib.author
+    @title = values[:title]
+    @author = values[:author]
 
     if Rails.env.development?
       @subject = "TEST " + @subject + " (to: #{@to}, from: #{@from})"
