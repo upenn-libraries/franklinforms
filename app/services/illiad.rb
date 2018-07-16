@@ -7,9 +7,10 @@ class Illiad
 
   def self.getBibData(params)
     bib_data = Hash.new
+    aulast = params['rft.aulast'].presence || params['aulast'].presence || nil
  
     bib_data['author'] = nil
-    bib_data['author'] = "#{params['rft.aulast']},#{params['rft.aufirst']}" unless params['rft.aulast'].presence.nil?
+    bib_data['author'] = "#{aulast}#{params['rft.aufirst'].presence&.prepend(',')}" unless aulast.presence.nil?
     bib_data['author'] = params['Author'].presence || params['author'].presence || params['aau'].presence || params['au'].presence || params['rft.au'].presence || bib_data['author'].presence || ''
 
     # Use the book request form for unknown genre types
@@ -30,7 +31,7 @@ class Illiad
     bib_data['an']        = params['AN'].presence        || '';
     bib_data['py']        = params['PY'].presence        || '';
     bib_data['pb']        = params['PB'].presence        || '';
-    bib_data['journal']   = params['Journal'].presence   || params['journal'].presence     || params['rft.btitle'].presence || params['rft.jtitle'].presence || params['rft.title'].presence || '';
+    bib_data['journal']   = params['Journal'].presence   || params['journal'].presence     || params['rft.btitle'].presence || params['rft.jtitle'].presence || params['rft.title'].presence || params['title'].presence || '';
     bib_data['article']   = params['Article'].presence   || params['article'].presence     || params['atitle'].presence     || params['rft.atitle'].presence || '';
     bib_data['pmonth']    = params['pmonth'].presence    || params['rft.month'].presence   ||'';
     bib_data['rftdate']   = params['rftdate'].presence   || params['rft.date'].presence;
@@ -64,7 +65,7 @@ class Illiad
     # *** scan delivery uses journal title || book title, which ever we have ***
     # *** we should only have one of them ***
     bib_data['title'] = bib_data['booktitle'].presence || bib_data['journal'].presence;
-  
+
     # *** Make a non-inclusive page parameter ***
     bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || "";
     bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || "";
