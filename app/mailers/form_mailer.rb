@@ -97,17 +97,7 @@ class FormMailer < ApplicationMailer
     @transactionnumber = txnumber
 
     if(userinfo['status']) == 'StandingFaculty'
-      @from = case userinfo['illoffice']
-      when 'BIOMED'
-        'biolend@pobox.upenn.edu'
-      when 'DENTAL'
-        'dentlib@pobox.upenn.edu'
-      when 'VET'
-        'vetlib@pobox.upenn.edu'
-      else
-        'pld@pobox.upenn.edu'
-      end
-
+      @from = 'pld@pobox.upenn.edu'
       @reqtype = 'FacultyEXPRESS'
       @addldeliveryinfo = ''
 
