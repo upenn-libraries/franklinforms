@@ -3,6 +3,12 @@
   @page_title = "#{reqtype} #{record['requesttype']} Request"
 %>
 
+<% if record['requesttype'] == 'ScanDelivery' || record['requesttype'] == 'Article'  %>
+  <div class="alert alert-warning" style="color: #000000">
+    <p>Health Science Patrons: if you need an article or book chapter scan for <b>URGENT PATIENT CARE</b> over the holiday break (December 22, 2018 to January 2, 2019) please call the Biomedical Library directly to place a request: 215-898-5818</p>
+  </div>
+<% end %>
+
 <%= render :partial => "form/proxy" %>
 
 <%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_ill()" } do |f| %>
