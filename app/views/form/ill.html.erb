@@ -3,11 +3,9 @@
   @page_title = "#{reqtype} #{record['requesttype']} Request"
 %>
 
-<% if record['requesttype'] == 'ScanDelivery' || record['requesttype'] == 'Article'  %>
-  <div class="alert alert-warning" style="color: #000000">
-    <p>Health Science Patrons: if you need an article or book chapter scan for <b>URGENT PATIENT CARE</b> over the holiday break (December 22, 2018 to January 2, 2019) please call the Biomedical Library directly to place a request: 215-898-5818</p>
-  </div>
-<% end %>
+<div class="alert alert-warning" style="color: #000000">
+  <p>Requests placed over the special holiday break will be filled starting January 2, 2019. If you have a request related to emergency patient care, please contact the Biomedical Library by emailing your citation to <a href="mailto:circbio@pobox.upenn.edu">circbio@pobox.upenn.edu</a> and calling 215-898-5815 to confirm receipt. If you have a question about requests, please email the ILL department at <a href="interlib@pobox.upenn.edu">interlib@pobox.upenn.edu</a>.</p>
+</div>
 
 <%= render :partial => "form/proxy" %>
 
