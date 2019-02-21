@@ -2,13 +2,16 @@ title = "gitleaks config"
 
 [[regexes]]
 description = "Password set with string literal"
-regex = '''(?i)[\w]*password[\w]* *[:=>]+ *['"][\S]{3,}['"]'''
+regex = '''(?i)[\w]*password[\w]*[:=>, ]+['"][\S]{3,}['"]'''
 [[regexes]]
-description = "Password in Rails config"
-regex = '''^(?i)[\w]*password[\w]* *: *[\S]{3,}[^,}]$'''
+description = "Password in YAML config"
+regex = '''^(?i)[\w]*password[\w][: ]+[\S]{3,}[^,}]$'''
 [[regexes]]
-description = "Rails secret key"
-regex = '''(?i)(devise_secret_key|secret_key_base)[:= ]+[0-9a-zA-Z]{3,}'''
+description = "Rails secret key set with string literal"
+regex = '''(?i)(devise_secret_key|secret_key_base)[:=>, ]+['"][0-9a-zA-Z]{3,}['"]'''
+[[regexes]]
+description = "Rails secret key in YAML config"
+regex = '''^(?i)(devise_secret_key|secret_key_base)[: ]+[0-9a-zA-Z]{3,}[^,}]$'''
 [[regexes]]
 description = "Database connection string"
 regex = '''(?i)database_url.*mysql2://'''
