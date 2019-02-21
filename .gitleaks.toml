@@ -58,3 +58,7 @@ files = [
   '\.gitleaks\.toml',
   '(.*?)(jpg|gif|doc|pdf|bin|md)$',
 ]
+regexes = [
+  # Values set by environment variables
+  '''ENV\[['"][\S]+['"]\]''',
+]
