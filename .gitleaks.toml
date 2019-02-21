@@ -22,9 +22,6 @@ regex = '''(?i)alma_api_key.*[0-9a-zA-Z]{36}'''
 description = "Alma auth secret"
 regex = '''(?i)alma_auth_secret.*[0-9a-zA-Z]{3,}'''
 [[regexes]]
-description = "Summon secret key"
-regex = '''(?i)summon_secret_key.*[0-9a-zA-Z]{32}'''
-[[regexes]]
 description = "AWS"
 regex = '''AKIA[0-9A-Z]{16}'''
 [[regexes]]
