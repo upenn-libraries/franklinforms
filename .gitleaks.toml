@@ -56,6 +56,7 @@ regex = '''(?i)(sk|pk)_(test|live)_[0-9a-zA-Z]{10,32}'''
 commits = []
 files = [
   '\.gitleaks\.toml',
+  '\.env\.example',
   '(.*?)(jpg|gif|doc|pdf|bin|md)$',
 ]
 regexes = [
