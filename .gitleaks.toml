@@ -2,7 +2,7 @@ title = "gitleaks config"
 
 [[regexes]]
 description = "Password set with string literal"
-regex = '''(?i)[\w]*password[\w]* *[:=] *['"][\S]{8,}['"]'''
+regex = '''(?i)[\w]*password[\w]* *[:=>]+ *['"][\S]{8,}['"]'''
 [[regexes]]
 description = "Password in Rails config"
 regex = '''(?i)[\w]*password[\w]* *: *[\S]{8,}'''
