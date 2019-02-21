@@ -2,13 +2,13 @@ title = "gitleaks config"
 
 [[regexes]]
 description = "Password set with string literal"
-regex = '''(?i)[\w]*password[\w]* *[:=>]+ *['"][\S]{6,}['"]'''
+regex = '''(?i)[\w]*password[\w]* *[:=>]+ *['"][\S]{3,}['"]'''
 [[regexes]]
 description = "Password in Rails config"
-regex = '''(?i)[\w]*password[\w]* *: *[\S]{6,}'''
+regex = '''(?i)[\w]*password[\w]* *: *[\S]{3,}'''
 [[regexes]]
 description = "Rails secret key"
-regex = '''(?i)(devise_secret_key|secret_key_base)[:= ]+[0-9a-zA-Z]{6,}'''
+regex = '''(?i)(devise_secret_key|secret_key_base)[:= ]+[0-9a-zA-Z]{3,}'''
 [[regexes]]
 description = "Database connection string"
 regex = '''(?i)database_url.*mysql2://'''
@@ -17,7 +17,7 @@ description = "Alma API key"
 regex = '''(?i)alma_api_key.*[0-9a-zA-Z]{36}'''
 [[regexes]]
 description = "Alma auth secret"
-regex = '''(?i)alma_auth_secret.*[0-9a-zA-Z]{6,}'''
+regex = '''(?i)alma_auth_secret.*[0-9a-zA-Z]{3,}'''
 [[regexes]]
 description = "Summon secret key"
 regex = '''(?i)summon_secret_key.*[0-9a-zA-Z]{32}'''
