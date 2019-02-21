@@ -1,7 +1,7 @@
 title = "gitleaks config"
 
 [[regexes]]
-description = "Password set with string literal"
+description = "Password in string"
 regex = '''(?i)[\w]*password[\w]*[:=>, ]+['"][\S]{3,}['"]'''
 [[regexes]]
 description = "Password in YAML config"
