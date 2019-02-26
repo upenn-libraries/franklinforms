@@ -42,7 +42,6 @@ COPY lib/ /home/app/webapp/lib
 COPY log/ /home/app/webapp/log
 COPY public/ /home/app/webapp/public
 COPY Rakefile /home/app/webapp/
-COPY tmp/ /home/app/webapp/tmp
 COPY vendor/ /home/app/webapp/vendor
 
 RUN chown -R app.app .
