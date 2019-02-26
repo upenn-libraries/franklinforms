@@ -26,6 +26,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'listen', '~> 3.1.0'
   gem 'pry-rails'
   gem 'pry-byebug'
 end
