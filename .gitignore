@@ -16,9 +16,6 @@
 !/log/.keep
 /tmp
 
-# Ignore config yml files
-config/*.yml
-
 # Ignore ENV files
 .env*
 !.env.example
