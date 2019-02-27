@@ -1,11 +1,7 @@
 class FranklinAvailability
   include HTTParty
 
-  if Rails.env.development?
-    base_uri 'https://franklin.library.upenn.edu'
-  else
-    base_uri 'http://blacklight'
-  end
+  base_uri ENV['FRANKLIN_BASE_URL']
 
   def self.getAvailabilityNotes(mmsid)
     query = {:id_list => mmsid}
