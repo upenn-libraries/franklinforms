@@ -91,7 +91,7 @@ class Illiad
 
     db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
-    tablename = ENV['ILLIAD_ENV'] == 'production' ? 'usersall' : 'users'
+    tablename = ENV['ILLIAD_USER_TABLE']
 
     userinfo = user.data
 
@@ -186,7 +186,7 @@ class Illiad
 
     db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
-    tablename = ENV['ILLIAD_ENV'] == 'production' ? 'usersall' : 'users'
+    tablename = ENV['ILLIAD_USER_TABLE']
 
     userinfo = user.data
     department = userinfo['dept'].respond_to?(:join) ? userinfo['dept'].join('|') : userinfo['dept']
@@ -221,7 +221,7 @@ class Illiad
   def self.updateIlliadUser(user)
     db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
-    tablename = ENV['ILLIAD_ENV'] == 'production' ? 'usersall' : 'users'
+    tablename = ENV['ILLIAD_USER_TABLE']
 
     userinfo = user.data
     department = userinfo['dept'].respond_to?(:join) ? userinfo['dept'].join('|') : (userinfo['dept'] || '')
