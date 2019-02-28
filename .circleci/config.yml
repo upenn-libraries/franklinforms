@@ -2,10 +2,10 @@ version: 2.1
 orbs:
   docker-publish: circleci/docker-publish@0.1.6
 workflows:
-  build:
+  build_and_publish:
     jobs:
       - docker-publish/publish:
+          context: quay.io
           registry: quay.io
           image: upennlibraries/franklinforms
           tag: circleci.${CIRCLE_BUILD_NUM}
-          deploy: false
