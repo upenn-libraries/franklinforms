@@ -3,11 +3,26 @@ version: 2.1
 orbs:
   docker-publish: circleci/docker-publish@0.1.6
 
+jobs:
+  test:
+    docker:
+      - image: circleci/ruby:2.6.1
+      - image: quay.io/upennlibraries/franklinforms:circleci.${CIRCLE_BUILD_NUM}
+        environment:
+          SECRET_KEY_BASE: x
+    steps:
+      - run:
+          name: Smoke Test Container
+          command: curl --retry 5 --retry-connrefused http://localhost:80
+
 workflows:
-  build_and_publish:
+  build_and_test:
     jobs:
       - docker-publish/publish:
           context: quay.io
           registry: quay.io
           image: upennlibraries/franklinforms
           tag: circleci.${CIRCLE_BUILD_NUM}
+      - test:
+          requires:
+            - docker-publish/publish
