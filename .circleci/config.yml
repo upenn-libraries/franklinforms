@@ -7,13 +7,16 @@ jobs:
   test:
     docker:
       - image: circleci/ruby:2.6.1
-      - image: quay.io/upennlibraries/franklinforms:circleci.${CIRCLE_BUILD_NUM}
+      - image: quay.io/upennlibraries/franklinforms:circleci.7
         environment:
           SECRET_KEY_BASE: x
     steps:
       - run:
           name: Smoke Test Container
-          command: curl --retry 5 --retry-connrefused http://localhost:80
+          command: |
+            wget \
+              -q -t 5 --retry-connrefused -O /dev/null \
+              http://localhost:80/redir/help
 
 workflows:
   build_and_test:
