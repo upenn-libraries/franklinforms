@@ -7,7 +7,7 @@ jobs:
   test:
     docker:
       - image: circleci/ruby:2.6.1
-      - image: quay.io/upennlibraries/franklinforms:circleci.${CIRCLE_SHA1:0:7}
+      - image: quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1:0:7}
         environment:
           SECRET_KEY_BASE: x
     steps:
@@ -25,7 +25,7 @@ workflows:
           context: quay.io
           registry: quay.io
           image: upennlibraries/franklinforms
-          tag: circleci.${CIRCLE_SHA1:0:7}
+          tag: ${CIRCLE_SHA1:0:7}
           extra_build_args: >-
             --label "edu.upenn.library.build-system=circleci"
             --label "edu.upenn.library.circleci.build-number=${CIRCLE_BUILD_NUM}"
