@@ -4,6 +4,15 @@ orbs:
   docker-publish: circleci/docker-publish@0.1.6
 
 jobs:
+  gitleaks:
+    docker:
+      - image: quay.io/upennlibraries/gitleaks:v1.23.0
+    steps:
+      - run:
+          name: Audit Repository for Secrets
+          command: |
+            git clone https://github.com/upenn-libraries/franklinforms.git /root/project
+            gitleaks --repo-path=/root/project --redact --repo-config
   test:
     docker:
       - image: circleci/ruby:2.6.1
@@ -21,6 +30,7 @@ jobs:
 workflows:
   build_and_test:
     jobs:
+      - gitleaks
       - docker-publish/publish:
           context: quay.io
           registry: quay.io
