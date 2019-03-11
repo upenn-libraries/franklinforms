@@ -92,19 +92,15 @@ class Aeon
   def self.getOpenUrlParams(mmsid)
 
     url = "https://upenn.alma.exlibrisgroup.com/view/uresolver/01UPENN_INST/openurl?rft.mms_id=#{mmsid}&svc_dat=CTO"
-    #param_map = {'rft.format' => 'format', 'rft.au' => 'au', 'rft.creator' => 'creator', 'rft.title' => 'title', 'rft.edition' => 'edition', 'rft.place' => 'place', 'rft.pub' => 'pub', 'rft.date' => 'date', 'rft.isbn' => 'isbn', 'rft.issn' => 'issn', 'rft.identifier' => 'ReferenceNumber'}
-    #result = {'format' => '', 'au' => '', 'creator' => '', 'title' => '', 'edition' => '', 'place' => '', 'pub' => '', 'date' => '', 'isbn' => '', 'issn' => '', 'ReferenceNumber' => ''};
     result = {'rft.format' => '', 'rft.au' => '', 'rft.genre' => '', 'rft.creator' => '', 'rft.title' => '', 'rft.edition' => '', 'rft.place' => '', 'rft.pub' => '', 'rft.date' => '', 'rft.isbn' => '', 'rft.issn' => ''};
 
-    open(url) { |f|
-      xml = Nokogiri::XML(f.read).remove_namespaces!
-      xml.xpath('//context_object/keys/key').each { |k| 
-       #result[param_map[k.values.first]] &&= k.children.text
-       result[k.values.first] &&= k.children.text
-      }
+    response = HTTParty.get(url)
+    xml = Nokogiri::XML(response.body).remove_namespaces!
+    xml.xpath('//context_object/keys/key').each { |k|
+     result[k.values.first] &&= k.children.text
     }
 
-    result
+    return result
   end
 
   def self.getAdditionalParams(mmsid, hldid)
