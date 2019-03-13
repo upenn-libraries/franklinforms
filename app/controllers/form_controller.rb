@@ -26,7 +26,8 @@ class FormController < ApplicationController
 
     # Reference: https://stackoverflow.com/a/16623769
     uri = URI(request.original_url)
-    query = URI.decode_www_form(uri.query || '') << ['bibid', mmsid]
+    query = URI.decode_www_form(uri.query || '')
+    query << ['bibid', mmsid] if params['bibid'].nil? && mmsid.present
     uri.query = URI.encode_www_form(query)
     uri.path = uri.path.sub /^\/[^\/]*\//, '/forms/'
 
