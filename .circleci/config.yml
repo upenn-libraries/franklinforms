@@ -23,7 +23,7 @@ workflows:
   build_and_test:
     jobs:
       - gitleaks/check_local:
-          image: quay.io/upennlibraries/gitleaks:v1.23.0
+          image: quay.io/upennlibraries/gitleaks:v1.24.0
           options: --redact --repo-config
       - docker-publish/publish:
           context: quay.io
