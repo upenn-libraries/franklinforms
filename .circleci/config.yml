@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  docker-publish: upenn-libraries/docker-publish@dev:2faa8ae
+  docker-publish: upenn-libraries/docker-publish@0.1.0
   gitleaks: upenn-libraries/gitleaks@0.1.0
 
 jobs:
