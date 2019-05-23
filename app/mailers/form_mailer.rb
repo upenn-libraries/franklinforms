@@ -189,6 +189,7 @@ class FormMailer < ApplicationMailer
     @to = user.data['email']
     @title = values[:title]
     @author = values[:author]
+    @comments = values[:comments]
 
     if Rails.env.development?
       @subject = "TEST " + @subject + " (to: #{@to}, from: #{@from})"
