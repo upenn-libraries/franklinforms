@@ -196,7 +196,7 @@ class Illiad
                  (username, lastname, firstname, ssn, status, emailaddress, phone, department,
                   nvtgc, password, notificationmethod, deliverymethod, loandeliverymethod, cleared, web, address, authtype, articlebillingcategory, loanbillingcategory )
                  VALUES
-                 ('#{username}', '#{db.escape userinfo['last_name']}', '#{db.escape userinfo['first_name']}', '#{db.escape userinfo['penn_id']}', '#{db.escape userinfo['status']}', '#{db.escape userinfo['emailAddr']}', '#{db.escape userinfo['phone']}', '#{db.escape department}', '#{db.escape userinfo['illoffice']}', '#{ENV['ILLIAD_USER_PASSWORD_HASH']}', 'Electronic', 'Mail to Address','Hold for Pickup','Yes', 'Yes', '#{db.escape userinfo['delivery']}', 'ILLiad', 'Exempt', 'Exempt' )
+                 ('#{username}', '#{db.escape userinfo['last_name']}', '#{db.escape userinfo['first_name']}', '#{db.escape userinfo['penn_id']}', '#{db.escape userinfo['status']}', '#{db.escape userinfo['emailAddr']}', '#{db.escape userinfo['phone']}', '#{db.escape department}', '#{db.escape userinfo['illoffice']}', '#{ENV['ILLIAD_USER_PASSWORD_HASH']}', 'Electronic', 'Mail to Address','Hold for Pickup','Yes', 'Yes', '#{db.escape userinfo['delivery']}', 'Default', 'Exempt', 'Exempt' )
     }
 
     result = db.execute(query).do
