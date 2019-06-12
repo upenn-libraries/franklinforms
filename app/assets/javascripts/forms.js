@@ -43,3 +43,28 @@ function form_validate(required) {
 
   return !errors;
 }
+
+function init_report_error_form() {
+  // Hide holding form-group
+  $('select[name="[holding]"').parent().parent().hide();
+}
+
+function update_title() {
+  var report_type = $('input[name="[report_type]"]:checked').val();
+  var type_title_heading = $('#type_title');
+
+  switch(report_type) {
+    case "fixopac":
+      type_title_heading.text("Report error");
+      $('select[name="[holding]"').parent().parent().hide();
+      break;
+    case "enhanced":
+      type_title_heading.text("Request enhanced cataloging");
+      $('select[name="[holding]"').parent().parent().hide();
+      break;
+    case "missing":
+      type_title_heading.text("Report item missing");
+      $('select[name="[holding]"').parent().parent().show();
+      break;
+  }
+}

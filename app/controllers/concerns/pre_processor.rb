@@ -6,8 +6,10 @@ module PreProcessor
         #username, _ = ActionController::HttpAuthentication::Basic::user_name_and_password(request)
         username = request.headers['HTTP_REMOTE_USER']&.split('@')&.first || ''
         record = Alma::Bib.find([params[:bibid]], {expand: :p_avail})
+        holdings = Alma::Bib.resources.almaws_v1_bibs.mms_id_holdings.get(Alma::Bib.query_merge(mms_id: params[:bibid]));
 
         return {record: BibRecord.new((record.first.response unless record.has_error?)),
+                holdings: Hash[holdings['holdings']['holding'].map {|h| ["#{h['location']['desc']}", h['holding_id']]}],
                 user: User.new(username),
                 params: params}
 

@@ -3,8 +3,17 @@ class FormMailer < ApplicationMailer
 
   def send_enhanced_email(user, bib, values)
     @to = 'fixopac@pobox.upenn.edu'
-    @subject = 'Request enhanced cataloging'
-    send_email(user, bib, values)
+
+    report_type = values[:report_type]
+    case report_type
+      when 'missing'
+        send_missing_email(user, bib, values)
+      when 'fixopac'
+        send_fixopac_email(user, bib, values)
+      else
+        @subject = 'Request enhanced cataloging'
+        send_email(user, bib, values)
+    end
   end
 
   def send_missing_email(user, bib, values)
@@ -46,7 +55,7 @@ class FormMailer < ApplicationMailer
     @pennid = user.data['penn_id']
     @title = values[:title]
     @bibid = values[:bibid]
-    @mfhdid = values[:mfhdid]
+    @mfhdid = values[:holding]
     @author = values[:author]
     @callno = values[:call_number]
     @iteminfo = values[:iteminfo]
@@ -66,9 +75,18 @@ class FormMailer < ApplicationMailer
 
   def confirm_enhanced_email(user, bib, values)
     @from = "fixopac@pobox.upenn.edu"
-    @subject = "Request Enhanced Cataloging"
-    @reqtype = "Request Enhanced Cataloging"
-    confirm_email(user, bib, values)
+
+    report_type = values[:report_type]
+    case report_type
+      when 'missing'
+        confirm_missing_email(user, bib, values)
+      when 'fixopac'
+        confirm_fixopac_email(user, bib, values)
+      else
+        @subject = "Request Enhanced Cataloging"
+        @reqtype = "Request Enhanced Cataloging"
+        confirm_email(user, bib, values)
+    end
   end
 
   def confirm_missing_email(user, bib, values)
@@ -205,41 +223,46 @@ class FormMailer < ApplicationMailer
 
   def self.get_location_email(location)
     case location
-      when /afro/i then "vpstacks@pobox.upenn.edu" 
-      when /^annb/i then "sblack@asc.upenn.edu" 
-      when /^biom/i then "circbio@pobox.upenn.edu" 
-      when /^chem/i then "chemlib@pobox.upenn.edu" 
-      when /^cjs/i then "cajs@pobox.upenn.edu"      
-      when /classics/i then "vpstacks@pobox.upenn.edu" 
-      when /dent/i then "bjenkins@pobox.upenn.edu"  
-      when /easia/i then "vpstacks@pobox.upenn.edu" 
-      when /easiasem/i then "vpstacks@pobox.upenn.edu" 
-      when /engi/i then "townelib@seas.upenn.edu" 
-      when /^fine/i then "finearts@pobox.upenn.edu" 
-      when /judaica/i then "vpstacks@pobox.upenn.edu" 
-      when /lipp/i then "lippinco@wharton.upenn.edu" 
-      when /math/i then "mpalib@pobox.upenn.edu" 
-      when /medieval/i then "vpstacks@pobox.upenn.edu" 
-      when /mideast/i then "vpstacks@pobox.upenn.edu" 
-      when /^muse/i then "jasonfd@pobox.upenn.edu" 
-      when /musiclist/i then "griscom@pobox.upenn.edu" 
-      when /musicsem/i then "vpstacks@pobox.upenn.edu" 
-      when /newb/i then "vetlib@pobox.upenn.edu"            
-      when /sasiarefe/i then "vpstacks@pobox.upenn.edu"          
-      when /scfurn/i then "scmissing@lists.upenn.edu"         
-      when /sclea/i then "scmissing@lists.upenn.edu" 
-      when /scrare/i then "scmissing@lists.upenn.edu" 
-      when /screfe/i then "scmissing@lists.upenn.edu" 
-      when /scsmith/i then "scmissing@lists.upenn.edu" 
-      when /^vanp$/i then "vpstacks@pobox.upenn.edu" 
-      when /vanpinfo/i then "vpstacks@pobox.upenn.edu" 
-      when /vanpmicro/i then "vpstacks@pobox.upenn.edu"          
-      when /vanpvideo/i then "vpstacks@pobox.upenn.edu" 
-      when /vete/i then "vetlib@pobox.upenn.edu" 
-      when /^vpref$/i then "vpstacks@pobox.upenn.edu" 
-      when /vprefmoel/i then "vpstacks@pobox.upenn.edu"          
-      when /vpwicref/i then "vpstacks@pobox.upenn.edu" 
-      when /yarn/i then "vpstacks@pobox.upenn.edu"    
+      when "afro" then "vpstacks@upenn.edu"
+      when "annbcirc" then "sblack@asc.upenn.edu"
+      when "annbrefe" then "sblack@asc.upenn.edu"
+      when "annbrese" then "sblack@asc.upenn.edu"
+      when "arbor" then "vpstacks@upenn.edu"
+      when "biom" then "libref@mail.med.upenn.edu"
+      when "chem" then "chemlib@pobox.upenn.edu"
+      when "cjs" then "cajs@pobox.upenn.edu"
+      when "classics" then "vpstacks@upenn.edu"
+      when "dent" then "baumans@upenn.edu"
+      when "easiasem" then "vpstacks@upenn.edu"
+      when "eastasia" then "vpstacks@upenn.edu"
+      when "fine" then "finearts@pobox.upenn.edu"
+      when "judaica" then "vpstacks@upenn.edu"
+      when "lipp" then "lippinco@wharton.upenn.edu"
+      when "math" then "mpalib@pobox.upenn.edu"
+      when "medieval" then "vpstacks@upenn.edu"
+      when "mideast" then "vpstacks@upenn.edu"
+      when "muse" then "jasonfd@pobox.upenn.edu"
+      when "musiclist" then "lizavick@upenn.edu"
+      when "musicsem" then "vpstacks@upenn.edu"
+      when "newb" then "vetlib@pobox.upenn.edu"
+      when "rotc" then "scmissing@lists.upenn.edu"
+      when "sasiarefe" then "vpstacks@upenn.edu"
+      when "scfurn" then "scmissing@lists.upenn.edu"
+      when "sclea" then "scmissing@lists.upenn.edu"
+      when "scrare" then "scmissing@lists.upenn.edu"
+      when "screfe" then "scmissing@lists.upenn.edu"
+      when "scsmith" then "storage@pobox.upenn.edu"
+      when "stor" then "vetlib@pobox.upenn.edu"
+      when "vanpinfo" then "vpstacks@upenn.edu"
+      when "vanpmicro" then "vpstacks@upenn.edu"
+      when "vanp" then "vpstacks@upenn.edu"
+      when "vanpvideo" then "vpstacks@upenn.edu"
+      when "vete" then "vpstacks@upenn.edu"
+      when "vprefmoel" then "vpstacks@upenn.edu"
+      when "vpref" then "vpstacks@upenn.edu"
+      when "vpwicref" then "vpstacks@upenn.edu"
+      when "yarn" then "vpstacks@upenn.edu"
+      else "vpstacks@upenn.edu"
     end
   end
 end
