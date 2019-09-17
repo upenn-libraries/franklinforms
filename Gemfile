@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.0', '>= 5.0.7.1'
+gem 'rails', '~> 5.0.0', '>= 5.0.7.2'
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
 # Use SCSS for stylesheets
@@ -33,7 +33,7 @@ end
 
 gem 'tzinfo-data'
 
-gem 'bootstrap-sass'
+gem 'bootstrap-sass', '~> 3.4.0', '>= 3.4.1'
 gem 'bootstrap_form'
 gem 'net-ldap'
 gem 'dbi'
@@ -41,6 +41,6 @@ gem 'rails-dbi'
 gem 'ruby-oci8'
 gem 'blacklight'
 gem 'alma'
-gem 'nokogiri'
+gem 'nokogiri', '~> 1.10.0', '>= 1.10.4'
 gem 'tiny_tds'
 gem 'httparty'
