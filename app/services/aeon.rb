@@ -65,7 +65,7 @@ class Aeon
     'sc1100c' => '1100c LIBRA',
     'scsmithst' => 'Smith Storage LIBRA',
     'scfurnst' => 'Furness Storage LIBRA',
-    'scdreis' => 'Dreiser LIBRA',
+    'scdreis' => 'Dreiser',
     'scelias' => 'Swift Reading',
     'scparts' => 'Books in Parts',
     'scdrey' => 'Dreyfus',
