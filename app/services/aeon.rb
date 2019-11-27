@@ -67,6 +67,7 @@ class Aeon
     'scfurnst' => 'Furness Storage LIBRA',
     'scdreis' => 'Dreiser',
     'scelias' => 'Swift Reading',
+    'scbanks' => 'Banks',
     'scparts' => 'Books in Parts',
     'scdrey' => 'Dreyfus',
     'scbyron' => 'Byron',
