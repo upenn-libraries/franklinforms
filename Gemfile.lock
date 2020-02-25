@@ -137,7 +137,7 @@ GEM
     multi_xml (0.6.0)
     net-ldap (0.16.0)
     nio4r (2.5.1)
-    nokogiri (1.10.4)
+    nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -246,7 +246,7 @@ DEPENDENCIES
   listen (~> 3.1.0)
   meta_request
   net-ldap
-  nokogiri (~> 1.10.0, >= 1.10.4)
+  nokogiri (~> 1.10.8)
   pry-byebug
   pry-rails
   puma (~> 3.0)
