@@ -55,7 +55,7 @@ function update_title() {
 
   switch(report_type) {
     case "fixopac":
-      type_title_heading.text("Report error");
+      type_title_heading.text("Report cataloging error");
       $('select[name="[holding]"').parent().parent().hide();
       break;
     case "enhanced":
