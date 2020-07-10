@@ -1,11 +1,15 @@
-version: '2'
+version: '3.8'
+
 services:
   web:
     build: .
     image: franklinforms
+    container_name: franklinforms
+    env_file:
+      - '.env'
+    environment:
+      RAILS_ENV: production
+      PASSENGER_APP_ENV: production
     ports:
       - '80:80'
       - '443:443'
-    env_file:
-      - '.env'
-

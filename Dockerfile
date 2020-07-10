@@ -1,61 +1,39 @@
 FROM codeforkjeff/passenger-ruby23:0.9.19-ruby-build
 #FROM pennlib/passenger-ruby23:0.9.23-ruby-build
 
-MAINTAINER Christopher Clement <clemenc@upenn.edu>
-
-EXPOSE 80
-
 ENV LD_LIBRARY_PATH=/opt/oracle/instantclient_12_1
 
-RUN apt-get update && apt-get install -qq -y --no-install-recommends \
-        libaio1 \
-        unzip
-
-RUN mkdir -p /opt/oracle
-
 COPY oracle/instantclient-* /opt/oracle/
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 
-RUN mkdir -p /home/app/webapp
-
-#COPY . /home/app/webapp
-COPY Gemfile* /home/app/webapp/
+RUN apt-get update && apt-get install -qq -y --no-install-recommends \
+    libaio1 \
+    unzip && \
+    chmod +x /usr/local/bin/docker-entrypoint && \
+    rm -f /etc/service/nginx/down /etc/nginx/sites-enabled/default && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/oracle/
 
-RUN bash -c "ls *.zip | xargs -n1 unzip"
+RUN bash -c "ls *.zip | xargs -n1 unzip" && \
+    ln -s /opt/oracle/instantclient_12_1/libclntsh.so.12.1 /opt/oracle/instantclient_12_1/libclntsh.so && \
+    mkdir -p network/admin
 
-WORKDIR /opt/oracle/instantclient_12_1
-
-RUN ln -s libclntsh.so.12.1 libclntsh.so
-
-RUN mkdir -p network/admin
+COPY --chown=app:app . /tmp/app
+COPY --chown=app:app Gemfile* /home/app/webapp/
+COPY rails-env.conf /etc/nginx/main.d/rails-env.conf
+COPY webapp.conf /etc/nginx/sites-enabled/webapp.conf
 
 WORKDIR /home/app/webapp
 
-RUN bundle install
+# Install gems, add application files, and precompile assets
+RUN gem install bundler && \
+    bundle install && \
+    mv /tmp/app/* .
 
-COPY app/ /home/app/webapp/app
-COPY bin/ /home/app/webapp/bin
-COPY config/ /home/app/webapp/config
-COPY config.ru /home/app/webapp/
-COPY lib/ /home/app/webapp/lib
-COPY log/ /home/app/webapp/log
-COPY public/ /home/app/webapp/public
-COPY Rakefile /home/app/webapp/
-COPY vendor/ /home/app/webapp/vendor
+# Clean up
+RUN rm -fr /tmp/* /var/tmp/*
 
-RUN chown -R app.app .
- 
-# Enable Nginx and Passenger
-RUN rm -f /etc/service/nginx/down
-
-RUN rm /etc/nginx/sites-enabled/default
-
-ADD webapp.conf /etc/nginx/sites-enabled/webapp.conf
-
-ADD rails-env.conf /etc/nginx/main.d/rails-env.conf
-
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ENTRYPOINT ["docker-entrypoint"]
 
 CMD ["/sbin/my_init"]

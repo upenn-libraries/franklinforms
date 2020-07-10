@@ -32,6 +32,22 @@ docker build -t indexing-dev.library.upenn.int:5000/upenn-libraries/franklinform
 docker push indexing-dev.library.upenn.int:5000/upenn-libraries/franklinforms:master
 ```
 
+## Development
+
+To set up a development environment you first need to export your local UID/GID as new variables (CURRENT_UID and CURRENT_GID):
+
+```bash
+export CURRENT_UID=$(id -u)
+export CURRENT_GID=$(id -g)
+```
+
+Then run the dockerized dev environment:
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+```
+
+Any changes made to the files in your local directory will be reflected within the container.
+
 ## Paths
 
 Franklin Forms has two top-level paths:

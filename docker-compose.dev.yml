@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  web:
+    environment:
+      APP_UID: ${CURRENT_UID:-1000}
+      APP_GID: ${CURRENT_GID:-1000}
+      RAILS_ENV: development
+      PASSENGER_APP_ENV: development
+    volumes:
+      - ${PWD}:/home/app/webapp
