@@ -20,4 +20,14 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  forms:
+    common:
+      fields:
+        submit: "Submit"
+    help:
+      page_title: "Request Help"
+      message: "Please provide details about the resource you were trying to find."
+      fields:
+        name: "Name"
+        email: "Email"
+        details: "Your Question"
