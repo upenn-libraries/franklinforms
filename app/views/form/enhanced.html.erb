@@ -19,7 +19,7 @@
     </div>
     <div class="section-body">
       <%= f.form_group(:report_type, label: {text: "Report Type"}) do %>
-        <%= f.radio_button(:report_type, :fixopac, label: "Report error", checked: true, onclick: "update_title()") %>
+        <%= f.radio_button(:report_type, :fixopac, label: "Report cataloging error", checked: true, onclick: "update_title()") %>
         <%= f.radio_button(:report_type, :enhanced, label: "Request enhanced cataloging", onclick: "update_title()") %>
         <%= f.radio_button(:report_type, :missing, label: "Report item missing", onclick: "update_title()") %>
       <% end %>
@@ -36,7 +36,7 @@
       <%= f.text_field(:author, label: 'Author', value: record.author) %>
       <%= f.text_field(:call_number, label: 'Call Number', value: record.call_number) %>
       <%= f.text_area(:comments, label: 'Comments<br />(max 256 chars)'.html_safe, maxlength: 256) %>
-      <%= f.submit('Submit Request', id: 'submit', data: { disable_with: false }) %>  
+      <%= f.submit('Submit Request', id: 'submit', data: { disable_with: false }) %>
     </div>
   </div>
 
