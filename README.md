@@ -6,11 +6,13 @@ Franklin Forms is a Rails app that provides various forms and interfaces to patr
 
 * Ruby 2.3.1
 * Rails 5
-* Oracle Instant Client 12.1
-* libaio1
-* [FreeTDS](https://github.com/rails-sqlserver/tiny_tds#install)
 * Docker
 * Docker Compose
+
+### Additional dependencies for running the app w/o Docker
+* libaio1
+* Oracle Instant Client 12.1
+* [FreeTDS](https://github.com/rails-sqlserver/tiny_tds#install)
 * JS runtime (e.g., `nodejs`)
 
 ## Installation
