@@ -12,13 +12,13 @@ gem 'alma'
 gem 'nokogiri', '~> 1.10.0', '>= 1.10.4'
 gem 'tiny_tds'
 gem 'httparty'
-gem 'rails', '~> 5.0.0', '>= 5.0.7.2'
+gem 'rails', '~> 5.2'
 gem 'puma', '~> 3.0'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.2'
+# gem 'coffee-rails'
 gem 'jquery-rails'
-gem 'jbuilder', '~> 2.5'
+gem 'jbuilder'
 
 group :development, :test do
   gem 'byebug', platform: :mri
