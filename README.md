@@ -8,8 +8,10 @@ Franklin Forms is a Rails app that provides various forms and interfaces to patr
 * Rails 5
 * Oracle Instant Client 12.1
 * libaio1
+* [FreeTDS](https://github.com/rails-sqlserver/tiny_tds#install)
 * Docker
 * Docker Compose
+* JS runtime (e.g., `nodejs`)
 
 ## Installation
 
@@ -17,7 +19,13 @@ Franklin Forms is a Rails app that provides various forms and interfaces to patr
 1. Copy ``.env.example`` to ``.env``.
 1. Open ``.env`` set the values for each variable. Each variable is documented in the file.
 
+When installing gems, you may need to set an additional environment variable for `LD_LIBRARY_PATH` that points to the location of your install of the
+Oracle Instant Client (e.g., `/opt/oracle/instantclient_12_1`). 
+
 Now you can run the Rails server to access the forms or execute the following to run the forms with Docker:
+
+If you see ```Warning: NLS_LANG is not set. fallback to US7ASCII.```, you cna silence that by setting an environment 
+variable `NLS_LANG=AMERICAN_AMERICA.AL32UTF8`  
 
 ```bash
 docker-compose up .
