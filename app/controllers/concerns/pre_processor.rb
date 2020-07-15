@@ -51,7 +51,8 @@ module PreProcessor
         end
 
         user = User.new(username, proxy_id)
-        Illiad.getIlliadUserInfo(user, params)
+        # TODO: this below returns a hash of user data from Illiad, but doesn't even store it...
+        # Illiad.getIlliadUserInfo(user, params)
 
         if ['B', 'BO'].member?(user.data['cleared'])
           redirect_to "http://www.library.upenn.edu/access/ill/ill_blocked.html"
