@@ -4,24 +4,24 @@ RSpec.feature 'Form rendering and submission', type: :feature do
   let(:book_params) do
     {
       rfe_dat: '729064964',
-        rfr_id: '', 'rft.atitle': '',
-        'rft.au': 'Merleau-Ponty, Maurice, 1908-1961.',
-        'rft.aufirst': '', 'rft.auinit': '', 'rft.aulast': '', 'rft.date': '', 'rft.doi': '', 'rft.edition': '',
-        'rft.eisbn': '', 'rft.eissn': '', 'rft.epage': '',
-        'rft.genre': 'book',
-        'rft.isbn': '0415834333',
-        'rft.issn': '', 'rft.issue': '', 'rft.jtitle': '', 'rft.month': '', 'rft.number': '',
-        'rft.place': 'Abingdon%2C+Oxon+%3B',
-        'rft.pub': 'Routledge%2C',
-        'rft.publisher': 'Routledge%2C',
-        'rft.pubdate': '2012.',
-        'rft.pubyear': '', 'rft.spage': '',
-        'rft.stitle': 'Phenomenology of perception /',
-        'rft.btitle': 'Phenomenology of perception /',
-        'rft.title': 'Phenomenology of perception /',
-        'rft.volume': '', 'test': '',
-        'bibid': '9954537543503681',
-        'rfr_id': 'info:sid/primo.exlibrisgroup.com'
+      rfr_id: '', 'rft.atitle': '',
+      'rft.au': 'Merleau-Ponty, Maurice, 1908-1961.',
+      'rft.aufirst': '', 'rft.auinit': '', 'rft.aulast': '', 'rft.date': '', 'rft.doi': '', 'rft.edition': '',
+      'rft.eisbn': '', 'rft.eissn': '', 'rft.epage': '',
+      'rft.genre': 'book',
+      'rft.isbn': '0415834333',
+      'rft.issn': '', 'rft.issue': '', 'rft.jtitle': '', 'rft.month': '', 'rft.number': '',
+      'rft.place': 'Abingdon, Oxon;',
+      'rft.pub': 'Routledge,',
+      'rft.publisher': 'Routledge,',
+      'rft.pubdate': '2012.',
+      'rft.pubyear': '', 'rft.spage': '',
+      'rft.stitle': 'Phenomenology of perception /',
+      'rft.btitle': 'Phenomenology of perception /',
+      'rft.title': 'Phenomenology of perception /',
+      'rft.volume': '', 'test': '',
+      'bibid': '9954537543503681',
+      'rfr_id': 'info:sid/primo.exlibrisgroup.com'
     }
   end
   context 'for ILL' do
