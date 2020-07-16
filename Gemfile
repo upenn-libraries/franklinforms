@@ -1,46 +1,38 @@
 source 'https://rubygems.org'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.0', '>= 5.0.7.2'
-# Use Puma as the app server
-gem 'puma', '~> 3.0'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
-
-# Use jquery as the JavaScript library
+gem 'alma'
+gem 'blacklight'
+gem 'bootstrap_form'
+gem 'bootstrap-sass', '~> 3.4.0', '>= 3.4.1'
+gem 'coffee-rails'
+gem 'dbi'
+gem 'httparty'
+gem 'jbuilder'
 gem 'jquery-rails'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
+gem 'net-ldap'
+gem 'nokogiri', '~> 1.10.0', '>= 1.10.4'
+gem 'puma', '~> 3.0'
+gem 'rails', '~> 5.2'
+gem 'rails-dbi'
+gem 'ruby-oci8'
+gem 'sass-rails', '~> 5.0'
+gem 'tiny_tds'
+gem 'tzinfo-data'
+gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platform: :mri
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'meta_request'
+  gem 'byebug', platform: :mri
+  gem 'capybara'
   gem 'dotenv-rails'
+  gem 'meta_request'
+  gem 'rspec-rails'
 end
 
 group :development do
   gem 'listen', '~> 3.1.0'
-  gem 'pry-rails'
   gem 'pry-byebug'
+  gem 'pry-rails'
 end
 
-gem 'tzinfo-data'
-
-gem 'bootstrap-sass', '~> 3.4.0', '>= 3.4.1'
-gem 'bootstrap_form'
-gem 'net-ldap'
-gem 'dbi'
-gem 'rails-dbi'
-gem 'ruby-oci8'
-gem 'blacklight'
-gem 'alma'
-gem 'nokogiri', '~> 1.10.0', '>= 1.10.4'
-gem 'tiny_tds'
-gem 'httparty'

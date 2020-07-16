@@ -30,3 +30,6 @@ securestart.sh
 
 # Ignore VSCode files
 /.vscode/
+
+# Ignore rbenv file for now
+.ruby-version

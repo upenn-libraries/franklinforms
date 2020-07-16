@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get 'redir/:id' => 'form#redir'
   post 'redir/:id' => 'form#submit'
 
-  get 'forms/:id' => 'form#view'
+  get 'forms/:id' => 'form#view', as: 'form'
   post 'forms/:id' => 'form#submit'
 
   #get '*path' => redirect('/')

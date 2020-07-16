@@ -6,10 +6,14 @@ Franklin Forms is a Rails app that provides various forms and interfaces to patr
 
 * Ruby 2.3.1
 * Rails 5
-* Oracle Instant Client 12.1
-* libaio1
 * Docker
 * Docker Compose
+
+### Additional dependencies for running the app w/o Docker
+* libaio1
+* Oracle Instant Client 12.1
+* [FreeTDS](https://github.com/rails-sqlserver/tiny_tds#install)
+* JS runtime (e.g., `nodejs`)
 
 ## Installation
 
@@ -17,7 +21,13 @@ Franklin Forms is a Rails app that provides various forms and interfaces to patr
 1. Copy ``.env.example`` to ``.env``.
 1. Open ``.env`` set the values for each variable. Each variable is documented in the file.
 
+When installing gems, you may need to set an additional environment variable for `LD_LIBRARY_PATH` that points to the location of your install of the
+Oracle Instant Client (e.g., `/opt/oracle/instantclient_12_1`). 
+
 Now you can run the Rails server to access the forms or execute the following to run the forms with Docker:
+
+If you see ```Warning: NLS_LANG is not set. fallback to US7ASCII.```, you cna silence that by setting an environment 
+variable `NLS_LANG=AMERICAN_AMERICA.AL32UTF8`  
 
 ```bash
 docker-compose up .
@@ -31,6 +41,22 @@ Execute the following commands to create the Docker image and push it to the loc
 docker build -t indexing-dev.library.upenn.int:5000/upenn-libraries/franklinforms:master .
 docker push indexing-dev.library.upenn.int:5000/upenn-libraries/franklinforms:master
 ```
+
+## Development
+
+To set up a development environment you first need to export your local UID/GID as new variables (CURRENT_UID and CURRENT_GID):
+
+```bash
+export CURRENT_UID=$(id -u)
+export CURRENT_GID=$(id -g)
+```
+
+Then run the dockerized dev environment:
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+```
+
+Any changes made to the files in your local directory will be reflected within the container.
 
 ## Paths
 
