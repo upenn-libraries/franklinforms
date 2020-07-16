@@ -49,7 +49,7 @@ class FormController < ApplicationController
   end
 
   def help
-    locals = {referrer: request.referrer}
+    locals = { referrer: request.referrer }
     render :help, locals: locals
   end
 
