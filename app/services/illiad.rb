@@ -1,15 +1,10 @@
 class Illiad
 
   def initialize
-    # @illoffices = Hash.new() { 'Van Pelt Library' }
-    # @illoffices['BIOMED'] = 'Biomedical Library'
-    # @illoffices['DENTAL'] = 'Dental Medicine Library'
-    # @illoffices['VET'] =
-    @illoffices = {
-      'VET' => 'Veterinary Medicine Library',
-      'BIOMED' => 'Biomedical Library',
-      'DENTAL' => 'Dental Medicine Library'
-    }
+    @illoffices = Hash.new { 'Van Pelt Library' }
+    @illoffices['BIOMED'] = 'Biomedical Library'
+    @illoffices['DENTAL'] = 'Dental Medicine Library'
+    @illoffices['VET'] = 'Veterinary Medicine Library'
   end
 
   def getBibData(params)
