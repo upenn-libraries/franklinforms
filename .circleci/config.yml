@@ -16,7 +16,7 @@ jobs:
     executor: docker/docker
     steps:
       - persist_to_workspace:
-          root: .
+          root: /home/circleci
           paths:
             - .
       - setup_remote_docker
@@ -53,7 +53,7 @@ jobs:
     executor: docker/docker
     steps:
       - attach_workspace:
-          at: .
+          at: /home/circleci
       - run:
           name: Set Environment Variables for Slack Notification
           command: |
