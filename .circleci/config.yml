@@ -105,5 +105,7 @@ workflows:
       #       - build_image
       - push_image:
           context: quay.io
+          requires:
+            - build_image
           # requires:
           #   - smoke_test
