@@ -17,8 +17,8 @@ jobs:
     steps:
       - persist_to_workspace:
           root: .
-            paths:
-                - .
+          paths:
+            - .
       - setup_remote_docker
       - checkout
       - run:
