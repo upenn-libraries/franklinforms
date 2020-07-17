@@ -93,4 +93,10 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+  # Clear email queue before each test
+  config.before(:each) do
+    ActionMailer::Base.deliveries.clear
+  end
+
 end
