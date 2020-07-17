@@ -19,13 +19,13 @@ module PostProcessor
         FormMailer.confirm_enhanced_email(user, bib, values).deliver_now
       when 'resourcesharing'
       when 'ill'
+        illiad_service = Illiad.new
         if user.data['illiadrecord'] == 'new'
-          Illiad.addIlliadUser(user)
+          illiad_service.addIlliadUser(user)
         elsif user.data['illiadrecord'] == 'modify'
-          Illiad.updateIlliadUser(user)
+          illiad_service.updateIlliadUser(user)
         end
-
-        txnumber = Illiad.submit(user, bib, values)
+        txnumber = illiad_service.submit(user, bib, values)
         FormMailer.confirm_illiad_email(user, bib, txnumber, values).deliver_now
       when 'booksbymail'
         FormMailer.confirm_booksbymail_email(user, bib, values).deliver_now

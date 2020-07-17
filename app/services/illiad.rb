@@ -1,11 +1,18 @@
 class Illiad
 
-  @illoffices = Hash.new() { 'Van Pelt Library' }
-  @illoffices['BIOMED'] = 'Biomedical Library'
-  @illoffices['DENTAL'] = 'Dental Medicine Library'
-  @illoffices['VET'] = 'Veterinary Medicine Library'
+  def initialize
+    # @illoffices = Hash.new() { 'Van Pelt Library' }
+    # @illoffices['BIOMED'] = 'Biomedical Library'
+    # @illoffices['DENTAL'] = 'Dental Medicine Library'
+    # @illoffices['VET'] =
+    @illoffices = {
+      'VET' => 'Veterinary Medicine Library',
+      'BIOMED' => 'Biomedical Library',
+      'DENTAL' => 'Dental Medicine Library'
+    }
+  end
 
-  def self.getBibData(params)
+  def getBibData(params)
     bib_data = Hash.new
     aulast = params['rft.aulast'].presence || params['aulast'].presence || nil
  
@@ -83,13 +90,22 @@ class Illiad
 
     bib_data['pages'] = 'none specified' if bib_data['pages'].empty?
   
-    return bib_data
-  
+    bib_data
   end
 
-  def self.getIlliadUserInfo(user, params)
+  def getIlliadUserInfo(user, params)
 
-    db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
+    begin
+      db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
+    rescue StandardError => e
+      # TODO: Allow TDS connection to fail in dev, until FreeTDS connection can be debug'd
+      if Rails.env.development?
+        puts "TinyTDS connection failed: #{e.message}"
+        return
+      end
+
+      raise e
+    end
 
     tablename = Rails.env.production? ? 'usersall' : 'users'
 
@@ -131,10 +147,10 @@ class Illiad
 
     db.close
 
-    return userinfo
+    userinfo
   end
 
-  def self.getCorrectedDeptDetails(userinfo)
+  def getCorrectedDeptDetails(userinfo)
     if userinfo['status'] != 'StandingFaculty'
       return nil
     end
@@ -147,7 +163,7 @@ class Illiad
     end
   end
 
-  def self.getILLOffice(userinfo)
+  def getILLOffice(userinfo)
     office = nil
     active_i = userinfo['org_active_code'].each_with_index.select {|v,i| v != 'I'} .map {|v| v[1]}
     active_i.each do |i|
@@ -179,10 +195,10 @@ class Illiad
       end
     end
 
-    return office || 'VPL'
+    office || 'VPL'
   end
 
-  def self.addIlliadUser(user)
+  def addIlliadUser(user)
 
     db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
@@ -218,7 +234,7 @@ class Illiad
     db.close
   end
 
-  def self.updateIlliadUser(user)
+  def updateIlliadUser(user)
     db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
     tablename = Rails.env.production? ? 'usersall' : 'users'
@@ -241,7 +257,7 @@ class Illiad
     db.close
   end
 
-  def self.submit(user, bib_data, params)
+  def submit(user, bib_data, params)
 
     userinfo = user.data
 
@@ -293,8 +309,8 @@ class Illiad
               PhotoArticleTitle: bib_data['chaptitle'],
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
-	      CitedIn: bib_data['sid'],
-	      SubmitButton: 'Submit Request'}
+	             CitedIn: bib_data['sid'],
+	             SubmitButton: 'Submit Request'}
     else
       illiadreqtype = 'ArticleRequest'
       illiadreqtype = 'BookChapterRequest' unless bib_data['requesttype'].index('chapter').nil?
@@ -315,15 +331,15 @@ class Illiad
               PhotoArticleTitle: bib_data['article'],
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
-	      CitedIn: bib_data['sid'],
-	      SubmitButton: 'Submit Request'}
+	             CitedIn: bib_data['sid'],
+	             SubmitButton: 'Submit Request'}
     end
 
     res = HTTParty.post(illserver, body: body, headers: headers)
     #/<span class="statusError">(.*)<\/span>/.match(res).nil? should be true unless error with values POSTed to ILLiad
     txnumber = /Transaction Number (\d+)\<\/span>/.match(res)[1]
 
-    return txnumber
+    txnumber
   end
 
 end
