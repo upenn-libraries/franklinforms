@@ -16,9 +16,9 @@ jobs:
     executor: docker/docker
     steps:
       - persist_to_workspace:
-          root: /tmp
-          paths:
-            - app
+          root: .
+            paths:
+                - .
       - setup_remote_docker
       - checkout
       - run:
@@ -53,7 +53,7 @@ jobs:
     executor: docker/docker
     steps:
       - attach_workspace:
-          at: /tmp/app
+          at: .
       - run:
           name: Set Environment Variables for Slack Notification
           command: |
