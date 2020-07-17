@@ -51,19 +51,20 @@ module PreProcessor
         end
 
         user = User.new(username, proxy_id)
-        Illiad.getIlliadUserInfo(user, params)
+        illiad_service = Illiad.new
+        illiad_service.getIlliadUserInfo(user, params)
 
         if ['B', 'BO'].member?(user.data['cleared'])
           redirect_to "http://www.library.upenn.edu/access/ill/ill_blocked.html"
           return
         end
 
-        record = Illiad.getBibData(params)
+        record = illiad_service.getBibData(params)
         delivery_method = record['requesttype'] == 'Book' ? "Pickup at #{user.data['illoffice_name']}" : 'Web Delivery'
         show_addr_msg = false
 
         if user.data['status'] == 'StandingFaculty'
-          Illiad.getCorrectedDeptDetails(user.data)
+          illiad_service.getCorrectedDeptDetails(user.data)
           if record['requesttype'] == 'Book'
             delivery_method = "Deliver to my department: #{user.data['delivery']}" if record['requesttype'] == 'Book'
             show_addr_msg = true

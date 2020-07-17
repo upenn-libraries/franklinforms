@@ -106,8 +106,8 @@ class FormMailer < ApplicationMailer
   def confirm_illiad_email(user, bib, txnumber, values)
     userinfo = user.data
 
-    @to = userinfo['emailAddr']
-    @from = ''
+    # use email from form if userinfo doesn't have an address
+    @to = userinfo['emailAddr'] || values['email']
     @subject = 'Request Confirmation'
 
     @name = "#{userinfo['first_name']} #{userinfo['last_name']}"

@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 RSpec.feature 'Form rendering and submission', type: :feature do
+  before do
+    # Mock Illiad interactions
+    allow_any_instance_of(Illiad).to receive(:getIlliadUserInfo).and_return nil
+    allow_any_instance_of(Illiad).to receive(:addIlliadUser).and_return nil
+    allow_any_instance_of(Illiad).to receive(:updateIlliadUser).and_return nil
+    allow_any_instance_of(Illiad).to receive(:submit).and_return 'test_tx_number'
+  end
   let(:book_params) do
     {
       rfe_dat: '729064964',
@@ -30,6 +37,21 @@ RSpec.feature 'Form rendering and submission', type: :feature do
       expect(page).to have_text 'Bibliographic information for the item requested'
       expect(page).to have_field 'Journal/Book Title', with: 'Phenomenology of perception /'
       expect(page).to have_field 'ISBN/ISSN', with: '0415834333'
+    end
+    scenario 'upon submission, sends and email and renders confirmation' do
+      visit form_path({ id: 'ill', requesttype: 'ScanDelivery' }.merge(book_params))
+      # fill in required fields even though they are only required by JS
+      test_email = 'test@upenn.edu'
+      fill_in 'Email', with: test_email
+      fill_in 'Article/Chapter Title', with: 'Other Selves and the Human World'
+      fill_in 'Issue Date', with: '1945'
+      click_on 'Submit Request'
+      expect(ActionMailer::Base.deliveries.length).to eq 1
+      mail = ActionMailer::Base.deliveries.first
+      expect(mail.subject).to eq 'Request Confirmation'
+      expect(mail.to).to eq [test_email]
+      expect(page.current_path).to eq form_path(id: 'ill')
+      expect(page).to have_text 'Your request has been submitted'
     end
   end
   context 'for cataloging errors' do
