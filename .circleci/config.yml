@@ -15,6 +15,10 @@ jobs:
   build_image:
     executor: docker/docker
     steps:
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - app
       - setup_remote_docker
       - checkout
       - run:
@@ -37,11 +41,10 @@ jobs:
             --label "edu.upenn.library.circleci.workflow-id=${CIRCLE_WORKFLOW_ID}"
           image: upennlibraries/franklinforms
           registry: quay.io
-          tag: "${CIRCLE_SHA1},${CIRCLE_SHA1:0:7}"
-      - docker/push:
-          image: upennlibraries/franklinforms
-          registry: quay.io
-          tag: "${CIRCLE_SHA1},${CIRCLE_SHA1:0:7}"
+          tag: "${CIRCLE_SHA1}"
+      - run:
+          name: Save docker build
+          command: docker save -o /tmp/app/franklinforms_image.tar quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
       - slack/status:
           <<: *default-slack-config
           failure_message: ":red_circle: Docker build failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>, Message: ${GIT_COMMIT_DESC}"
@@ -49,20 +52,26 @@ jobs:
   push_image:
     executor: docker/docker
     steps:
+      - attach_workspace:
+          at: /tmp/app
       - run:
           name: Set Environment Variables for Slack Notification
           command: |
-            echo "export GIT_COMMIT_DESC='$(git --git-dir $HOME/project/.git log --format=%B -n 1 $CIRCLE_SHA1)'" >> $BASH_ENV
             echo "export GIT_URL=<< pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<< pipeline.git.revision >>" >> $BASH_ENV
             source $BASH_ENV
+      - run:
+          name: Load previously built docker image
+          command: |
+            docker load -i /tmp/app/franklinforms_image.tar
+            docker image tag quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1} quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1:0:7}
       - docker/push:
           image: upennlibraries/franklinforms
           registry: quay.io
           tag: "${CIRCLE_SHA1},${CIRCLE_SHA1:0:7}"
       - slack/status:
           <<: *default-slack-config
-          failure_message: ":red_circle: Docker publish failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>, Message: ${GIT_COMMIT_DESC}"
-          success_message: ":tada: Docker publish succeeded! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>, Message: ${GIT_COMMIT_DESC}"
+          failure_message: ":red_circle: Docker publish failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
+          success_message: ":tada: Docker publish succeeded! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
   smoke_test:
     docker:
       - image: circleci/ruby:2.6.1
@@ -91,10 +100,10 @@ workflows:
           context: quay.io
           requires:
             - gitleaks/check_local
-      - smoke_test:
-          requires:
-            - build_image
+      # - smoke_test:
+      #     requires:
+      #       - build_image
       - push_image:
           context: quay.io
-          requires:
-            - smoke_test
+          # requires:
+          #   - smoke_test
