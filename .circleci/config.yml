@@ -55,7 +55,6 @@ jobs:
     executor: docker/docker
     environment:
       GIT_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<< pipeline.git.revision >>
-      SECRET_KEY_BASE: x
     steps:
       - setup_remote_docker
       - attach_workspace:
@@ -65,13 +64,13 @@ jobs:
           command: docker load -i ~/image/franklinforms_image.tar
       - run:
           name: Start Docker Container
-          command: docker run -d --name franklinforms quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
+          command: docker run -d -e SECRET_KEY_BASE=x --name franklinforms quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
       - run:
           name: Install wget inside container
           command: docker exec franklinforms /bin/bash -c "apt update && apt install -y wget"
       - run:
           name: Run Smoke Test
-          command: docker exec franklinforms wget -q -t 5 --retry-connrefused -O /dev/null http://localhost:80/redir/help
+          command: docker exec franklinforms wget -q -t 5 --retry-connrefused http://localhost:80/redir/help -O /dev/null
       - slack/status:
           <<: *default-slack-config
           failure_message: ":red_circle: Smoke Test failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
