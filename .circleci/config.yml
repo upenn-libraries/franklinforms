@@ -67,6 +67,8 @@ jobs:
           command: |
             docker load -i ~/image/franklinforms_image.tar
             docker image tag quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1} quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1:0:7}
+      - docker/check:
+          registry: quay.io
       - docker/push:
           image: upennlibraries/franklinforms
           registry: quay.io
