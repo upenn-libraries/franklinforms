@@ -67,7 +67,7 @@ jobs:
           command: docker run -d -e SECRET_KEY_BASE=x --name franklinforms quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
       - run:
           name: Run RSpec Test
-          command: docker exec franklinforms /bin/bash -c "~/.rbenv/shims/rspec"
+          command: docker exec franklinforms bundle exec rspec
       - slack/status:
           <<: *default-slack-config
           failure_message: ":red_circle: RSpec test failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
