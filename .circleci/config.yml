@@ -67,6 +67,9 @@ jobs:
           name: Start Docker Container
           command: docker run -d --name franklinforms quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
       - run:
+          name: Install wget inside container
+          command: docker exec franklinforms /bin/bash -c "apt update && apt install -y wget"
+      - run:
           name: Run Smoke Test
           command: docker exec franklinforms wget -q -t 5 --retry-connrefused -O /dev/null http://localhost:80/redir/help
       - slack/status:
