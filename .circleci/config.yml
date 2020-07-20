@@ -40,7 +40,9 @@ jobs:
           tag: "${CIRCLE_SHA1}"
       - run:
           name: Save docker build
-          command: docker save -o ~/image/franklinforms_image.tar quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
+          command: |
+            mkdir -p ~/image
+            docker save -o ~/image/franklinforms_image.tar quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
       - persist_to_workspace:
         root: ~/image
         paths:
