@@ -44,9 +44,9 @@ jobs:
             mkdir -p ~/image
             docker save -o ~/image/franklinforms_image.tar quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
       - persist_to_workspace:
-        root: ~/image
-        paths:
-          - franklinforms_image.tar
+          root: ~/image
+          paths:
+            - franklinforms_image.tar
       - slack/status:
           <<: *default-slack-config
           failure_message: ":red_circle: Docker build failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>, Message: ${GIT_COMMIT_DESC}"
