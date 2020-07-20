@@ -51,6 +51,27 @@ jobs:
           <<: *default-slack-config
           failure_message: ":red_circle: Docker build failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>, Message: ${GIT_COMMIT_DESC}"
           success_message: ":tada: Docker build succeeded! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>, Message: ${GIT_COMMIT_DESC}"
+  rspec_test:
+    executor: docker/docker
+    environment:
+      GIT_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<< pipeline.git.revision >>
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/image
+      - run:
+          name: Load previously built docker image
+          command: docker load -i ~/image/franklinforms_image.tar
+      - run:
+          name: Start Docker Container
+          command: docker run -d -e SECRET_KEY_BASE=x --name franklinforms quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
+      - run:
+          name: Run RSpec Test
+          command: docker exec franklinforms /bin/bash -c "~/.rbenv/shims/rspec"
+      - slack/status:
+          <<: *default-slack-config
+          failure_message: ":red_circle: RSpec test failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
+          success_message: ":tada: RSpec test passed!"
   smoke_test:
     executor: docker/docker
     environment:
@@ -75,27 +96,6 @@ jobs:
           <<: *default-slack-config
           failure_message: ":red_circle: Smoke test failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
           success_message: ":tada: Smoke test passed!"
-  rspec_test:
-      executor: docker/docker
-      environment:
-        GIT_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<< pipeline.git.revision >>
-      steps:
-        - setup_remote_docker
-        - attach_workspace:
-            at: ~/image
-        - run:
-            name: Load previously built docker image
-            command: docker load -i ~/image/franklinforms_image.tar
-        - run:
-            name: Start Docker Container
-            command: docker run -d -e SECRET_KEY_BASE=x --name franklinforms quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
-        - run:
-            name: Run RSpec Test
-            command: docker exec franklinforms rspec
-        - slack/status:
-            <<: *default-slack-config
-            failure_message: ":red_circle: RSpec test failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
-            success_message: ":tada: RSpec test passed!"
   push_image:
     executor: docker/docker
     steps:
