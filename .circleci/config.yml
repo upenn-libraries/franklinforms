@@ -51,6 +51,27 @@ jobs:
           <<: *default-slack-config
           failure_message: ":red_circle: Docker build failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>, Message: ${GIT_COMMIT_DESC}"
           success_message: ":tada: Docker build succeeded! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>, Message: ${GIT_COMMIT_DESC}"
+  smoke_test:
+    executor: docker/docker
+    environment:
+      GIT_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<< pipeline.git.revision >>
+      SECRET_KEY_BASE: x
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: ~/image
+      - run:
+          name: Load previously built docker image
+          command: docker load -i ~/image/franklinforms_image.tar
+      - run:
+          name: Start Docker Container
+          command: docker run -d --name franklinforms quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
+      - run:
+          name: Run Smoke Test
+          command: docker exec franklinforms wget -q -t 5 --retry-connrefused -O /dev/null http://localhost:80/redir/help
+      - slack/status:
+          <<: *default-slack-config
+          failure_message: ":red_circle: Smoke Test failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
   push_image:
     executor: docker/docker
     steps:
@@ -77,23 +98,6 @@ jobs:
           <<: *default-slack-config
           failure_message: ":red_circle: Docker push failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
           success_message: ":tada: Docker push succeeded! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
-  smoke_test:
-    docker:
-      - image: circleci/ruby:2.6.1
-      - image: quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
-    environment:
-      GIT_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<< pipeline.git.revision >>
-      SECRET_KEY_BASE: x
-    steps:
-      - run:
-          name: Smoke Test
-          command: |
-            wget \
-              -q -t 5 --retry-connrefused -O /dev/null \
-              http://localhost:80/redir/help
-      - slack/status:
-          <<: *default-slack-config
-          failure_message: ":red_circle: Smoke Test failed! ${CIRCLE_USERNAME}'s workflow (<${CIRCLE_BUILD_URL}|${CIRCLE_JOB}>) in <${GIT_URL}|${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}>"
 
 workflows:
   build_and_test:
@@ -105,12 +109,11 @@ workflows:
           context: quay.io
           requires:
             - gitleaks/check_local
-      # - smoke_test:
-      #     requires:
-      #       - build_image
+      - smoke_test:
+          requires:
+            - build_image
       - push_image:
           context: quay.io
           requires:
             - build_image
-          # requires:
-          #   - smoke_test
+            - smoke_test
