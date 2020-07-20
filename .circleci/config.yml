@@ -39,7 +39,7 @@ jobs:
           registry: quay.io
           tag: "${CIRCLE_SHA1}"
       - run:
-          name: Save docker build
+          name: Save Docker Build
           command: |
             mkdir -p ~/image
             docker save -o ~/image/franklinforms_image.tar quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
@@ -54,6 +54,7 @@ jobs:
   push_image:
     executor: docker/docker
     steps:
+      - setup_remote_docker
       - attach_workspace:
           at: ~/image
       - run:
