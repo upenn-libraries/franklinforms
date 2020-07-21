@@ -51,7 +51,14 @@ module PreProcessor
         end
 
         user = User.new(username, proxy_id)
-        Illiad.getIlliadUserInfo(user, params)
+        if Rails.env.in? %w[test development]
+          # populate User with whatever is needed to move things along in dev
+          # eventually, TinyTDS can be fixed or eliminated and this can be removed
+          user.data['proxied_for'] = username
+          user.data['proxied_by'] = ''
+        else
+          Illiad.getIlliadUserInfo(user, params)
+        end
 
         if ['B', 'BO'].member?(user.data['cleared'])
           redirect_to "http://www.library.upenn.edu/access/ill/ill_blocked.html"
