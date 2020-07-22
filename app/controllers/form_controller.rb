@@ -6,8 +6,7 @@ class FormController < ApplicationController
     begin
       locals = pre_process(params[:id], params)
     rescue Exception => e
-      puts e.message
-      puts e.backtrace.inspect
+      ExceptionNotifier.notify_exception e, env: request.env
       redirect_to '/'
     else
       render params[:id], locals: locals unless performed?
