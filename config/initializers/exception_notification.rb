@@ -23,4 +23,7 @@ ExceptionNotification.configure do |config|
                         icon_emoji: ':boom:',
                         mrkdwn: true
                       }
+
+  config.add_notifier :email, deliver_with: :deliver_now, sender_address: 'do-not-use@upenn.edu',
+                              exception_recipients: 'mkanning@upenn.edu'
 end

@@ -5,8 +5,12 @@ class FormController < ApplicationController
   def view
     begin
       locals = pre_process(params[:id], params)
-    rescue Exception => e
-      ExceptionNotifier.notify_exception e, env: request.env
+    rescue StandardError => e
+      ExceptionNotifier.notify_exception(e, env: request.env)
+        logger.info 'exception notification sent'
+      else
+        logger.info 'exception notification failed to send'
+      end
       redirect_to '/'
     else
       render params[:id], locals: locals unless performed?
