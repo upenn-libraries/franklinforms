@@ -1,18 +1,6 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # Use ExceptionNotification to send exception info to slack
-  config.middleware.use ExceptionNotification::Rack,
-                        slack: {
-                          webhook_url: ENV['EXCEPTION_NOTIFIER_SLACK_WEBHOOK'],
-                          channel: '#app-exceptions',
-                          username: "Franklinforms (#{Rails.env})",
-                          additional_parameters: {
-                            icon_emoji: ':boom:',
-                            mrkdwn: true
-                          }
-                        }
-
   # Code is not reloaded between requests.
   config.cache_classes = true
 
