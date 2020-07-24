@@ -30,7 +30,7 @@ class User
         end
       end
 
-      @data['status'] = 'StandingFaculty' if PennLdap.isStandingFaculty(@data['proxied_for'])
+      @data['status'] = 'StandingFaculty' if PennLdapUser.new(@data['proxied_for']).standing_faculty?
 
       @data['status'] ||= ''
     }
