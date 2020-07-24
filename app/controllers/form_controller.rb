@@ -6,11 +6,7 @@ class FormController < ApplicationController
     begin
       locals = pre_process(params[:id], params)
     rescue StandardError => e
-      if ExceptionNotifier.notify_exception(e, env: request.env)
-        logger.info 'exception notification sent'
-      else
-        logger.info 'exception notification failed to send'
-      end
+      ExceptionNotifier.notify_exception(e, env: request.env)
       redirect_to '/'
     else
       render params[:id], locals: locals unless performed?
