@@ -139,15 +139,16 @@ class Illiad
   end
 
   # no DB
+  # @param [Hash] userinfo
   def self.getCorrectedDeptDetails(userinfo)
     if userinfo['status'] != 'StandingFaculty'
       return nil
     end
 
     # not sure what to expect in userinfo, but this will address errors
-    return 'VPL' unless userinfo['org_active_code'].respond_to? :each
+    return 'VPL' unless userinfo['org_active_code'].respond_to? :each_with_index
 
-    active_i = userinfo['org_active_code'].each.reject { |v| v == 'I' } .map { |v| v[1] }
+    active_i = userinfo['org_active_code'].each_with_index.reject {|v,_i| v == 'I'} .map {|v| v[1]}
     corrected = active_i.map {|v| DeptMapping[userinfo['org_code'][v]]} .compact.first
     unless(corrected.nil?)
       userinfo['dept'] = corrected[:dept]
@@ -159,9 +160,10 @@ class Illiad
   def self.getILLOffice(userinfo)
     office = nil
     # not sure what to expect in userinfo, but this will address errors
-    return 'VPL' unless userinfo['org_active_code'].respond_to? :each
+    return 'VPL' unless userinfo['org_active_code'].respond_to? :each_with_index
 
-    active_i = userinfo['org_active_code'].each.reject { |v| v == 'I' } .map { |v| v[1] }
+    # get index of active code in returned array values
+    active_i = userinfo['org_active_code'].each_with_index.reject { |v, _i| v == 'I' } .map { |v| v[1] }
     active_i.each do |i|
       org_code = userinfo['org_code'][i]
       # check for VET attributes
