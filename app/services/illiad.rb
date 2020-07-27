@@ -43,7 +43,7 @@ class Illiad
     bib_data['isbn']      = params['isbn'].presence      || params['ISBN'].presence        || params['rft.isbn'].presence   || '';
     bib_data['sid']       = params['sid'].presence       || params['rfr_id'].presence      || '';
     bib_data['pid']       = params['pid'].presence       || '';
-    bib_data['source']    = params['source'].presence    || "direct";
+    bib_data['source']    = params['source'].presence    || 'direct';
     bib_data['comments']  = params['UserId'].presence    || params['comments'].presence    || '';
     bib_data['bibid']     = params['record_id'].presence || params['id'].presence          || params['bibid'].presence      || '';
 
@@ -68,8 +68,8 @@ class Illiad
     bib_data['title'] = bib_data['booktitle'].presence || bib_data['journal'].presence;
 
     # *** Make a non-inclusive page parameter ***
-    bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || "";
-    bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || "";
+    bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || '';
+    bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || '';
 
     if(!params['Pages'].presence.nil? && bib_data['spage'].empty?)
       bib_data['spage'], bib_data['epage'] = params['Pages'].split(/-/);
@@ -169,21 +169,21 @@ class Illiad
       # check for VET attributes
       if ['5021','VEM','VET','VTP'].member?(org_code) ||
          !(org_code =~ /58\d\d/).nil? ||
-         userinfo['emailAddr'].end_with?("@vet.upenn.edu")
+         userinfo['emailAddr'].end_with?('@vet.upenn.edu')
         office ||= 'VET'
       # check for DENTAL attributes
       elsif ['5020','DEN','DPH'].member?(org_code) ||
             !(org_code =~ /51\d\d/).nil? ||
-            userinfo['emailAddr'].end_with?("@dental.upenn.edu") ||
-            userinfo['emailAddr'].end_with?("@biochem.dental.upenn.edu")
+            userinfo['emailAddr'].end_with?('@dental.upenn.edu') ||
+            userinfo['emailAddr'].end_with?('@biochem.dental.upenn.edu')
         office ||= 'DENTAL'
       # check for BIOMED attributes
       elsif %w[BFC CCA CCNJ CNTRT CORP CPUP CPUPH GAMBR HUP JRB MDPAH MDPMC MDUPM MGMT MHUP MPAH MPMC PAH PAHHM PERFS PMC SCON TPHX TPHXD URSVC 5019 BMP MDP MED NRP NUG NUR NUP PDM CHOP].member?(org_code) ||
             !(org_code =~ /4\d\d\d/).nil? ||
-            userinfo['emailAddr'].end_with?("mail.med.upenn.edu") ||
-            userinfo['emailAddr'].end_with?("uphs.upenn.edu") ||
-            userinfo['emailAddr'].end_with?("nursing.upenn.edu") ||
-            userinfo['emailAddr'].end_with?("email.chop.edu")
+            userinfo['emailAddr'].end_with?('mail.med.upenn.edu') ||
+            userinfo['emailAddr'].end_with?('uphs.upenn.edu') ||
+            userinfo['emailAddr'].end_with?('nursing.upenn.edu') ||
+            userinfo['emailAddr'].end_with?('email.chop.edu')
         office ||= 'BIOMED'
       end
     end
@@ -270,6 +270,15 @@ class Illiad
 
     sessionid = /=(.*);/.match(res.headers['set-cookie'])[1]
     headers = {'Cookie' => "ILLiadSessionID=#{sessionid}"}
+
+    if params[:deliverytype] == 'bbm'
+      # MK 07-14-2020 - Franklin currently only sets the deliverytype value for 'book' requests
+      # We need to be aware if anything else is setting that param so we can update the right field in bib_data
+      if bib_data['requesttype'].downcase != 'book'
+        raise ArgumentError, 'BBM delivery requested for something that is not a book!'
+      end
+      bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
+    end
 
     if(bib_data['requesttype'].downcase == 'book')
       body = {ILLiadForm: 'LoanRequest',
