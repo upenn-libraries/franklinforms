@@ -3,13 +3,7 @@
 <%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_booksbymail()" } do |f| %>
   <%= f.hidden_field(:bibid, {id: 'bibid', value: record.bibid}) %>
 
-  <div class="alert alert-warning" style="color: #000000">
-    <p><span class="bold">NOTE:</span> <span class="red">Registration is required</span> (click <%=link_to 'here', "https://upenn.libwizard.com/f/books-by-mail", target: '_blank' %> to register).</p>
-  </div>
-
-  <div class="alert alert-warning" style="color: #000000">
-    <p><span class="bold">NOTE: Due to local circulation policies items from the Pennsylvania Hospital Collection cannot be requested via Books by Mail.</span></p>
-  </div>
+  <%= render 'bbm_warnings' %>
 
   <div class="section">
     <div class="section-heading">

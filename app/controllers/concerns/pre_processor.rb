@@ -52,7 +52,7 @@ module PreProcessor
           return
         end
         record = Illiad.getBibData(params)
-        delivery_method = record['requesttype'] == 'Book' ? "Pickup at #{user.data['illoffice_name']}" : 'Web Delivery'
+        delivery_method = determine_delivery_method(record, user, params)
         show_addr_msg = false
         if user.data['status'] == 'StandingFaculty'
           Illiad.getCorrectedDeptDetails(user.data)
@@ -80,4 +80,13 @@ module PreProcessor
     end
   end
 
+  def determine_delivery_method(record, user, params)
+    if params[:deliverytype] == 'bbm'
+      'Books by Mail'
+    elsif record['requesttype'] == 'Book'
+      "Pickup at #{user.data['illoffice_name']}"
+    else
+      'Web Delivery'
+    end
+  end
 end
