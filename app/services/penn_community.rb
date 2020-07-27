@@ -12,12 +12,13 @@ class PennCommunity
   # @return [Hash]
   # @param [String] id either a PennKey or PennID
   # @param [DBI::DatabaseHandle] db handle
+  # @return [DBI::StatementHandle]
   def self.get_user_info(id = nil, dbh = connection)
     # determine what type of credential is supplied and set limit for WHERE clause accordingly
     limit ||= "AND SAV.V_PENN_ID = '#{id}'" unless (id =~ /^\d+/).nil?
     limit ||= "AND SMV.V_KERBEROS_PRINCIPAL = '#{id}'" unless (id =~ /^\w/).nil?
     raise 'ERROR: Invalid ID provided' if limit.nil?
-    
+
     # Retrieve the records from PennCommunity
     query = user_query(limit)
     dbh.execute query
@@ -25,49 +26,41 @@ class PennCommunity
 
   # @param [DBI::StatementHandle] results
   def self.parse_query_results(results)
-    keys = results.column_names # array of column names, e.g., ["PENN_ID", "AFFILIATION_ACTIVE_CODE", "AFFILIATION_CODE", "PENNKEY_ACTIVE_CODE", "PENNKEY", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "EMAIL", "ORG_ACTIVE_CODE", "ORG_CODE", "DEPT", "RANK"]
-    user_info = Hash[keys.zip(Array.new(keys.length) { [] })] # builds hash with keys from column names and values as empty arrays
-    results.reduce(user_info) { |l, r| l.merge!(r.to_h) { |_k, lv, rv| lv << rv.to_s } } # populates array values from results
-    # userinfo now looks like...
-    # {"PENN_ID"=>["51977820"],
-    #  "AFFILIATION_ACTIVE_CODE"=>["A"],
-    #  "AFFILIATION_CODE"=>["STAF"],
-    #  "PENNKEY_ACTIVE_CODE"=>["A"],
-    #  "PENNKEY"=>["mkanning"],
-    #  "FIRST_NAME"=>["Michael"],
-    #  "MIDDLE_NAME"=>[""],
-    #  "LAST_NAME"=>["Kanning"],
-    #  "EMAIL"=>["mkanning@upenn.edu"],
-    #  "ORG_ACTIVE_CODE"=>["A-F"],
-    #  "ORG_CODE"=>["5008"],
-    #  "DEPT"=>["Library Computing Systems"],
-    #  "RANK"=>["Staff"]}
-    user_info = Hash[user_info.map { |k, v| [k.downcase, v] }]
-    name_index = user_info['first_name'].index { |i| !i.blank? }
-
-    ['first_name', 'middle_name', 'last_name'].each do |f|
-      user_info[f] = name_index.nil? ? '' : user_info[f][name_index]
+    user_info = {}
+    results.each do |row|
+      results.column_names.map(&:downcase).each_with_index do |name, i|
+        value = row[i].to_s.rstrip # rstrip everything, not just dept and rank
+        user_info[name] = user_info[name].is_a?(Array) ? user_info[name].push(value) : [value]
+      end
     end
-
-    ['dept', 'rank'].each do |f|
-      user_info[f] = user_info[f].reject(&:blank?).map(&:rstrip)
-    end
-
-
-    ['affiliation_active_code', 'affiliation_code', 'org_active_code', 'org_code'].each do |f|
-      user_info[f] = user_info[f].reject(&:blank?)
-    end
-
-    ['penn_id', 'pennkey', 'pennkey_active_code', 'email'].each do |f|
-      user_info[f] = user_info[f].last || ''
-    end
-
     user_info
-    # Example return value:
-    # {"penn_id"=>"12345678", "affiliation_active_code"=>["A"], "affiliation_code"=>["STAF"], "pennkey_active_code"=>"A",
-    # "pennkey"=>"mkanning", "first_name"=>"Michael", "middle_name"=>"", "last_name"=>"Kanning",
-    # "email"=>"mkanning@upenn.edu", "org_active_code"=>["A-F"], "org_code"=>["5008"],
-    # "dept"=>["Library Computing Systems"], "rank"=>["Staff"]}
+  end
+
+  # Clean up hash by removing blank and duplicate values
+  # Example return value:
+  # {"penn_id"=>"12345678", "affiliation_active_code"=>["A"], "affiliation_code"=>["STAF"], "pennkey_active_code"=>"A",
+  # "pennkey"=>"mkanning", "first_name"=>"Michael", "middle_name"=>"", "last_name"=>"Kanning",
+  # "email"=>"mkanning@upenn.edu", "org_active_code"=>["A-F"], "org_code"=>["5008"],
+  # "dept"=>["Library Computing Systems"], "rank"=>["Staff"]}
+  # @param [Hash] user_info
+  # @return [Hash]
+  def self.clean_up(user_info)
+    # first_name might contain empty elements, get the right one to work with
+    # TODO: is first_name the best choice?
+    name_index = user_info['first_name'].index { |i| !i.blank? }
+    # reduce name fields to a single value
+    %w[first_name middle_name last_name].each do |field|
+      user_info[field] = name_index.nil? ? '' : user_info[field][name_index]
+    end
+    # remove blank values from fields
+    %w[dept rank affiliation_active_code affiliation_code org_active_code org_code].each do |field|
+      user_info[field] = user_info[field].reject(&:blank?)
+    end
+    # reduce identifier fields to .last value (they should all be identical if multivalued)
+    %w[penn_id pennkey pennkey_active_code email].each do |field|
+      user_info[field] = user_info[field].last || ''
+    end
+    user_info
   end
 
   def self.connection
