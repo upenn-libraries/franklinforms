@@ -75,8 +75,7 @@ module PreProcessor
                 show_addr_message: show_addr_msg,
                 params: params}
       else
-        # TODO probably should email an admin here
-        raise
+        raise ArgumentError, "PreProcessor encountered un-configured form_id: #{form_id}"
     end
   end
 

@@ -21,7 +21,9 @@ class Illiad
       bib_data['requesttype'] = params['genre'].presence || params['Type'].presence || params['requesttype'].presence || params['rft.genre'].presence || 'Article'
       bib_data['requesttype'] = 'Article' if bib_data['requesttype'] == 'issue'
       bib_data['requesttype'].sub!(/^(journal|bookitem|book|conference|article|preprint|proceeding).*?$/i, '\1')
-      bib_data['requesttype'][0] = bib_data['requesttype'][0].upcase if ['article', 'book'].member?(bib_data['requesttype'])
+      if ['article', 'book'].member?(bib_data['requesttype'])
+        bib_data['requesttype'][0] = bib_data['requesttype'][0].upcase
+      end
     end
 
     bib_data['chaptitle'] = params['chaptitle'].presence;
@@ -141,9 +143,7 @@ class Illiad
   # no DB
   # @param [Hash] userinfo
   def self.getCorrectedDeptDetails(userinfo)
-    if userinfo['status'] != 'StandingFaculty'
-      return nil
-    end
+    return nil if userinfo['status'] != 'StandingFaculty'
 
     # not sure what to expect in userinfo, but this will address errors
     return 'VPL' unless userinfo['org_active_code'].respond_to? :each_with_index
@@ -200,7 +200,12 @@ class Illiad
 
     userinfo = user.data
     department = userinfo['dept'].respond_to?(:join) ? userinfo['dept'].join('|') : userinfo['dept']
-    username = db.escape userinfo['proxied_for']
+    unescaped_username = userinfo['proxied_for']
+    unless unescaped_username
+      raise ArgumentError, "addIlliadUser called with no username available! user_info: #{userinfo}"
+    end
+    
+    username = db.escape unescaped_username # throws exception if #escape is sent nil
 
     query = %Q{INSERT INTO #{tablename}
                  (username, lastname, firstname, ssn, status, emailaddress, phone, department,
@@ -261,7 +266,9 @@ class Illiad
       bib_data['comments'] += "\n#{FranklinAvailability.getAvailabilityNotes(params['bibid'].presence)}\n"
     end
 
-    bib_data['comments'] += '  Proxied by ' + userinfo['proxied_by'] if userinfo['proxied_by'] != userinfo['proxied_for']
+    if userinfo['proxied_by'] != userinfo['proxied_for']
+      bib_data['comments'] += '  Proxied by ' + userinfo['proxied_by']
+    end
 
     illserver = "http://#{ENV['ILLIAD_DBHOST']}/illiad/illiad.dll"
 
@@ -340,9 +347,14 @@ class Illiad
 	      SubmitButton: 'Submit Request'}
     end
 
-    res = HTTParty.post(illserver, body: body, headers: headers)
-    #/<span class="statusError">(.*)<\/span>/.match(res).nil? should be true unless error with values POSTed to ILLiad
-    txnumber = /Transaction Number (\d+)\<\/span>/.match(res)[1]
+    begin
+      res = HTTParty.post(illserver, body: body, headers: headers)
+      #/<span class="statusError">(.*)<\/span>/.match(res).nil? should be true unless error with values POSTed to ILLiad
+      txnumber = /Transaction Number (\d+)\<\/span>/.match(res)[1]
+    rescue NoMethodError => e
+      raise StandardError,
+            "Failed to get txnumber on Illiad submission. Illiad response: #{res}. Original exception: #{e.message}"
+    end
 
     return txnumber
   end
