@@ -1,12 +1,16 @@
+# Service for querying and parsing responses from Penn Community
+# for info on PCOM data see https://www.isc.upenn.edu/penn-community-details#Tables-and-Data-Elements
 class PennCommunity
-
+  # @param [String] id
+  # @return [Hash]
   def self.lookup(id = nil)
     raise 'ERROR: No ID provided' if id.nil?
 
     dbh = connection # TODO: validate connection?
     results = get_user_info id, dbh
     dbh.disconnect
-    parse_query_results results
+    parsed_results = parse_query_results results
+    clean_up parsed_results
   end
 
   # @return [Hash]
@@ -63,6 +67,7 @@ class PennCommunity
     user_info
   end
 
+  # @return [DBI::DatabaseHandle]
   def self.connection
     DBI.connect(ENV['PCOM_DBI'], ENV['PCOM_USERNAME'], ENV['PCOM_PASSWORD'])
   end
