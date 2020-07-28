@@ -50,7 +50,7 @@ module PreProcessor
           proxy_id = params['upennproxyid']
         end
 
-        user = User.new(username, proxy_id)
+        user = User.new(username, proxy_id: proxy_id)
         if Rails.env.in? %w[test development]
           # populate User with whatever is needed to move things along in dev
           # eventually, TinyTDS can be fixed or eliminated and this can be removed
