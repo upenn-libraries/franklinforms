@@ -1,13 +1,11 @@
 class Illiad
 
-  def initialize
-    @illoffices = Hash.new { 'Van Pelt Library' }
-    @illoffices['BIOMED'] = 'Biomedical Library'
-    @illoffices['DENTAL'] = 'Dental Medicine Library'
-    @illoffices['VET'] = 'Veterinary Medicine Library'
-  end
+  @illoffices = Hash.new { 'Van Pelt Library' }
+  @illoffices['BIOMED'] = 'Biomedical Library'
+  @illoffices['DENTAL'] = 'Dental Medicine Library'
+  @illoffices['VET'] = 'Veterinary Medicine Library'
 
-  def getBibData(params)
+  def self.getBibData(params)
     bib_data = Hash.new
     aulast = params['rft.aulast'].presence || params['aulast'].presence || nil
  
@@ -88,7 +86,7 @@ class Illiad
     bib_data
   end
 
-  def getIlliadUserInfo(user, params)
+  def self.getIlliadUserInfo(user, params)
 
     begin
       db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
@@ -145,7 +143,7 @@ class Illiad
     userinfo
   end
 
-  def getCorrectedDeptDetails(userinfo)
+  def self.getCorrectedDeptDetails(userinfo)
     if userinfo['status'] != 'StandingFaculty'
       return nil
     end
@@ -158,7 +156,7 @@ class Illiad
     end
   end
 
-  def getILLOffice(userinfo)
+  def self.getILLOffice(userinfo)
     office = nil
     active_i = userinfo['org_active_code'].each_with_index.select {|v,i| v != 'I'} .map {|v| v[1]}
     active_i.each do |i|
@@ -193,7 +191,7 @@ class Illiad
     office || 'VPL'
   end
 
-  def addIlliadUser(user)
+  def self.addIlliadUser(user)
 
     db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
@@ -229,7 +227,7 @@ class Illiad
     db.close
   end
 
-  def updateIlliadUser(user)
+  def self.updateIlliadUser(user)
     db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
     tablename = Rails.env.production? ? 'usersall' : 'users'
@@ -252,7 +250,7 @@ class Illiad
     db.close
   end
 
-  def submit(user, bib_data, params)
+  def self.submit(user, bib_data, params)
 
     userinfo = user.data
 

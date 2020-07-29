@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.feature 'Form rendering and submission', type: :feature do
   before do
     # Mock Illiad interactions
-    allow_any_instance_of(Illiad).to receive(:getIlliadUserInfo).and_return nil
-    allow_any_instance_of(Illiad).to receive(:addIlliadUser).and_return nil
-    allow_any_instance_of(Illiad).to receive(:updateIlliadUser).and_return nil
-    allow_any_instance_of(Illiad).to receive(:submit).and_return 'test_tx_number'
+    allow(Illiad).to receive(:getIlliadUserInfo).and_return nil
+    allow(Illiad).to receive(:addIlliadUser).and_return nil
+    allow(Illiad).to receive(:updateIlliadUser).and_return nil
+    allow(Illiad).to receive(:submit).and_return 'test_tx_number'
   end
   let(:book_params) do
     {
