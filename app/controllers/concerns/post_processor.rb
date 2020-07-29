@@ -6,6 +6,12 @@ module PostProcessor
     bib = vars[:record]
     values = vars[:params]
 
+    # check for email address in user
+    unless user['email'].present?
+      #  cant send emails with no from address
+      #
+    end
+
     case form_id
     when 'fixit'
       FormMailer.send_fixopac_email(user, bib, values).deliver_now

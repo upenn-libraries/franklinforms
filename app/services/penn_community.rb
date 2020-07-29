@@ -170,7 +170,7 @@ class PennCommunity
     }
 
     ['penn_id', 'pennkey', 'pennkey_active_code', 'email'].each {|f|
-      userInfo[f] = userInfo[f].last || ''
+      userInfo[f] = userInfo[f].reject(&:blank?).last || ''
     }
 
     dbh.disconnect if dbh
