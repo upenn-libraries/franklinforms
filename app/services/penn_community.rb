@@ -1,5 +1,11 @@
 class PennCommunity
 
+  # Example return value:
+  # {"penn_id"=>"12345678", "affiliation_active_code"=>["A"], "affiliation_code"=>["STAF"], "pennkey_active_code"=>"A",
+  # "pennkey"=>"mkanning", "first_name"=>"Michael", "middle_name"=>"", "last_name"=>"Kanning",
+  # "email"=>"mkanning@upenn.edu", "org_active_code"=>["A-F"], "org_code"=>["5008"],
+  # "dept"=>["Library Computing Systems"], "rank"=>["Staff"]}
+  # @return [Hash]
   def self.getUser(id = nil)
 
     # *** Determine if a credential is supplied, and what type it is *** 
@@ -164,7 +170,7 @@ class PennCommunity
     }
 
     ['penn_id', 'pennkey', 'pennkey_active_code', 'email'].each {|f|
-      userInfo[f] = userInfo[f].last || ''
+      userInfo[f] = userInfo[f].reject(&:blank?).last || ''
     }
 
     dbh.disconnect if dbh

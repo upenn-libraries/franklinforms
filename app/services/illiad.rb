@@ -5,10 +5,11 @@ class Illiad
   @illoffices['DENTAL'] = 'Dental Medicine Library'
   @illoffices['VET'] = 'Veterinary Medicine Library'
 
+  # no DB
   def self.getBibData(params)
     bib_data = Hash.new
     aulast = params['rft.aulast'].presence || params['aulast'].presence || nil
- 
+
     bib_data['author'] = nil
     bib_data['author'] = "#{aulast}#{params['rft.aufirst'].presence&.prepend(',')}" unless aulast.presence.nil?
     bib_data['author'] = params['Author'].presence || params['author'].presence || params['aau'].presence || params['au'].presence || params['rft.au'].presence || bib_data['author'].presence || ''
@@ -20,9 +21,11 @@ class Illiad
       bib_data['requesttype'] = params['genre'].presence || params['Type'].presence || params['requesttype'].presence || params['rft.genre'].presence || 'Article'
       bib_data['requesttype'] = 'Article' if bib_data['requesttype'] == 'issue'
       bib_data['requesttype'].sub!(/^(journal|bookitem|book|conference|article|preprint|proceeding).*?$/i, '\1')
-      bib_data['requesttype'][0] = bib_data['requesttype'][0].upcase if ['article', 'book'].member?(bib_data['requesttype'])
+      if ['article', 'book'].member?(bib_data['requesttype'])
+        bib_data['requesttype'][0] = bib_data['requesttype'][0].upcase
+      end
     end
-  
+
     bib_data['chaptitle'] = params['chaptitle'].presence;
     bib_data['booktitle'] = params['title'].presence     || params['Book'].presence        || params['bookTitle'].presence || params['booktitle'].presence || params['rft.title'].presence || '';
     bib_data['edition']   = params['edition'].presence   || params['rft.edition'].presence || '';
@@ -42,7 +45,7 @@ class Illiad
     bib_data['isbn']      = params['isbn'].presence      || params['ISBN'].presence        || params['rft.isbn'].presence   || '';
     bib_data['sid']       = params['sid'].presence       || params['rfr_id'].presence      || '';
     bib_data['pid']       = params['pid'].presence       || '';
-    bib_data['source']    = params['source'].presence    || "direct";
+    bib_data['source']    = params['source'].presence    || 'direct';
     bib_data['comments']  = params['UserId'].presence    || params['comments'].presence    || '';
     bib_data['bibid']     = params['record_id'].presence || params['id'].presence          || params['bibid'].presence      || '';
 
@@ -51,24 +54,24 @@ class Illiad
       parts = params['rft_id'].split(':')
       bib_data[parts[0]] = parts[1]
     end
-  
+
     # *** Relais/BD sends dates through as rft.date but it may be a book request ***
     if(bib_data['sid'] == 'BD' && bib_data['requesttype'] == 'Book')
       bib_data['year'] = params['date'].presence || bib_data['rftdate']
     end
-  
+
     ## Lookup record in Alma on submit?
-  
+
     # *** Make the bookitem booktitle the journal title ***
     bib_data['journal'] = params['bookTitle'].presence || bib_data['journal'] if bib_data['requesttype'] == 'bookitem';
-  
+
     # *** scan delivery uses journal title || book title, which ever we have ***
     # *** we should only have one of them ***
     bib_data['title'] = bib_data['booktitle'].presence || bib_data['journal'].presence;
 
     # *** Make a non-inclusive page parameter ***
-    bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || "";
-    bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || "";
+    bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || '';
+    bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || '';
 
     if(!params['Pages'].presence.nil? && bib_data['spage'].empty?)
       bib_data['spage'], bib_data['epage'] = params['Pages'].split(/-/);
@@ -82,23 +85,14 @@ class Illiad
     end
 
     bib_data['pages'] = 'none specified' if bib_data['pages'].empty?
-  
+
     bib_data
   end
 
+  # queries DB
   def self.getIlliadUserInfo(user, params)
 
-    begin
-      db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
-    rescue StandardError => e
-      # TODO: Allow TDS connection to fail in dev, until FreeTDS connection can be debug'd
-      if Rails.env.development?
-        puts "TinyTDS connection failed: #{e.message}"
-        return
-      end
-
-      raise e
-    end
+    db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
     tablename = Rails.env.production? ? 'usersall' : 'users'
 
@@ -118,9 +112,11 @@ class Illiad
     userinfo['cleared'] = result['cleared'] || ''
     userinfo['delivery'] = ''
 
+    ill_office = getILLOffice(userinfo)
+
     if result['status'].nil?
       userinfo['illiadrecord'] = 'new'
-      userinfo['illoffice'] = getILLOffice(userinfo)
+      userinfo['illoffice'] = ill_office
       #userinfo['delivery'] = getDeliveryAddr(userinfo) || ''
     elsif userinfo['dept'] != result['department'] ||
           userinfo['illoffice'] != result['nvtgc'] ||
@@ -129,7 +125,7 @@ class Illiad
           userinfo['phone'] != result['phone']
       userinfo['illiadrecord'] = 'modify'
       userinfo['dept'] = result['department']
-      userinfo['illoffice'] = result['nvtgc'] || getILLOffice(userinfo)
+      userinfo['illoffice'] = result['nvtgc'] || ill_office
       userinfo['delivery'] = result['address'] || userinfo['delivery']
       userinfo['status'] = result['status'] || userinfo['status']
     else
@@ -143,12 +139,15 @@ class Illiad
     userinfo
   end
 
+  # no DB
+  # @param [Hash] userinfo
   def self.getCorrectedDeptDetails(userinfo)
-    if userinfo['status'] != 'StandingFaculty'
-      return nil
-    end
+    return nil if userinfo['status'] != 'StandingFaculty'
 
-    active_i = userinfo['org_active_code'].each_with_index.select {|v,i| v != 'I'} .map {|v| v[1]}
+    # not sure what to expect in userinfo, but this will address errors
+    return 'VPL' unless userinfo['org_active_code'].respond_to? :each_with_index
+
+    active_i = userinfo['org_active_code'].each_with_index.reject {|v,_i| v == 'I'} .map {|v| v[1]}
     corrected = active_i.map {|v| DeptMapping[userinfo['org_code'][v]]} .compact.first
     unless(corrected.nil?)
       userinfo['dept'] = corrected[:dept]
@@ -156,34 +155,34 @@ class Illiad
     end
   end
 
+  # no DB
   def self.getILLOffice(userinfo)
     office = nil
-    active_i = userinfo['org_active_code'].each_with_index.select {|v,i| v != 'I'} .map {|v| v[1]}
+    # not sure what to expect in userinfo, but this will address errors
+    return 'VPL' unless userinfo['org_active_code'].respond_to? :each_with_index
+
+    # get index of active code in returned array values
+    active_i = userinfo['org_active_code'].each_with_index.reject { |v, _i| v == 'I' } .map { |v| v[1] }
     active_i.each do |i|
       org_code = userinfo['org_code'][i]
-      if(['5021','VEM','VET','VTP'].member?(org_code) ||
+      # check for VET attributes
+      if ['5021','VEM','VET','VTP'].member?(org_code) ||
          !(org_code =~ /58\d\d/).nil? ||
-         userinfo['emailAddr'].end_with?("@vet.upenn.edu"))
-
-         office ||= 'VET'
-      elsif(['5020','DEN','DPH'].member?(org_code) ||
+         userinfo['emailAddr'].end_with?('@vet.upenn.edu')
+        office ||= 'VET'
+      # check for DENTAL attributes
+      elsif ['5020','DEN','DPH'].member?(org_code) ||
             !(org_code =~ /51\d\d/).nil? ||
-            userinfo['emailAddr'].end_with?("@dental.upenn.edu") ||
-            userinfo['emailAddr'].end_with?("@biochem.dental.upenn.edu"))
-
+            userinfo['emailAddr'].end_with?('@dental.upenn.edu') ||
+            userinfo['emailAddr'].end_with?('@biochem.dental.upenn.edu')
         office ||= 'DENTAL'
-      elsif(['BFC','CCA','CCNJ','CNTRT','CORP',
-             'CPUP','CPUPH','GAMBR','HUP','JRB',
-             'MDPAH','MDPMC','MDUPM','MGMT','MHUP',
-             'MPAH','MPMC','PAH','PAHHM','PERFS',
-             'PMC','SCON','TPHX','TPHXD','URSVC',
-             '5019','BMP','MDP','MED','NRP',
-             'NUG','NUR','NUP','PDM','CHOP'].member?(org_code) ||
-             !(org_code =~ /4\d\d\d/).nil? ||
-             userinfo['emailAddr'].ends_with?("mail.med.upenn.edu") ||
-             userinfo['emailAddr'].ends_with?("uphs.upenn.edu") ||
-             userinfo['emailAddr'].ends_with?("nursing.upenn.edu") ||
-             userinfo['emailAddr'].ends_with?("email.chop.edu"))
+      # check for BIOMED attributes
+      elsif %w[BFC CCA CCNJ CNTRT CORP CPUP CPUPH GAMBR HUP JRB MDPAH MDPMC MDUPM MGMT MHUP MPAH MPMC PAH PAHHM PERFS PMC SCON TPHX TPHXD URSVC 5019 BMP MDP MED NRP NUG NUR NUP PDM CHOP].member?(org_code) ||
+            !(org_code =~ /4\d\d\d/).nil? ||
+            userinfo['emailAddr'].end_with?('mail.med.upenn.edu') ||
+            userinfo['emailAddr'].end_with?('uphs.upenn.edu') ||
+            userinfo['emailAddr'].end_with?('nursing.upenn.edu') ||
+            userinfo['emailAddr'].end_with?('email.chop.edu')
         office ||= 'BIOMED'
       end
     end
@@ -191,6 +190,7 @@ class Illiad
     office || 'VPL'
   end
 
+  # queries DB
   def self.addIlliadUser(user)
 
     db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
@@ -199,7 +199,12 @@ class Illiad
 
     userinfo = user.data
     department = userinfo['dept'].respond_to?(:join) ? userinfo['dept'].join('|') : userinfo['dept']
-    username = db.escape userinfo['proxied_for']
+    unescaped_username = userinfo['proxied_for']
+    unless unescaped_username
+      raise ArgumentError, "addIlliadUser called with no username available! user_info: #{userinfo}"
+    end
+
+    username = db.escape unescaped_username # throws exception if #escape is sent nil
 
     query = %Q{INSERT INTO #{tablename}
                  (username, lastname, firstname, ssn, status, emailaddress, phone, department,
@@ -227,6 +232,7 @@ class Illiad
     db.close
   end
 
+  # queries DB
   def self.updateIlliadUser(user)
     db = TinyTds::Client.new(username: ENV['ILLIAD_USERNAME'], password: ENV['ILLIAD_PASSWORD'], host: ENV['ILLIAD_DBHOST'], database: ENV['ILLIAD_DATABASE'])
 
@@ -250,6 +256,7 @@ class Illiad
     db.close
   end
 
+  # uses web service
   def self.submit(user, bib_data, params)
 
     userinfo = user.data
@@ -258,7 +265,9 @@ class Illiad
       bib_data['comments'] += "\n#{FranklinAvailability.getAvailabilityNotes(params['bibid'].presence)}\n"
     end
 
-    bib_data['comments'] += '  Proxied by ' + userinfo['proxied_by'] if userinfo['proxied_by'] != userinfo['proxied_for']
+    if userinfo['proxied_by'] != userinfo['proxied_for']
+      bib_data['comments'] += '  Proxied by ' + userinfo['proxied_by']
+    end
 
     illserver = "http://#{ENV['ILLIAD_DBHOST']}/illiad/illiad.dll"
 
@@ -267,6 +276,15 @@ class Illiad
 
     sessionid = /=(.*);/.match(res.headers['set-cookie'])[1]
     headers = {'Cookie' => "ILLiadSessionID=#{sessionid}"}
+
+    if params[:deliverytype] == 'bbm'
+      # MK 07-14-2020 - Franklin currently only sets the deliverytype value for 'book' requests
+      # We need to be aware if anything else is setting that param so we can update the right field in bib_data
+      if bib_data['requesttype'].downcase != 'book'
+        raise ArgumentError, 'BBM delivery requested for something that is not a book!'
+      end
+      bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
+    end
 
     if(bib_data['requesttype'].downcase == 'book')
       body = {ILLiadForm: 'LoanRequest',
@@ -302,8 +320,8 @@ class Illiad
               PhotoArticleTitle: bib_data['chaptitle'],
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
-	             CitedIn: bib_data['sid'],
-	             SubmitButton: 'Submit Request'}
+	            CitedIn: bib_data['sid'],
+	            SubmitButton: 'Submit Request'}
     else
       illiadreqtype = 'ArticleRequest'
       illiadreqtype = 'BookChapterRequest' unless bib_data['requesttype'].index('chapter').nil?
@@ -324,13 +342,18 @@ class Illiad
               PhotoArticleTitle: bib_data['article'],
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
-	             CitedIn: bib_data['sid'],
-	             SubmitButton: 'Submit Request'}
+	            CitedIn: bib_data['sid'],
+	            SubmitButton: 'Submit Request'}
     end
 
-    res = HTTParty.post(illserver, body: body, headers: headers)
-    #/<span class="statusError">(.*)<\/span>/.match(res).nil? should be true unless error with values POSTed to ILLiad
-    txnumber = /Transaction Number (\d+)\<\/span>/.match(res)[1]
+    begin
+      res = HTTParty.post(illserver, body: body, headers: headers)
+      #/<span class="statusError">(.*)<\/span>/.match(res).nil? should be true unless error with values POSTed to ILLiad
+      txnumber = /Transaction Number (\d+)\<\/span>/.match(res)[1]
+    rescue NoMethodError => e
+      raise StandardError,
+            "Failed to get txnumber on Illiad submission. Illiad response: #{res}. Original exception: #{e.message}"
+    end
 
     txnumber
   end

@@ -8,7 +8,12 @@ class User
       @data['proxied_by'] = id
       @data['proxied_for'] = proxy_id || id
       setStatus
-    rescue
+    rescue StandardError => e
+      ExceptionNotifier.notify_exception(
+        StandardError.new(
+          "Problem initializing User object! id is #{id} and proxy_id is #{proxy_id}. Original Exception message is: #{e.message} "
+        )
+      )
       @data = Hash.new
     end
   end

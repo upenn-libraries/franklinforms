@@ -136,6 +136,11 @@ class FormMailer < ApplicationMailer
 
     end
 
+    # remove BBM prefix if present
+    if bib['booktitle'].starts_with?('BBM ')
+      bib['booktitle'] = bib['booktitle'][4..-1]
+    end
+
     if(bib['requesttype'].downcase == 'book')
       @title = bib['booktitle']
       @publisher = bib['publisher']

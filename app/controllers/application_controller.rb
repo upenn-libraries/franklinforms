@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
 
   def checkenv
     if Rails.env.development?
-      flash[:notice] = "TESTING: No emails will be sent"
+      flash[:notice] = 'TESTING: No emails will be sent'
     end
   end
 end

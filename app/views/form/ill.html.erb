@@ -3,9 +3,12 @@
   @page_title = "#{reqtype} #{record['requesttype']} Request"
 %>
 
+<%= render 'bbm_warnings' if params[:deliverytype] == 'bbm'  %>
+
 <%= render :partial => "form/proxy" %>
 
 <%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_ill()" } do |f| %>
+  <%= f.hidden_field(:deliverytype, { id: 'deliverytype', value: params[:deliverytype] }) %>
   <%= f.hidden_field(:bibid, {id: 'bibid', value: record['bibid']}) %>
   <% request.query_parameters.reject {|k,v| ['utf8'].member?(k)} .each do |k,v| %>
     <%= f.hidden_field(k.to_sym, {name: k, value: v}) %>

@@ -59,4 +59,5 @@ files = [
 regexes = [
   # Values set by environment variables
   '''ENV\[['"][\S]+['"]\]''',
+  '''(?i)(devise_secret_key\=x|secret_key_base\=x)'''
 ]
