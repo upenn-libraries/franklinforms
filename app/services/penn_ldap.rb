@@ -32,7 +32,18 @@ class PennLdap
     filter = Net::LDAP::Filter.eq("cn", username) & Net::LDAP::Filter.eq("ou", "fdd")
     treebase = "o=libpatrons,dc=library,dc=upenn,dc=edu"
 
-    results = ldap.search( :base => treebase, :filter => filter )
+    retries = 0
+    begin
+      results = ldap.search(base: treebase, filter: filter)
+    rescue Net::LDAP::Error => e
+      if retries > 1
+        ExceptionNotifier.notify_exception e
+        return false # return false so at least the form submission is not ruined
+      end
+      retries += 1
+      sleep 2
+      retry
+    end
 
     return results.size > 0
   end
