@@ -173,8 +173,51 @@ class PennCommunity
       userInfo[f] = userInfo[f].reject(&:blank?).last || ''
     }
 
+    if userInfo['email'].blank?
+      begin
+        userInfo['email'] = get_email userInfo['pennkey'], dbh
+      rescue StandardError => e
+        ExceptionNotifier.notify_exception e
+      end
+    end
+
     dbh.disconnect if dbh
 
     return userInfo
+  end
+
+  # @param [String] pennkey
+  # @param [Object] dbh
+  def self.get_email(pennkey, dbh = pcom_connect)
+    return unless pennkey && dbh
+
+    query = dbh.prepare <<-SQL
+        SELECT SAV.V_PENN_ID AS PENN_ID,
+               SMV.V_KERBEROS_PRINCIPAL AS PENNKEY,
+               LOWER(PD.EMAIL_ADDRESS) AS EMAIL
+        FROM (SELECT PENN_ID, EMAIL_ADDRESS
+              FROM DIRADMIN.DIR_DETAIL_EMAIL_ADDRESS_V
+              WHERE VIEW_TYPE = 'I' AND PREF_FLAG_EMAIL ='Y') PD,
+             COMADMIN.SSN4_AFFILIATION_VIEW SAV,
+             COMADMIN.SSN4_MEMBER_VIEW SMV
+        WHERE SAV.V_PENN_ID = PD.PENN_ID(+)
+          AND SAV.V_PENN_ID = SMV.V_PENN_ID
+          AND SMV.V_KERBEROS_PRINCIPAL = ?
+    SQL
+
+    query.execute pennkey
+    row = query.fetch
+    return unless row
+
+    row[2]
+  end
+
+  def self.pcom_connect
+    begin
+      DBI.connect(ENV['PCOM_DBI'], ENV['PCOM_USERNAME'], ENV['PCOM_PASSWORD'])
+    rescue StandardError => e
+      ExceptionNotifier.notify_exception e
+      nil
+    end
   end
 end
