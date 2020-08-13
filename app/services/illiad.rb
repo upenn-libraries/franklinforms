@@ -273,10 +273,14 @@ class Illiad
     illserver = "http://#{ENV['ILLIAD_DBHOST']}/illiad/illiad.dll"
 
     body = {ILLiadForm: 'Logon', Username: userinfo['proxied_for'], Password: ENV['ILLIAD_USER_PASSWORD'], SubmitButton: 'Logon to ILLiad'}
-    res = HTTParty.post(illserver, body: body)
 
-    sessionid = /=(.*);/.match(res.headers['set-cookie'])[1]
-    headers = {'Cookie' => "ILLiadSessionID=#{sessionid}"}
+    if Rails.env.development?
+      headers = {'Cookie' => "ILLiadSessionID=test-session"}
+    else
+      res = HTTParty.post(illserver, body: body)
+      sessionid = /=(.*);/.match(res.headers['set-cookie'])[1]
+      headers = {'Cookie' => "ILLiadSessionID=#{sessionid}"}
+    end
 
     if params[:deliverytype] == 'bbm'
       # MK 07-14-2020 - Franklin currently only sets the deliverytype value for 'book' requests
@@ -347,13 +351,17 @@ class Illiad
 	      SubmitButton: 'Submit Request'}
     end
 
-    begin
-      res = HTTParty.post(illserver, body: body, headers: headers)
-      #/<span class="statusError">(.*)<\/span>/.match(res).nil? should be true unless error with values POSTed to ILLiad
-      txnumber = /Transaction Number (\d+)\<\/span>/.match(res)[1]
-    rescue NoMethodError => e
-      raise StandardError,
-            "Failed to get txnumber on Illiad submission. Illiad response: #{res}. Original exception: #{e.message}"
+    if Rails.env.development?
+      txnumber = 'test-txnumber'
+    else
+      begin
+        res = HTTParty.post(illserver, body: body, headers: headers)
+        #/<span class="statusError">(.*)<\/span>/.match(res).nil? should be true unless error with values POSTed to ILLiad
+        txnumber = /Transaction Number (\d+)\<\/span>/.match(res)[1]
+      rescue NoMethodError => e
+        raise StandardError,
+              "Failed to get txnumber on Illiad submission. Illiad response: #{res}. Original exception: #{e.message}"
+      end
     end
 
     return txnumber
