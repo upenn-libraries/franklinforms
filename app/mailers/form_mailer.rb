@@ -141,6 +141,8 @@ class FormMailer < ApplicationMailer
       @bbm = true
       @from = 'bkbymail@pobox.upenn.edu'
       bib['booktitle'] = bib['booktitle'][4..-1]
+    else
+      @bbm = false
     end
 
     if(bib['requesttype'].downcase == 'book')
