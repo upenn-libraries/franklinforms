@@ -136,9 +136,13 @@ class FormMailer < ApplicationMailer
 
     end
 
-    # remove BBM prefix if present
+    # remove BBM prefix if present, also, set other overrides for pseudo-BBM confirmation
     if bib['booktitle'].starts_with?('BBM ')
+      @bbm = true
+      @from = 'bkbymail@pobox.upenn.edu'
       bib['booktitle'] = bib['booktitle'][4..-1]
+    else
+      @bbm = false
     end
 
     if(bib['requesttype'].downcase == 'book')
