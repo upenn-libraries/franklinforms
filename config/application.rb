@@ -26,7 +26,7 @@ module FranklinForms
     unless Rails.env.development?
       config.action_mailer.delivery_method = :smtp
       config.action_mailer.smtp_settings = {
-        address: 'mailrelay.library.upenn.int',
+        address: '172.16.34.126',
       }
       config.action_mailer.default_options = { from: 'no-reply@upenn.edu' }
     end
