@@ -1,4 +1,5 @@
 module PreProcessor
+  include ActionView::Helpers::UrlHelper
   def pre_process(form_id, params)
     username = if Rails.env.development?
                  ENV['DEVELOPMENT_USERNAME']
@@ -47,10 +48,12 @@ module PreProcessor
         else
           Illiad.getIlliadUserInfo(user, params)
         end
-        if ['B', 'BO'].member?(user.data['cleared'])
-          redirect_to "http://www.library.upenn.edu/access/ill/ill_blocked.html"
+        # Show ILL "Blocked" page if user has blocked status flags
+        if user.ill_block?
+          redirect_to forms_ill_problem_path
           return
         end
+
         record = Illiad.getBibData(params)
         delivery_method = determine_delivery_method(record, user, params)
         show_addr_msg = false
