@@ -90,6 +90,22 @@ class Illiad
 
   end
 
+  # @param [Object] params
+  # @return [User]
+  def self.supplement_user_data(user, params)
+    db = db_client
+    # set table name for user info queries. why is this different in production?
+    users_table = Rails.env.production? ? 'usersall' : 'users'
+    query = <<~SQL
+      SELECT emailaddress, phone, department, nvtgc, address, address2, status, cleared
+      FROM #{users_table}
+      WHERE username = ?
+    SQL
+    ill_user_data = db.select_one query, user.proxied_for
+
+    user
+  end
+
   # queries DB
   def self.getIlliadUserInfo(user, params)
 
@@ -365,6 +381,15 @@ class Illiad
     end
 
     return txnumber
+  end
+
+  def self.db_client
+    TinyTds::Client.new(
+        username: ENV['ILLIAD_USERNAME'],
+        password: ENV['ILLIAD_PASSWORD'],
+        host: ENV['ILLIAD_DBHOST'],
+        database: ENV['ILLIAD_DATABASE']
+    )
   end
 
 end

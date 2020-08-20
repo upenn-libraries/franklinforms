@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  get 'forms/ill', to: 'form#ill'
+
   get 'redir/aeon' => 'form#aeon'
   get 'redir/ares' => 'form#ares'
   get 'redir/help' => 'form#help'

@@ -49,4 +49,9 @@ class User
     return [@data['dept'], @data['status']].join(' ').squeeze(' ').strip()
   end
 
+  # @return [String] proxied_for username
+  def proxied_for
+    @data['proxied_for']
+  end
+
 end

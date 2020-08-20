@@ -14,4 +14,15 @@ class ApplicationController < ActionController::Base
       flash[:notice] = 'TESTING: No emails will be sent'
     end
   end
+
+  # Return current user, or establish User object
+  # @return [User]
+  def user
+    username = if Rails.env.development?
+                  ENV['DEVELOPMENT_USERNAME']
+                else
+                  request.headers['HTTP_REMOTE_USER']&.split('@')&.first || ''
+               end
+    @user ||= User.new username, params['upennproxyid']
+  end
 end
