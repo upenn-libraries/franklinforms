@@ -34,5 +34,7 @@ end
 
 group :development do
   gem 'listen', '~> 3.1.0'
-  gem 'dotenv'
+  gem 'pry-byebug'
+  gem 'pry-rails'
 end
+

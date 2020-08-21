@@ -56,7 +56,7 @@ class FormController < ApplicationController
   # Render the ILL form, which is also used for BBM requests if
   # the deliverytype param is bbm
   def ill
-    user = Illiad.supplement_user_data user, params
+    ill_user = Illiad.supplement_user_data user
   end
 
 end

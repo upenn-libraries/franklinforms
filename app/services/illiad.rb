@@ -92,18 +92,34 @@ class Illiad
 
   # @param [Object] params
   # @return [User]
-  def self.supplement_user_data(user, params)
+  def self.supplement_user_data(user)
+    ill_user_data = ill_user_data_for user.proxied_for
+    ill_office = getILLOffice(user.data)
+    user.merge_ill_data ill_user_data.merge({ ill_office: ill_office})
+    user
+  end
+
+  # Query ILL DB and get selected user info
+  # @param [String] username
+  def self.ill_user_data_for(username)
+    return unless username.present?
+
     db = db_client
     # set table name for user info queries. why is this different in production?
     users_table = Rails.env.production? ? 'usersall' : 'users'
-    query = <<~SQL
+    query = %Q(
       SELECT emailaddress, phone, department, nvtgc, address, address2, status, cleared
-      FROM #{users_table}
-      WHERE username = ?
-    SQL
-    ill_user_data = db.select_one query, user.proxied_for
-
-    user
+      FROM #{db.escape users_table}
+      WHERE username = '#{db.escape username}'
+    ).squish
+    result = db.execute query
+    if result.entries.empty?
+      db.close
+      return
+    end
+    data = result.entries.first
+    db.close
+    data.symbolize_keys
   end
 
   # queries DB
