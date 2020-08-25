@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'forms/static/ill_problem', to: 'static#ill_problem', as: :ill_problem
+
   get 'redir/aeon' => 'form#aeon'
   get 'redir/ares' => 'form#ares'
   get 'redir/help' => 'form#help'
@@ -10,7 +12,6 @@ Rails.application.routes.draw do
   get 'forms/:id' => 'form#view', as: 'form'
   post 'forms/:id' => 'form#submit'
 
-  get 'static/ill_problem', to: 'static#ill_problem'
 
   #get '*path' => redirect('/')
 end
