@@ -5,13 +5,6 @@
 
 <%= render 'bbm_warnings' if params[:deliverytype] == 'bbm'  %>
 
-<div class="row">
-  <div class="col alert alert-warning">
-    Faculty Express, Digital Delivery, and Books By Mail will be unavailable on Wednesday, August 26, from noon to 5pm
-    due to necessary systems maintenance. We apologize for the interruption.
-  </div>
-</div>
-
 <%= render :partial => "form/proxy" %>
 
 <%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_ill()" } do |f| %>
