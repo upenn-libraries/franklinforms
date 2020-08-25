@@ -52,11 +52,15 @@ class FormController < ApplicationController
     render :help, locals: locals
   end
 
-  # GET /forms/ill
-  # Render the ILL form, which is also used for BBM requests if
+  # GET /forms/ill_new
+  # Render the New ILL form, which is also used for BBM requests if
   # the deliverytype param is bbm
-  def ill
+  # params should include OpenURL data from catalog
+  def ill_new
     ill_user = Illiad.supplement_user_data user
+    # TODO: redirect if blocked
+    record = Illiad.getBibData params # TODO: i can't even
+
   end
 
 end

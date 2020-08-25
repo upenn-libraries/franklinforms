@@ -1,11 +1,14 @@
 class Illiad
 
+  # TODO: replace usages with #ill_office_name
   @illoffices = Hash.new() { 'Van Pelt Library' }
   @illoffices['BIOMED'] = 'Biomedical Library'
   @illoffices['DENTAL'] = 'Dental Medicine Library'
   @illoffices['VET'] = 'Veterinary Medicine Library'
 
   # no DB
+  # Takes OpenURL params from request and mixes them up into something appropriate for
+  # posting to ILLiad
   def self.getBibData(params)
     bib_data = Hash.new
     aulast = params['rft.aulast'].presence || params['aulast'].presence || nil
@@ -95,7 +98,12 @@ class Illiad
   def self.supplement_user_data(user)
     ill_user_data = ill_user_data_for user.proxied_for
     ill_office = getILLOffice(user.data)
-    user.merge_ill_data ill_user_data.merge({ ill_office: ill_office})
+    ill_office_name = ill_office_name(ill_office)
+    user.merge_ill_data ill_user_data.merge({
+        ill_office: ill_office,
+        ill_office_name: ill_office_name
+      }
+    )
     user
   end
 
@@ -408,4 +416,20 @@ class Illiad
     )
   end
 
+  # Get a more human friendly ILL Office name
+  # but why??
+  # @param [String] ill_office_code
+  # @return [String]
+  def self.ill_office_name(ill_office_code)
+    case ill_office_code
+    when 'BIOMED'
+      'Biomedical Library'
+    when 'DENTAL'
+      'Dental Medicine Library'
+    when 'VET'
+      'Veterinary Medicine Library'
+    else
+      'Van Pelt Library'
+    end
+  end
 end
