@@ -270,7 +270,7 @@ class Illiad
       bib_data['comments'] += '  Proxied by ' + userinfo['proxied_by']
     end
 
-    illserver = "http://#{ENV['ILLIAD_DBHOST']}/illiad/illiad.dll"
+    illserver = "https://#{ENV['ILLIAD_DBHOST']}/illiad/illiad.dll"
 
     body = {ILLiadForm: 'Logon', Username: userinfo['proxied_for'], Password: ENV['ILLIAD_USER_PASSWORD'], SubmitButton: 'Logon to ILLiad'}
 
