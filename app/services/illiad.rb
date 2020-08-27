@@ -277,7 +277,7 @@ class Illiad
     if Rails.env.development?
       headers = {'Cookie' => "ILLiadSessionID=test-session"}
     else
-      res = HTTParty.post(illserver, body: body)
+      res = HTTParty.post(illserver, body: body, verify: false)
       sessionid = /=(.*);/.match(res.headers['set-cookie'])[1]
       headers = {'Cookie' => "ILLiadSessionID=#{sessionid}"}
     end
