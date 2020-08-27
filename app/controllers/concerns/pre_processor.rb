@@ -54,7 +54,7 @@ module PreProcessor
         end
         # Show ILL "Blocked" page if user has blocked status flags
         if user.ill_block?
-          redirect_to forms_ill_problem_path
+          redirect_to ill_problem_path
           return
         end
 
