@@ -35,10 +35,6 @@ module PreProcessor
       when 'resourcesharing'
         return {user: User.new(username)}
       when 'ill', 'facultyexpress'
-        # redirect to resource sharing page during ill downtime
-        redirect_to '/forms/resourcesharing'
-        return
-
         proxy_id = nil
         unless params['upennproxyid'].nil? || params['upennproxyid'].empty?
           proxy_id = params['upennproxyid']
