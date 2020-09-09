@@ -93,6 +93,131 @@ class Illiad
 
   end
 
+  # modify keys to downcase and remove 'rft.'
+  def self.simplify_keys(params)
+    params.transform_keys do |key|
+      map_to_standard key.downcase.gsub('rft.', '')
+    end
+  end
+
+  #
+  # @param [String] key
+  # @return [Symbol]
+  def self.map_to_standard(key)
+    case key.to_sym
+    when :aau, :au
+      :author
+    when :genre, :type, :requesttype
+      :type
+    when :title, :book
+      :booktitle
+    when :pub
+      :publisher
+    when :publiplace
+      :place
+    when :btitle, :jtitle
+      :title
+    when :atitle
+      :article
+    when :month
+      :pmonth
+    when :date
+      :rftdate
+    when :pubyear, :pubdate
+      :year
+    when :rfr_id
+      :sid
+    when :record_id, :id
+      :bibid
+    when :userid
+      :comments
+    else
+      key.to_sym
+    end
+  end
+
+  def self.normalize_request_type(type)
+    return unless type
+
+    type.sub(/^(journal|bookitem|book|conference|article|preprint|proceeding).*?$/i, '\1').downcase
+  end
+
+  # @param [ActionController::Parameters] params with OpenURL data
+  def self.get_bib_data(params)
+    bib_data = {}
+
+    # simplify keys in params
+    params = simplify_keys(params.except(:controller, :action)).to_unsafe_h
+
+    # set Author
+    bib_data[:author] = if params[:aulast]
+                          "#{params[:aulast]}#{params[:aufirst]&.prepend(', ')}"
+                        else
+                          params[:author]
+                        end
+
+    # set Request Type
+    normalized_request_type = normalize_request_type params[:type]
+    bib_data[:request_type] = case normalized_request_type
+                              when 'unknown'
+                                'Book'
+                              when 'issue', nil
+                                'Article'
+                              else
+                                normalized_request_type
+                              end
+
+    bib_data.merge! params.except(:author, :aulast, :aufirst, :type).symbolize_keys
+
+    # set :journal to :title if not yet set
+    bib_data[:journal] ||= params[:title]
+
+    # set :source to 'direct' if not yet set
+    bib_data[:source] ||= 'direct'
+
+
+
+
+    # Handles IDs coming like pmid:numbersgohere
+    unless params['rft_id'].presence.nil?
+      parts = params['rft_id'].split(':')
+      bib_data[parts[0]] = parts[1]
+    end
+
+    # *** Relais/BD sends dates through as rft.date but it may be a book request ***
+    if(bib_data['sid'] == 'BD' && bib_data['requesttype'] == 'Book')
+      bib_data['year'] = params['date'].presence || bib_data['rftdate']
+    end
+
+    ## Lookup record in Alma on submit?
+
+    # *** Make the bookitem booktitle the journal title ***
+    bib_data['journal'] = params['bookTitle'].presence || bib_data['journal'] if bib_data['requesttype'] == 'bookitem';
+
+    # *** scan delivery uses journal title || book title, which ever we have ***
+    # *** we should only have one of them ***
+    bib_data['title'] = bib_data['booktitle'].presence || bib_data['journal'].presence;
+
+    # *** Make a non-inclusive page parameter ***
+    bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || '';
+    bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || '';
+
+    if(!params['Pages'].presence.nil? && bib_data['spage'].empty?)
+      bib_data['spage'], bib_data['epage'] = params['Pages'].split(/-/);
+    end
+
+    if(params['pages'].presence.nil?)
+      bib_data['pages'] = bib_data['spage'];
+      bib_data['pages'] += "-#{bib_data['epage']}" unless bib_data['epage'].empty?
+    else
+      bib_data['pages'] = params['pages'].presence
+    end
+
+    bib_data['pages'] = 'none specified' if bib_data['pages'].empty?
+
+    return bib_data
+  end
+
   # @param [Object] params
   # @return [User]
   def self.supplement_user_data(user)
@@ -113,8 +238,7 @@ class Illiad
     return unless username.present?
 
     db = db_client
-    # set table name for user info queries. why is this different in production?
-    users_table = Rails.env.production? ? 'usersall' : 'users'
+    users_table = 'usersall'
     query = %Q(
       SELECT emailaddress, phone, department, nvtgc, address, address2, status, cleared
       FROM #{db.escape users_table}

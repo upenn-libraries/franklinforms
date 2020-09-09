@@ -57,10 +57,9 @@ class FormController < ApplicationController
   # the deliverytype param is bbm
   # params should include OpenURL data from catalog
   def ill_new
-    ill_user = Illiad.supplement_user_data user
+    @user = Illiad.supplement_user_data user
     # TODO: redirect if blocked
-    record = Illiad.getBibData params # TODO: i can't even
-
+    @record = Illiad.get_bib_data params # TODO: i can't even
+    @delivery_method = determine_delivery_method @record, @user, params
   end
-
 end

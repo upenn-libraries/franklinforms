@@ -1,0 +1,22 @@
+<section id="ill-form">
+  <%# TODO: BBM WARNINGS %>
+  <h2><%= ill_request_type @user %> <%= @record['requesttype'] %> Request </h2>
+  <%= bootstrap_form_tag do |f| %>
+    <%= f.hidden_field(:deliverytype, { id: 'deliverytype', value: params[:deliverytype] }) %>
+    <%= f.hidden_field(:bibid, { id: 'bibid', value: @record['bibid'] }) %>
+    <%= f.static_control(label: 'Name') { @user.name } %>
+    <%= f.static_control(label: 'Affiliation') { @user.affiliation } %>
+    <%= f.email_field :email, value: @user.email, required: true %>
+    <%= f.phone_field :phone, value: @user.phone %>
+    <hr>
+    <%= f.text_field :upennproxyid, label: 'Act as a proxy for' %>
+    <hr>
+    <%= f.static_control(label: 'Delivery Method') { @delivery_method } %>
+    <hr>
+    <%= render_bib_info_partial f, @record %>
+    <hr>
+    <%= f.text_area :comments, label: 'Comments (maximum 256 characters)', maxlength: 256 %>
+    <hr>
+    <%= f.submit 'Submit Request' %>
+  <% end %>
+</section>

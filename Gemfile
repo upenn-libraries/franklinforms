@@ -23,18 +23,13 @@ gem 'tzinfo-data'
 gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
-  gem 'better_errors'
-  gem 'binding_of_caller'
   gem 'byebug', platform: :mri
   gem 'capybara'
   gem 'dotenv-rails'
-  gem 'meta_request'
   gem 'rspec-rails'
 end
 
 group :development do
   gem 'listen', '~> 3.1.0'
-  gem 'pry-byebug'
-  gem 'pry-rails'
 end
 

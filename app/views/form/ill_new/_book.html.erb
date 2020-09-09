@@ -1,0 +1,8 @@
+<%= f.text_field :booktitle, label: 'Title', value: record['booktitle'], required: true %>
+<%= f.text_field :author, label: 'Author', value: record['author'], required: true %>
+<%= f.text_field :edition, label: 'Edition', value: record['edition'], required: false %>
+<%= f.text_field :publisher, label: 'Publisher', value: record['publisher'], required: false %>
+<%= f.text_field :place, label: 'Place of Publication', value: record['place'], required: false %>
+<%= f.text_field :year, label: 'Year of Publication', value: record['year'], required: true %>
+<%= f.text_field :isbn, label: 'ISBN', value: record['isbn'], required: false %>
+<%= f.text_field :source, label: 'Citation Source', value: record['sid'], required: false %>

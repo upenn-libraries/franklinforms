@@ -14,7 +14,7 @@ class User
           "Problem initializing User object! id is #{id} and proxy_id is #{proxy_id}. Original Exception message is: #{e.message} "
         )
       )
-      @data = { 'username' => id }
+      @data = { 'username' => id, 'proxied_for' => id }
     end
   end
 
@@ -49,10 +49,23 @@ class User
     return [@data['dept'], @data['status']].join(' ').squeeze(' ').strip()
   end
 
+  def email
+    @data['emailAddr']
+  end
+
+  def phone
+    @data['phone']
+  end
+
+  # @return [TrueClass, FalseClass]
+  def standing_faculty?
+    @data['status'] == 'StandingFaculty'
+  end
+
   # Return 'proxied_for' value, or the current user's id
   # @return [String] proxied_for username
   def proxied_for
-    @data['proxied_for'] || id
+    @data['proxied_for']
   end
 
   def id

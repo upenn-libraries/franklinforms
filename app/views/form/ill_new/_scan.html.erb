@@ -1,0 +1,9 @@
+<%= f.text_field :journal, label: 'Journal/Book Title', value: record['title'], required: true %>
+<%= f.text_field :chaptitle, label: 'Article/Chapter Title', value: (record['chaptitle'] || record['article']), required: true %>
+<%= f.text_field :author, label: 'Article/Chapter Author', value: record['author'], required: true %>
+<%= f.text_field :rftdate, label: 'Issue Date', value: record['rftdate'], required: true %>
+<%= f.text_field :volume, label: 'Volume', value: record['volume'], required: false %>
+<%= f.text_field :issue, label: 'Issue', value: record['issue'], required: false %>
+<%= f.text_field :pages, label: 'Pages', value: record['pages'], required: true %>
+<%= f.text_field :sid, label: 'Citation Source', value: record['sid'], required: false %>
+<%= f.text_field :isbn, label: 'ISBN/ISSN', value: record['isbn'], required: false %>
