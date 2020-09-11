@@ -30,10 +30,11 @@ module PostProcessor
     when 'help'
       FormMailer.send_help_email(values).deliver_now
     else
-      ExceptionNotifier.notify_exception(
-        StandardError.new("PostProcessor encountered un-configured form_id: #{form_id}"),
-        env: request.env
-      )
+      # TODO: honeybadger-ify?
+      # ExceptionNotifier.notify_exception(
+      #   StandardError.new("PostProcessor encountered un-configured form_id: #{form_id}"),
+      #   env: request.env
+      # )
     end
   end
 
