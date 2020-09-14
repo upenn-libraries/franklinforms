@@ -37,8 +37,6 @@ class PennLdap
       results = ldap.search(base: treebase, filter: filter)
     rescue Net::LDAP::Error => e
       if retries > 1
-        # TODO: honeybadger-ify?
-        # ExceptionNotifier.notify_exception e
         return false # return false so at least the form submission is not ruined
       end
       retries += 1
