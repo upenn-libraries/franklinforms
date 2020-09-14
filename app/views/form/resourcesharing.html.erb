@@ -1,8 +1,8 @@
 <% 
   @page_title = "Request Options"
 
-  bd_url = "https://bd.relaisd2d.com/?LS=PENN&PI=#{user.data['penn_id']}"
-  ezb_url = "https://ezb.relaisd2d.com/?LS=PENN&PI=#{user.data['penn_id']}"
+  bd_url = "https://bd.relaisd2d.com/?LS=PENN&PI=#{user.data['proxied_by']}"
+  ezb_url = "https://ezb.relaisd2d.com/?LS=PENN&PI=#{user.data['proxied_by']}"
   bd_logo = link_to image_tag('bdlogo', id: 'bdlogo'), bd_url
   ezb_logo = link_to image_tag('palcilogo', id: 'ezblogo'), ezb_url
 
@@ -20,6 +20,7 @@
         <li><%= link_to "BorrowDirect+", "http://hdl.library.upenn.edu/1017/125512" %>
           <ul>
             <li><%= link_to "BorrowDirect", bd_url %></li>
+            <li><%= link_to "E-ZBorrow", ezb_url %></li>
           </ul>
         </li>
         <li><%= link_to "InterLibrary Loan / Document Delivery", "http://hdl.library.upenn.edu/1017/125512/1" %>
@@ -38,7 +39,7 @@
         <div class="col">
           <h1>How to Get Books Not Available at Penn Libraries</h1>
           <div>
-            <h2>Direct request service for books: BorrowDirect</h2>
+            <h2>Direct request services for books: BorrowDirect and E-ZBorrow</h2>
               <ul>
                 <li>Search multiple library collections simultaneously; place your own requests</li>
                 <li>Fast delivery in 3 - 5 days</li>
@@ -50,10 +51,16 @@
       </div>
 
       <div id="relaiswrapper" class="row">
-        <div id="borrowdirect" class="col-sm-12 col-md-12">
+        <div id="borrowdirect" class="col-sm-12 col-md-6">
           <div><%= bd_logo %></div>
           <div>Borrow books directly from Brown, Columbia, Cornell, Dartmouth, Duke, Harvard, Johns Hopkins, MIT, Princeton, Stanford, the University of Chicago, Yale, and the Center for Research Libraries.</div>
           <div><%= link_to "Connect to BorrowDirect", bd_url %></div>
+        </div>
+
+        <div id="ezborrow" class="col-sm-12 col-md-6">
+          <div><%= ezb_logo %></div>
+          <div>Books available from over 60 academic libraries in Pennsylvania and nearby states.</div>
+          <div><%= link_to "Connect to E-ZBorrow", ezb_url %></div>
         </div>
       </div>
 
@@ -62,9 +69,8 @@
           <h2>Features and Policies</h2>
           <ul>
             <li>Searching and discovery: Keyword and advanced author, title, and subject searching, in an updated interface.</li>
-            <li>Loan period: BorrowDirect - 16 weeks with no renewals.</li>
+            <li>Loan period: BorrowDirect - 16 weeks with no renewals, E-ZBorrow - 12 weeks with no renewals.</li>
             <li>Integration with your Library account: BorrowDirect books will be charged on your account just like Penn books. Please note: late fines of $1/day will apply.</li>
-            <li>Account information: In addition to automatic email notification, you can now view and track items borrowed using "My Account" in Franklin, or through BorrowDirect.</li>
             <li>Delivery options: Books may be delivered to any Penn Library for pick-up.</li>
             <li>Linking to Interlibrary Loan: Requests for books that cannot be supplied by BorrowDirect may be passed directly to Interlibrary Loan.</li>
           </ul>
@@ -73,9 +79,9 @@
         
       <div class="row">
         <div class="col">
-          <h2>Interlibrary Loan and E-ZBorrow</h2>
-          <p>Interlibrary Loan and E-ZBorrow services are currently suspended due to COVID-19. Please place requests via
-            BorrowDirect or <%= mail_to 'interlib@pobox.upenn.edu', 'contact us' %> for assistance.</p>
+          <h2>Interlibrary Loan</h2>
+          <p>Interlibrary Loan services are currently suspended due to COVID-19. Please place requests via
+            BorrowDirect, E-ZBorrow or <%= mail_to 'interlib@pobox.upenn.edu', 'contact us' %> for assistance.</p>
         </div>
       </div>
 
