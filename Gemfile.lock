@@ -111,6 +111,7 @@ GEM
     ffi (1.10.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    honeybadger (4.7.2)
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
     i18n (1.8.3)
@@ -283,6 +284,7 @@ DEPENDENCIES
   dbi
   dotenv-rails
   exception_notification
+  honeybadger (~> 4.0)
   httparty
   jbuilder
   jquery-rails

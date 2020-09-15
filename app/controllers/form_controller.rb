@@ -6,7 +6,7 @@ class FormController < ApplicationController
     begin
       locals = pre_process(params[:id], params)
     rescue StandardError => e
-      ExceptionNotifier.notify_exception(e, env: request.env)
+      Honeybadger.notify e
       redirect_to '/'
     else
       render params[:id], locals: locals unless performed?

@@ -177,7 +177,7 @@ class PennCommunity
       begin
         userInfo['email'] = get_email userInfo['pennkey'], dbh
       rescue StandardError => e
-        ExceptionNotifier.notify_exception e
+        Honeybadger.notify e
       end
     end
 
@@ -216,7 +216,7 @@ class PennCommunity
     begin
       DBI.connect(ENV['PCOM_DBI'], ENV['PCOM_USERNAME'], ENV['PCOM_PASSWORD'])
     rescue StandardError => e
-      ExceptionNotifier.notify_exception e
+      Honeybadger.notify e
       nil
     end
   end
