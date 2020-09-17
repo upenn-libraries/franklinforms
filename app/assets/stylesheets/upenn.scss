@@ -77,14 +77,6 @@ span.site-name {
   color: #ffffff;
 }
 
-
-
-/*************
-*
-* Overriding Blacklight styles
-*
-**************/
-
 #header-navbar {
   background-image: asset-url('orrerybg.jpg');
   height: 100px;
@@ -93,29 +85,6 @@ span.site-name {
     margin-right: 15px;
   }
 }
-
-#header-brand-links {
-  float: left;
-  padding-left: 10px;
-}
-
-#user-util-links {
-  background-color: $upenn-darkest-blue;
-  border-top: 1px solid $upenn-red;
-  a {
-    color: $text-white;
-  }
-  a:hover {
-    font-weight: bold;
-    text-decoration: underline;
-    background-color: $upenn-red;
-  }
-}
-
-#search-navbar {
-  clear: both;
-}
-
 
 .btn-primary {
   background-color: $upenn-red;
