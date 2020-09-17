@@ -5,9 +5,8 @@ class FormController < ApplicationController
   def view
     begin
       locals = pre_process(params[:id], params)
-    rescue Exception => e
-      puts e.message
-      puts e.backtrace.inspect
+    rescue StandardError => e
+      Honeybadger.notify e
       redirect_to '/'
     else
       render params[:id], locals: locals unless performed?

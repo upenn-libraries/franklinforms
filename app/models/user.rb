@@ -8,7 +8,8 @@ class User
       @data['proxied_by'] = id
       @data['proxied_for'] = proxy_id || id
       setStatus
-    rescue
+    rescue StandardError => e
+      Honeybadger.notify e
       @data = Hash.new
     end
   end
@@ -44,4 +45,9 @@ class User
     return [@data['dept'], @data['status']].join(' ').squeeze(' ').strip()
   end
 
+  # Return true if there's a status code indicating an ILL Block
+  # @return [TrueClass, FalseClass]
+  def ill_block?
+    @data['cleared'].in? %w[B BO]
+  end
 end

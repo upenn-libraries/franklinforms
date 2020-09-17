@@ -1,7 +1,7 @@
 <% @page_title = "Request Help" %>
 
 <%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { onsubmit: "return submit_help()" } do |f| %>
-  <%= f.hidden_field(:referrer, {id: 'referrer', value: referrer}) %>
+  <%= f.hidden_field(:referrer, {id: 'referrer', value: request.referrer}) %>
 
   <div class="alert alert-warning" style="color: #000000">
     <p><span class="bold">NOTE:</span> Please provide details about the resource you were trying to find.</p>

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  get 'forms/static/ill_problem', to: 'static#ill_problem', as: :ill_problem
 
   get 'redir/aeon' => 'form#aeon'
   get 'redir/ares' => 'form#ares'
@@ -10,6 +11,7 @@ Rails.application.routes.draw do
 
   get 'forms/:id' => 'form#view', as: 'form'
   post 'forms/:id' => 'form#submit'
+
 
   #get '*path' => redirect('/')
 end
