@@ -33,9 +33,13 @@
     <div class="section-body">
       <div class="form-group">
         <div class="col-sm-12 col-md-12">
-          <p class="form-control-static"><%= delivery_method %></p>
-          <% if show_addr_message %>
-            <p class="form-control-static"> If your departmental address is wrong, please email us at <%= mail_to('pld@pobox.upenn.edu') %>
+          <% if record['requesttype'] == 'Book' %>
+            <%= f.select :deliverytype, options_for_select([['Van Pelt Library'], ['Books by Mail']]), { label: 'Delivery' } %>
+          <% else %>
+            <p class="form-control-static"><%= delivery_method %></p>
+            <% if show_addr_message %>
+              <p class="form-control-static"> If your departmental address is wrong, please email us at <%= mail_to('pld@pobox.upenn.edu') %>
+            <% end %>
           <% end %>
         </div>
       </div>

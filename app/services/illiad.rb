@@ -291,7 +291,7 @@ class Illiad
       bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
     end
 
-    if(bib_data['requesttype'].downcase == 'book')
+    if bib_data['requesttype'].downcase == 'book'
       body = {ILLiadForm: 'LoanRequest',
               Username: userinfo['proxied_for'],
               SessionID: sessionid,
@@ -306,8 +306,9 @@ class Illiad
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
               CitedIn: bib_data['sid'],
+              ItemInfo1: params[:deliverytype],
               SubmitButton: 'Submit Request'}
-    elsif(bib_data['requesttype'] == 'ScanDelivery')
+    elsif bib_data['requesttype'] == 'ScanDelivery'
       bib_data['chaptitle'] = 'none supplied' if bib_data['chaptitle'].presence.nil?
 
       body = {IlliadForm: 'ArticleRequest',
