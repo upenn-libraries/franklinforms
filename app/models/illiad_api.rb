@@ -21,8 +21,24 @@ class IlliadApi
     if response.parsed_response.key? 'TransactionNumber'
       response.parsed_response['TransactionNumber']
     else
-      # TODO: handle error - message?
+      Rails.logger.error "Illiad API request failure: #{response.message}"
+      nil
     end
+  end
+
+  def user_info(username)
+    response = self.class.get("/users/#{username}", @default_options)
+    if response.code == 200
+      response.parsed_response.transform_keys { |k| k.downcase.to_sym }
+    else
+      nil
+    end
+  end
+
+  def add_user(user_info)
+    options = @default_options
+    options[:body] = user_info
+    self.class.post('/Users', options)
   end
 
   private
