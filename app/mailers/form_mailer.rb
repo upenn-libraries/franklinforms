@@ -117,7 +117,7 @@ class FormMailer < ApplicationMailer
     if(userinfo['status']) == 'StandingFaculty'
       @from = 'pld@pobox.upenn.edu'
       @reqtype = 'FacultyEXPRESS'
-      @addldeliveryinfo = ''
+      @addldeliveryinfo = 'Your request has been sent.'
     else
       @from = case userinfo['illoffice']
       when 'BIOMED'
