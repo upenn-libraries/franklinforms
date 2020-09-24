@@ -118,7 +118,6 @@ class FormMailer < ApplicationMailer
       @from = 'pld@pobox.upenn.edu'
       @reqtype = 'FacultyEXPRESS'
       @addldeliveryinfo = ''
-
     else
       @from = case userinfo['illoffice']
       when 'BIOMED'
@@ -132,8 +131,15 @@ class FormMailer < ApplicationMailer
       end
 
       @reqtype = 'Interlibrary Loan'
-      @addldeliveryinfo = 'Delivery times vary depending upon lender location.  You will receive an email as soon as your request is available.'
 
+      @addldeliveryinfo = <<~MSG
+        Your request has been sent to Interlibrary Loan. Delivery times vary depending upon lender location. 
+
+        In order to expedite delivery, Interlibrary Loan requests may be filled using Borrow Direct, in which case you 
+        will receive an additional Borrow Direct request confirmation email. Regardless of how the loan arrives, you 
+        will receive an email notification of its arrival, based on your choice of delivery option: pickup at Van Pelt 
+        Library, or mailed directly to you via Books by Mail.
+      MSG
     end
 
     # remove BBM prefix if present, also, set other overrides for pseudo-BBM confirmation
