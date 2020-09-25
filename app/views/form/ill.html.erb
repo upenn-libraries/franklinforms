@@ -33,7 +33,7 @@
     <div class="section-body">
       <div class="form-group">
         <div class="col-sm-12 col-md-12">
-          <% if record['requesttype'] == 'Book' %>
+          <% if record['requesttype'] == 'Book' && params[:deliverytype] != 'bbm' %>
             <%= f.select :deliverytype, options_for_select([['Van Pelt Library'], ['Books by Mail']]), { label: 'Delivery' } %>
           <% else %>
             <p class="form-control-static"><%= delivery_method %></p>
