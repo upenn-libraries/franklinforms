@@ -48,8 +48,9 @@
           <% else %>
             <%# render ILL delivery info (ScanDeliver, Article or Book) %>
             <%= render partial: 'ill_delivery_info', locals: {
-                book_request: book_request, f: f
-            } %>
+                         book_request: book_request, f: f
+                       }
+            %>
           <% end %>
         </div>
       </div>
