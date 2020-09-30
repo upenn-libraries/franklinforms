@@ -3,9 +3,8 @@
   @page_title = "#{reqtype} #{record['requesttype']} Request"
 %>
 
-<%= render 'bbm_warnings' if params[:deliverytype] == 'bbm'  %>
-
-<%= render :partial => "form/proxy" %>
+<%= render 'bbm_warnings' if explicit_bbm  %>
+<%= render partial: "form/proxy" %>
 
 <%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_ill()" } do |f| %>
   <%= f.hidden_field(:deliverytype, { id: 'deliverytype', value: params[:deliverytype] }) %>
@@ -30,28 +29,32 @@
     <div class="section-heading">
       <h1>Delivery Method</h1>
     </div>
+
     <div class="section-body">
       <div class="form-group">
         <div class="col-sm-12 col-md-12">
-          <% if record['requesttype'] == 'Book' && params[:deliverytype] != 'bbm' %>
-            <%= f.select :deliverytype, options_for_select([['Van Pelt Library'], ['Books by Mail']]), { label: 'Delivery' } %>
+          <% if explicit_bbm %>
+            <%# render BBM delivery info %>
+            <%= t('forms.bbm.messages.delivery_address_note_html',
+                  read_this: link_to('read our terms of service and register',
+                                     'https://guides.library.upenn.edu/resourcesharing/books-by-mail'))
+            %>
           <% else %>
-            <p class="form-control-static"><%= delivery_method %></p>
-            <% if show_addr_message %>
-              <p class="form-control-static"> If your departmental address is wrong, please email us at <%= mail_to('pld@pobox.upenn.edu') %>
-            <% end %>
+            <%# render ILL delivery info (ScanDeliver, Article or Book) %>
+            <%= render partial: 'ill_delivery_info', locals: {
+                book_request: book_request, f: f
+            } %>
           <% end %>
         </div>
       </div>
     </div>
   </div>
-
   <div class="section">
     <div class="section-heading">
       <h1>Bibliographic information for the item requested</h1>
     </div>
     <div class="section-body">
-      <% if record['requesttype'] == 'Book' %>
+      <% if book_request %>
         <%= render(:partial => "form/ill/book", :locals => {:f=>f, :record=>record}) %>
       <% elsif record['requesttype'] == 'ScanDelivery'  %>
         <%= render(:partial => "form/ill/scan", :locals => {:f=>f, :record=>record}) %>
@@ -62,5 +65,4 @@
       <%= f.submit('Submit Request', id: 'submit', data: { disable_with: false }) %>  
     </div>
   </div>
-
 <% end %>
