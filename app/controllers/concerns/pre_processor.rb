@@ -68,7 +68,7 @@ module PreProcessor
         record['author'] = author.presence || "none specified"
       end
 
-      # Return variables for form ratial rendering
+      # Return variables for form partial rendering
       return { record: record, user: user, params: params,
                explicit_bbm: params[:deliverytype] == 'bbm',
                book_request: record['requesttype']&.downcase == 'book'}

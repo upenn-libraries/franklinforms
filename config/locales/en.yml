@@ -10,7 +10,7 @@ en:
       messages:
         delivery_address_note_html: "<p>Deliver to my Books by Mail address</p><p>Are you registered for Books by Mail? If not, please %{read_this} before submitting requests."
         registration_html: "<span class='bold'>NOTE:</span> <span class='red'>Registration is required</span> (click %{registration_link} to register) to use Books by Mail. Please do not submit Books by Mail requests until you have received your registration confirmation email. These requests will be cancelled."
-        chop_curc: 'NOTE: Due to local circulation policies items from the Pennsylvania Hospital Collection cannot be requested via Books by Mail.'
+        chop_circ: 'NOTE: Due to local circulation policies items from the Pennsylvania Hospital Collection cannot be requested via Books by Mail.'
     help:
       page_title: "Request Help"
       message: "Please provide details about the resource you were trying to find."
@@ -18,5 +18,3 @@ en:
         name: "Name"
         email: "Email"
         details: "Your Question"
-
-

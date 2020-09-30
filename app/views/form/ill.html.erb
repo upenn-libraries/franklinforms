@@ -6,11 +6,17 @@
 <%= render 'bbm_warnings' if explicit_bbm  %>
 <%= render partial: "form/proxy" %>
 
-<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10', html: { :onsubmit => "return submit_ill()" } do |f| %>
+<%= bootstrap_form_tag(
+      layout: :horizontal,
+      label_col: 'col-sm-6 col-md-2',
+      control_col: 'col-sm-6 col-md-10',
+      html: { onsubmit: "return submit_ill()" }
+    ) do |f| %>
+
   <%= f.hidden_field(:deliverytype, { id: 'deliverytype', value: params[:deliverytype] }) %>
-  <%= f.hidden_field(:bibid, {id: 'bibid', value: record['bibid']}) %>
-  <% request.query_parameters.reject {|k,v| ['utf8'].member?(k)} .each do |k,v| %>
-    <%= f.hidden_field(k.to_sym, {name: k, value: v}) %>
+  <%= f.hidden_field(:bibid, { id: 'bibid', value: record['bibid'] }) %>
+  <% request.query_parameters.reject { |k,_| ['utf8'].member?(k) }.each do |k,v| %>
+    <%= f.hidden_field(k.to_sym, { name: k, value: v }) %>
   <% end %>
 
   <div class="section">
@@ -55,11 +61,11 @@
     </div>
     <div class="section-body">
       <% if book_request %>
-        <%= render(:partial => "form/ill/book", :locals => {:f=>f, :record=>record}) %>
+        <%= render partial: "form/ill/book", locals: { f: f, record: record } %>
       <% elsif record['requesttype'] == 'ScanDelivery'  %>
-        <%= render(:partial => "form/ill/scan", :locals => {:f=>f, :record=>record}) %>
+        <%= render partial: "form/ill/scan", locals: { f: f, record: record } %>
       <% else %>
-        <%= render(:partial => "form/ill/article", :locals => {:f=>f, :record=>record}) %>
+        <%= render partial: "form/ill/article", locals: { f: f, record: record} %>
       <% end %>
       <%= f.text_area(:comments, label: 'Comments<br />(max 256 chars)'.html_safe, maxlength: 256) %>
       <%= f.submit('Submit Request', id: 'submit', data: { disable_with: false }) %>  
