@@ -1,5 +1,7 @@
 class Illiad
 
+  # These options are used by Illiad rules to properly route requests.
+  # Do not alter them without first consulting ILL staff.
   ILL_PICKUP_OPTIONS = [['Van Pelt Library'], ['Pickup at Penn']]
 
   @illoffices = Hash.new() { 'Van Pelt Library' }
