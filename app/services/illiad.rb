@@ -1,5 +1,7 @@
 class Illiad
 
+  ILL_PICKUP_OPTIONS = [['Van Pelt Library'], ['Pickup at Penn']]
+
   @illoffices = Hash.new() { 'Van Pelt Library' }
   @illoffices['BIOMED'] = 'Biomedical Library'
   @illoffices['DENTAL'] = 'Dental Medicine Library'
