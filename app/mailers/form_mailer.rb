@@ -133,12 +133,7 @@ class FormMailer < ApplicationMailer
       @reqtype = 'Interlibrary Loan'
 
       @addldeliveryinfo = <<~MSG
-        Your request has been sent to Interlibrary Loan. Delivery times vary depending upon lender location. 
-
-        In order to expedite delivery, Interlibrary Loan requests may be filled using Borrow Direct, in which case you 
-        will receive an additional Borrow Direct request confirmation email. Regardless of how the loan arrives, you 
-        will receive an email notification of its arrival, based on your choice of delivery option: pickup at Van Pelt 
-        Library, or mailed directly to you via Books by Mail.
+        Your request has been sent to Interlibrary Loan. Delivery times vary depending upon lender location.
       MSG
     end
 
@@ -151,14 +146,22 @@ class FormMailer < ApplicationMailer
       @bbm = false
     end
 
-    if(bib['requesttype'].downcase == 'book')
+    if bib['requesttype'].downcase == 'book'
+      # append BD caveat to book requests
+      @addldeliveryinfo += <<~MSG
+
+        In order to expedite delivery, Interlibrary Loan requests may be filled using Borrow Direct, in which case you 
+        will receive an additional Borrow Direct request confirmation email. Regardless of how the loan arrives, you 
+        will receive an email notification of its arrival, based on your choice of delivery option: pickup at Van Pelt 
+        Library, or mailed directly to you via Books by Mail.
+      MSG
       @title = bib['booktitle']
       @publisher = bib['publisher']
       @place = bib['place']
       @date = bib['rftdate'] || bib['year']
       @edition = bib['edition']
       template_name = 'confirmillbook'
-    elsif(bib['requesttype'] == 'ScanDelivery')
+    elsif bib['requesttype'] == 'ScanDelivery'
       @title = bib['title']
       @chaptitle = bib['chaptitle']
       @volume = bib['volume']
@@ -190,6 +193,7 @@ class FormMailer < ApplicationMailer
          template_name: template_name)
   end
 
+  # TODO: consider for removal now that we send BBM through the ILL form
   def confirm_booksbymail_email(user, bib, values)
     @to = "bkbymail@pobox.upenn.edu"
     @from = "#{user.name} <#{user.data['email']}>"
