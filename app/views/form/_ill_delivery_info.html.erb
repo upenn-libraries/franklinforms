@@ -1,0 +1,10 @@
+<% if book_request %>
+  <%= f.select(
+        :deliverytype,
+        options_for_select(Illiad::ILL_PICKUP_OPTIONS),
+        { label: 'Delivery' })
+  %>
+<% else %>
+  <%# ScanDeliver or Article case %>
+  Web Delivery
+<% end %>

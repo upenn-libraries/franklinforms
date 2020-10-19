@@ -26,7 +26,16 @@
         <li><%= link_to "InterLibrary Loan / Document Delivery", "http://hdl.library.upenn.edu/1017/125512/1" %>
           <ul>
             <li><%= link_to "Request Article / Chapter", ill_article_url %></li>
+            <li><%= link_to "Request Book / Media", ill_book_url %></li>
+            <li><%= link_to "View Current Requests", "https://atlas.library.upenn.edu/cgi-bin/forms/webdeliver?action=status" %></li>
           </ul>
+        <li><%= link_to "FacultyEXPRESS", "http://hdl.library.upenn.edu/1017/125512/4" %>
+          <ul>
+            <li><%= link_to "Request Article / Chapter", ill_article_url %></li>
+            <li><%= link_to "Request Book / Media", ill_book_url %></li>
+            <li><%= link_to "View Current Requests", "https://atlas.library.upenn.edu/cgi-bin/forms/webdeliver?action=status" %></li>
+          </ul>
+        </li>
         <li><%= link_to "Web Delivery", "http://hdl.library.upenn.edu/1017/125512/3" %>
           <ul>
             <li><%= link_to "ILL / Document Delivery Pickup", "https://atlas.library.upenn.edu/cgi-bin/forms/webdeliver?action=delivered" %></li>
@@ -76,12 +85,16 @@
           </ul>
         </div>
       </div>
-        
+
       <div class="row">
         <div class="col">
           <h2>Interlibrary Loan</h2>
-          <p>Interlibrary Loan services are currently suspended due to COVID-19. Please place requests via
-            BorrowDirect, E-ZBorrow or <%= mail_to 'interlib@pobox.upenn.edu', 'contact us' %> for assistance.</p>
+          <div>For books not available in either E-ZBorrow or BorrowDirect, and for all non-book materials (audio recordings, video recordings, or microtext)</div>
+          <div class="bold">Use Interlibrary Loan:
+            <a href="<%= ill_article_url %>">Article request</a>
+            |
+            <a href="<%= ill_book_url %>">Other format request</a>
+          </div>
         </div>
       </div>
 

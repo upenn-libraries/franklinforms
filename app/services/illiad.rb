@@ -1,5 +1,9 @@
 class Illiad
 
+  # These options are used by Illiad rules to properly route requests.
+  # Do not alter them without first consulting ILL staff.
+  ILL_PICKUP_OPTIONS = [['Van Pelt Library'], ['Books by Mail']]
+
   @illoffices = Hash.new() { 'Van Pelt Library' }
   @illoffices['BIOMED'] = 'Biomedical Library'
   @illoffices['DENTAL'] = 'Dental Medicine Library'
@@ -282,16 +286,25 @@ class Illiad
       headers = {'Cookie' => "ILLiadSessionID=#{sessionid}"}
     end
 
-    if params[:deliverytype] == 'bbm'
-      # MK 07-14-2020 - Franklin currently only sets the deliverytype value for 'book' requests
-      # We need to be aware if anything else is setting that param so we can update the right field in bib_data
-      if bib_data['requesttype'].downcase != 'book'
-        raise ArgumentError, 'BBM delivery requested for something that is not a book!'
-      end
+    # deliverytype either comes from Franklin as 'bbm' param
+    # or is set by the Delivery Options drop down in the book request version
+    # of the ILL form. we ship this to ILLiad via the item_info_1 field
+    item_info_1 = case params[:deliverytype]
+                  when 'bbm'
+                    # explicit BBM case (user clicked 'Books by Mail' in Franklin)
+                    'Books by Mail'
+                  when 'Books by Mail', 'Van Pelt Library'
+                    params[:deliverytype]
+                  else
+                    ''
+                  end
+
+    # if the request is explicitly BBM, and we're sure its a 'book' request, prepend the BBM
+    if params[:deliverytype] == 'bbm' && params[:requesttype].downcase == 'book'
       bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
     end
 
-    if(bib_data['requesttype'].downcase == 'book')
+    if bib_data['requesttype'].downcase == 'book'
       body = {ILLiadForm: 'LoanRequest',
               Username: userinfo['proxied_for'],
               SessionID: sessionid,
@@ -306,8 +319,9 @@ class Illiad
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
               CitedIn: bib_data['sid'],
+              ItemInfo1: item_info_1,
               SubmitButton: 'Submit Request'}
-    elsif(bib_data['requesttype'] == 'ScanDelivery')
+    elsif bib_data['requesttype'] == 'ScanDelivery'
       bib_data['chaptitle'] = 'none supplied' if bib_data['chaptitle'].presence.nil?
 
       body = {IlliadForm: 'ArticleRequest',
