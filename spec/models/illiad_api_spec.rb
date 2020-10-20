@@ -14,4 +14,23 @@ RSpec.describe IlliadApi, type: :model do
       expect(response.body).to include 'ILLiad Secure Platform Version: 9.0.1.0'
     end
   end
+  context 'api submit' do
+    let(:user) do
+      { 'proxied_for' => 'bfranklin' }
+    end
+    let(:bib_data_book) do
+      {
+        'author' => 'B Franklin',
+        'booktitle' => 'Autobiography',
+        'publisher' => 'Penn Press',
+        'place' => 'Philadelphia, PA',
+        'year' => '2020'
+      }
+    end
+    it 'works' do
+      body = Illiad.book_request_body user, bib_data_book, 'test'
+      # response = api.transaction body # TODO: mock
+      expect(response).to not_be nil
+    end
+  end
 end

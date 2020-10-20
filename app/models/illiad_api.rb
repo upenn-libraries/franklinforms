@@ -14,6 +14,9 @@ class IlliadApi
     self.class.get '/SystemInfo/SecurePlatformVersion', @default_options
   end
 
+  # Submit a transaction request and return transaction number if successful
+  # @param [Hash] transaction_data
+  # @return [String, nil]
   def transaction(transaction_data)
     options = @default_options
     options[:body] = transaction_data

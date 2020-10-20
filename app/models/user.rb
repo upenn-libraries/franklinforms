@@ -50,4 +50,10 @@ class User
   def ill_block?
     @data['cleared'].in? %w[B BO]
   end
+
+  # Is this user currently engaged in a proxied request?
+  # @return [TrueClass, FalseClass]
+  def proxy_request?
+    data['proxied_by'] != data['proxied_for']
+  end
 end
