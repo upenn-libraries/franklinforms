@@ -21,8 +21,9 @@ class IlliadApi
     options = @default_options
     options[:body] = transaction_data
     response = self.class.post('/transaction', options)
-    if response.parsed_response.key? 'TransactionNumber'
-      response.parsed_response['TransactionNumber']
+    parsed_response = JSON.parse response.body
+    if parsed_response.key? 'TransactionNumber'
+      parsed_response['TransactionNumber']
     else
       Rails.logger.error "Illiad API request failure: #{response.message}"
       nil
