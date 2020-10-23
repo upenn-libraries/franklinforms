@@ -92,7 +92,6 @@ Franklin Forms operates with the following services:
 | Ares | for placing course reserves |
 | BorrowDirect+ | for Relais authentication and linking to search interface |
 | ILLiad | for placing various requests; interacts directly w/database and simulates browser activity |
-| Library LDAP | for authorization and determining standing faculty status |
 | Penn Community | for retrieving patron information |
 
 ## Auditing Secrets

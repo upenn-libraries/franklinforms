@@ -153,7 +153,6 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.14.2)
     multi_xml (0.6.0)
-    net-ldap (0.16.0)
     nio4r (2.5.2)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
@@ -291,7 +290,6 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.1.0)
   meta_request
-  net-ldap
   nokogiri (~> 1.10.0, >= 1.10.4)
   pry-byebug
   pry-rails

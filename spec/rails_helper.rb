@@ -8,7 +8,7 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require 'webmock/rspec'
-WebMock.disable_net_connect!
+WebMock.enable_net_connect!
 
 require File.join Rails.root, '/spec/support/alma_user_stubs'
 
