@@ -29,6 +29,7 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'meta_request'
   gem 'rspec-rails'
+  gem 'webmock'
 end
 
 group :development do
