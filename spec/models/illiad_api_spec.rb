@@ -36,14 +36,14 @@ RSpec.describe IlliadApi, type: :model do
       it 'returns user info' do
         mock_get_user_transaction
         response = api.get_user 'testuser'
-        expect(response&.keys).to include 'UserName', 'EMailAddress'
+        expect(response&.keys).to include :username, :emailaddress
       end
     end
     context 'create' do
       it 'returns newly created user info' do
         mock_create_user_transaction
         response = api.create_user user_info
-        expect(response.dig('UserName')).to eq 'testuser'
+        expect(response&.dig(:username)).to eq 'testuser'
       end
     end
   end

@@ -52,7 +52,7 @@ class IlliadApi
 
   def respond_to(response)
     if response.code == 200
-      JSON.parse response.body
+      JSON.parse(response.body).transform_keys { |k| k.downcase.to_sym }
     else
       nil
     end
