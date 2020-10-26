@@ -144,8 +144,50 @@ class Illiad
     return userinfo
   end
 
-  def self.user_info(user, params)
+  # @param [User] user
+  # @param [Object] params
+  def self.conflicting_user_info?(user, illiad_user)
+    user.data['dept'] != illiad_user['department'] ||
+      user.data['illoffice'] != illiad_user['nvtgc'] ||
+      user.data['status'] != illiad_user['status'] ||
+      user.data['emailAddr'] != illiad_user['emailaddress'] ||
+      user.data['phone'] != illiad_user['phone']
+  end
 
+  # Lookup Illiad user and modify User data as needed
+  # Intended as a drop-in replacement for getIlliadUserInfo
+  # @param [User] user
+  # @param [Object] params
+  # @return [Hash]
+  def self.user_info(user, params)
+    illiad_user = IlliadApi.new.get_user user.data['proxied_for']
+    return unless illiad_user
+
+    # update user object info as needed
+    user.data['emailAddr'] = params['email'].presence || illiad_user['emailaddress'].presence || user.data['email'] || ''
+    user.data['phone'] = illiad_user['phone'] || ''
+    user.data['cleared'] = illiad_user['cleared'] || ''
+    user.data['delivery'] = ''
+
+    ill_office = getILLOffice(user.data)
+    
+    if illiad_user['status'].blank?
+      # user has no status yet - they were probably just created?
+      user.data['illiadrecord'] = 'new'
+      user.data['illoffice'] = ill_office
+    elsif conflicting_user_info?(user, illiad_user)
+      user.data['illiadrecord'] = 'modify'
+      user.data['dept'] = illiad_user['department']
+      user.data['illoffice'] = illiad_user['nvtgc'] || ill_office
+      user.data['delivery'] = illiad_user['address'] || user.data['delivery']
+      user.data['status'] = illiad_user['status'] || user.data['status']
+    else
+      user.data['illiadrecord'] = 'nochange'
+    end
+    
+    user.data['illoffice_name'] = @illoffices[user.data['illoffice']]
+    
+    user.data
   end
 
   # no DB
