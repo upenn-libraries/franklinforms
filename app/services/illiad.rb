@@ -144,6 +144,10 @@ class Illiad
     return userinfo
   end
 
+  def self.user_info(user, params)
+
+  end
+
   # no DB
   # @param [Hash] userinfo
   def self.getCorrectedDeptDetails(userinfo)

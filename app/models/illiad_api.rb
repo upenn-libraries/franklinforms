@@ -30,10 +30,12 @@ class IlliadApi
     end
   end
 
+  # @param [String] username
+  # @return [Hash, nil] parsed response
   def user_info(username)
     response = self.class.get("/users/#{username}", @default_options)
     if response.code == 200
-      response.parsed_response.transform_keys { |k| k.downcase.to_sym }
+      JSON.parse response.body
     else
       nil
     end
