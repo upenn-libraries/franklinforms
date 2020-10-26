@@ -1,81 +1,83 @@
 module IlliadApiMocks
-  def stub_book_transaction
-    stub_request(:post, "https://illiad.library.upenn.edu/ILLiadWebPlatform/transaction").
-      with(
-          body: "Username=bfranklin&ProcessType=Borrowing&LoanAuthor=B%20Franklin&LoanTitle=Autobiography&LoanPublisher=Penn%20Press&LoanPlace=Philadelphia%2C%20PA&LoanDate=2020&LoanEdition=&ISSN=&ESPNumber=&Notes=&CitedIn=&ItemInfo1=test",
-          headers: {
-              'Accept'=>'application/json; version=1',
-              'Apikey'=>ENV['ILLIAD_API_KEY']
-          }).
-      to_return(
+  def mock_book_transaction
+    stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/transaction")
+      .with(
+        body: "Username=testuser&ProcessType=Borrowing&LoanAuthor=B%20Franklin&LoanTitle=Autobiography&LoanPublisher=Penn%20Press&LoanPlace=Philadelphia%2C%20PA&LoanDate=2020&LoanEdition=&ISSN=&ESPNumber=&Notes=&CitedIn=&ItemInfo1=test",
+        headers: default_headers
+      ).to_return(
         status: 200, body: '{"TransactionNumber": "123456"}', headers: {}
       )
   end
 
-  def stub_get_user_transaction
-    stub_request(:get, "https://illiad.library.upenn.edu/ILLiadWebPlatform/users/testuser").
-      with(
-        headers: {
-            'Accept'=>'application/json; version=1',
-            'Apikey'=>ENV['ILLIAD_API_KEY']
-        }).
-      to_return(
-        status: 200, body: '{
-          "UserName": "testuser",
-          "ExternalUserId": "testuser",
-          "LastName": "User",
-          "FirstName": "Test",
-          "SSN": "51234567",
-          "Status": "Student",
-          "EMailAddress": "testuser@upenn.edu",
-          "Phone": "",
-          "Department": "",
-          "NVTGC": "VPL",
-          "NotificationMethod": "Electronic",
-          "DeliveryMethod": "Mail to Address",
-          "LoanDeliveryMethod": "Hold for Pickup",
-          "LastChangedDate": null,
-          "AuthorizedUsers": null,
-          "Cleared": "Yes",
-          "Web": true,
-          "Address": "",
-          "Address2": null,
-          "City": null,
-          "State": null,
-          "Zip": null,
-          "Site": null,
-          "ExpirationDate": null,
-          "Number": null,
-          "UserRequestLimit": null,
-          "Organization": null,
-          "Fax": null,
-          "ShippingAcctNo": null,
-          "ArticleBillingCategory": "Exempt",
-          "LoanBillingCategory": "Exempt",
-          "Country": null,
-          "SAddress": null,
-          "SAddress2": null,
-          "SCity": null,
-          "SState": null,
-          "SZip": null,
-          "SCountry": null,
-          "RSSID": "555555555555555555555",
-          "AuthType": "Default",
-          "UserInfo1": null,
-          "UserInfo2": null,
-          "UserInfo3": null,
-          "UserInfo4": null,
-          "UserInfo5": null,
-          "MobilePhone": null
-          }', headers: {}
-        )
+  def mock_get_user_transaction
+    stub_request(:get, "#{ENV['ILLIAD_API_BASE_URI']}/users/testuser")
+      .with(headers: default_headers)
+      .to_return(status: 200, body: test_user_response, headers: {})
   end
 
-  def stub_update_user_transaction
-
+  def mock_create_user_transaction
+    stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/users")
+      .with(
+        body: "Username=testuser&LastName=User&FirstName=Test&EMailAddress=testuser%40upenn.edu",
+        headers: default_headers
+      ).to_return(
+        status: 200, body: test_user_response, headers: {}
+      )
   end
 
-  def stub_create_user_transaction
+  def test_user_response
+    '{
+      "UserName": "testuser",
+      "ExternalUserId": "testuser",
+      "LastName": "User",
+      "FirstName": "Test",
+      "SSN": "",
+      "Status": "",
+      "EMailAddress": "testuser@upenn.edu",
+      "Phone": "",
+      "Department": "",
+      "NVTGC": "VPL",
+      "NotificationMethod": "Electronic",
+      "DeliveryMethod": "Mail to Address",
+      "LoanDeliveryMethod": "Hold for Pickup",
+      "LastChangedDate": null,
+      "AuthorizedUsers": null,
+      "Cleared": "Yes",
+      "Web": true,
+      "Address": "",
+      "Address2": null,
+      "City": null,
+      "State": null,
+      "Zip": null,
+      "Site": null,
+      "ExpirationDate": null,
+      "Number": null,
+      "UserRequestLimit": null,
+      "Organization": null,
+      "Fax": null,
+      "ShippingAcctNo": null,
+      "ArticleBillingCategory": "Exempt",
+      "LoanBillingCategory": "Exempt",
+      "Country": null,
+      "SAddress": null,
+      "SAddress2": null,
+      "SCity": null,
+      "SState": null,
+      "SZip": null,
+      "SCountry": null,
+      "RSSID": "555555555555555555555",
+      "AuthType": "Default",
+      "UserInfo1": null,
+      "UserInfo2": null,
+      "UserInfo3": null,
+      "UserInfo4": null,
+      "UserInfo5": null,
+      "MobilePhone": null
+    }'
+  end
 
+  def default_headers
+    { 'Accept'=>'application/json; version=1',
+      'Apikey'=>ENV['ILLIAD_API_KEY'] }
   end
 end
