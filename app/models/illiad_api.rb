@@ -30,10 +30,27 @@ class IlliadApi
     end
   end
 
+  # Get user info from Illiad
   # @param [String] username
   # @return [Hash, nil] parsed response
-  def user_info(username)
-    response = self.class.get("/users/#{username}", @default_options)
+  def get_user(username)
+    respond_to self.class.get("/users/#{username}", @default_options)
+  end
+
+  # Create an Illiad user with a username, at least
+  # @param [Hash] user_info
+  # @return [Hash, nil]
+  def create_user(user_info)
+    options = @default_options
+    return unless valid? user_info
+
+    options[:body] = user_info
+    respond_to self.class.post('/users', options)
+  end
+
+  private
+
+  def respond_to(response)
     if response.code == 200
       JSON.parse response.body
     else
@@ -41,13 +58,12 @@ class IlliadApi
     end
   end
 
-  def add_user(user_info)
-    options = @default_options
-    options[:body] = user_info
-    self.class.post('/Users', options)
+  # Checks if user_info includes minimum required Illiad API fields
+  # @param [Hash] user_info
+  # @return [TrueClass, FalseClass]
+  def valid?(user_info)
+    user_info&.dig('Username').present?
   end
-
-  private
 
   def headers
     { 'ApiKey' => ENV['ILLIAD_API_KEY'],
