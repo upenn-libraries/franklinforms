@@ -17,7 +17,7 @@ class User
   end
 
   def faculty_express?
-    url = "#{ENV['ALMA_API_BASE_URL']}v1/users/#{@data['proxied_for']}?user_id_type=all_unique&view=brief&expand=none&apikey=#{ENV['ALMA_API_KEY']}"
+    url = "#{ENV['ALMA_API_BASE_URL']}/v1/users/#{@data['proxied_for']}?user_id_type=all_unique&view=brief&expand=none&apikey=#{ENV['ALMA_API_KEY']}"
     resp = HTTParty.get url, { 'accept' => 'application/json' }
     if resp.success?
       JSON.parse(resp.body).dig('user_group', 'value') == ALMA_FACEX_GROUP_VALUE

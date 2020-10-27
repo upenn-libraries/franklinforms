@@ -1,6 +1,6 @@
 module AlmaUserStubs
   def stub_alma_facex_user
-    stub_request(:get, "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/testuser?apikey=#{ENV['ALMA_API_KEY']}&expand=none&user_id_type=all_unique&view=brief").
+    stub_request(:get, "#{ENV['ALMA_API_BASE_URL']}/v1/users/testuser?apikey=#{ENV['ALMA_API_KEY']}&expand=none&user_id_type=all_unique&view=brief").
       with(
         headers: {
           'Accept' => '*/*',
@@ -13,7 +13,7 @@ module AlmaUserStubs
     )
   end
   def stub_alma_non_facex_user
-    stub_request(:get, "https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/testuser?apikey=#{ENV['ALMA_API_KEY']}&expand=none&user_id_type=all_unique&view=brief").
+    stub_request(:get, "#{ENV['ALMA_API_BASE_URL']}/v1/users/testuser?apikey=#{ENV['ALMA_API_KEY']}&expand=none&user_id_type=all_unique&view=brief").
         with(
           headers: {
             'Accept' => '*/*',
