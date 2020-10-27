@@ -2,7 +2,10 @@
   <%= f.select(
         :deliverytype,
         options_for_select(Illiad::ILL_PICKUP_OPTIONS),
-        { label: 'Delivery' })
+        { label: t('forms.ill.fields.deliverytype'),
+          prompt: t('forms.ill.messages.delivery_options_blank') },
+        required: true
+      )
   %>
 <% else %>
   <%# ScanDeliver or Article case %>

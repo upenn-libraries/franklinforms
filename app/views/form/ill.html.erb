@@ -9,8 +9,7 @@
 <%= bootstrap_form_tag(
       layout: :horizontal,
       label_col: 'col-sm-6 col-md-2',
-      control_col: 'col-sm-6 col-md-10',
-      html: { onsubmit: "return submit_ill()" }
+      control_col: 'col-sm-6 col-md-10'
     ) do |f| %>
 
   <%= f.hidden_field(:deliverytype, { id: 'deliverytype', value: params[:deliverytype] }) %>
@@ -25,8 +24,8 @@
     </div>
     <div class='section-body'>
       <%= f.static_control(label: 'Name') { user.name } %>
-      <%= f.text_field(:email, label: 'Email', value: user.data['email']) %>
-      <%= f.text_field(:phone, label: 'Phone', value: '') %>
+      <%= f.email_field(:email, label: 'Email', value: user.data['email'], required: true) %>
+      <%= f.phone_field(:phone, label: 'Phone', value: '') %>
       <%= f.static_control(label: 'Affiliation') { user.affiliation } %>
     </div>
   </div>

@@ -4,7 +4,10 @@ en:
       fields:
         submit: "Submit"
     ill:
+      fields:
+        deliverytype: 'Delivery'
       messages:
+        delivery_options_blank: "Please select a delivery option"
         delivery_address_note_html: "If your departmental address is wrong, please email us at %{mail_link}"
     bbm:
       messages:
