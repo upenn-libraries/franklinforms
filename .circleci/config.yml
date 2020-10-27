@@ -63,7 +63,7 @@ jobs:
           command: docker load -i ~/image/franklinforms_image.tar
       - run:
           name: Start Docker Container
-          command: docker run -d -e SECRET_KEY_BASE=x -e ALMA_API_KEY=${ALMA_API_KEY} --name franklinforms quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
+          command: docker run -d -e SECRET_KEY_BASE=x -e ALMA_API_KEY=${ALMA_API_KEY} -e ALMA_API_BASE_URL=${ALMA_API_BASE_URL} --name franklinforms quay.io/upennlibraries/franklinforms:${CIRCLE_SHA1}
       - run:
           name: Run RSpec Test
           command: docker exec franklinforms bundle exec rspec
