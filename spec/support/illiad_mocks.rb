@@ -18,8 +18,7 @@ module IlliadApiMocks
   def mock_create_user_transaction
     stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/users")
       .with(
-        body: "Username=testuser&LastName=User&FirstName=Test&EMailAddress=testuser%40upenn.edu",
-        headers: default_headers
+        body: "Username=testuser&LastName=User&FirstName=Test&EMailAddress=testuser%40upenn.edu&NotificationPreferences[][ActivityType]=ClearedUser&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=PasswordReset&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestCancelled&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestOther&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestOverdue&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestPickup&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestShipped&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestElectronicDelivery&NotificationPreferences[][NotificationType]=Email",        headers: default_headers
       ).to_return(
         status: 200, body: test_user_response, headers: {}
       )
