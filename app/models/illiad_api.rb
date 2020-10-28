@@ -44,11 +44,29 @@ class IlliadApi
     options = @default_options
     return unless valid? user_info
 
+    user_info["NotificationPreferences"] = notification_preferences
     options[:body] = user_info
     respond_to self.class.post('/users', options)
   end
 
   private
+
+  # @return [Array]
+  def notification_preferences
+    activities = %w[ClearedUser PasswordReset RequestCancelled RequestOther
+      RequestOverdue RequestPickup RequestShipped RequestElectronicDelivery]
+    notification_entries activities
+  end
+
+  # @param [Array] activities
+  # @return [Array<Array<String>>]
+  def notification_entries(activities)
+    activities.map do |activity_type|
+      { "ActivityType" => activity_type,
+        "NotificationType" => "Email" }
+    end
+
+  end
 
   def respond_to(response)
     if response.code == 200
