@@ -1,9 +1,10 @@
 <% 
   reqtype = user.data['status'] == 'StandingFaculty' ? "FacultyEXPRESS" : "InterLibrary Loan"
-  @page_title = "#{reqtype} #{record['requesttype']} Request"
+  @page_title = "#{reqtype} #{request_type} Request"
 %>
 
-<%= render 'bbm_warnings' if explicit_bbm  %>
+<%= render 'bbm_warnings' if explicit_bbm?  %>
+<%= render 'limitation_warnings' if (article_request? || scandelivery_request?) %>
 <%= render partial: "form/proxy" %>
 
 <%= bootstrap_form_tag(
@@ -38,7 +39,7 @@
     <div class="section-body">
       <div class="form-group">
         <div class="col-sm-12 col-md-12">
-          <% if explicit_bbm %>
+          <% if explicit_bbm? %>
             <%# render BBM delivery info %>
             <%= t('forms.bbm.messages.delivery_address_note_html',
                   read_this: link_to('read our terms of service and register',
@@ -46,10 +47,7 @@
             %>
           <% else %>
             <%# render ILL delivery info (ScanDeliver, Article or Book) %>
-            <%= render partial: 'ill_delivery_info', locals: {
-                         book_request: book_request, f: f
-                       }
-            %>
+            <%= render partial: 'ill_delivery_info', locals: { f: f } %>
           <% end %>
         </div>
       </div>
@@ -60,9 +58,9 @@
       <h1>Bibliographic information for the item requested</h1>
     </div>
     <div class="section-body">
-      <% if book_request %>
+      <% if book_request? %>
         <%= render partial: "form/ill/book", locals: { f: f, record: record } %>
-      <% elsif record['requesttype'] == 'ScanDelivery'  %>
+      <% elsif scandelivery_request?  %>
         <%= render partial: "form/ill/scan", locals: { f: f, record: record } %>
       <% else %>
         <%= render partial: "form/ill/article", locals: { f: f, record: record} %>
