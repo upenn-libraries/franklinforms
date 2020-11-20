@@ -10,7 +10,6 @@ gem 'honeybadger', '~> 4.0'
 gem 'httparty'
 gem 'jbuilder'
 gem 'jquery-rails'
-gem 'net-ldap'
 gem 'nokogiri', '~> 1.10.0', '>= 1.10.4'
 gem 'puma', '~> 3.0'
 gem 'rails', '~> 5.2'
@@ -29,6 +28,7 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'meta_request'
   gem 'rspec-rails'
+  gem 'webmock'
 end
 
 group :development do
