@@ -1,9 +1,9 @@
 <% 
   reqtype = user.data['status'] == 'StandingFaculty' ? "FacultyEXPRESS" : "InterLibrary Loan"
-  @page_title = "#{reqtype} #{request_type} Request"
+  @page_title = "#{reqtype} #{request_type(record)} Request"
 %>
 
-<%= render 'limitation_warnings' if (article_request? || scandelivery_request?) %>
+<%= render 'limitation_warnings' if (article_request?(record) || scandelivery_request?(record)) %>
 <%= render partial: "form/proxy" %>
 
 <%= bootstrap_form_tag(
@@ -54,7 +54,7 @@
       <div class="form-group">
         <div class="col-sm-12 col-md-12">
           <%# render ILL delivery info (ScanDeliver, Article or Book) %>
-          <%= render partial: 'ill_delivery_info', locals: { f: f } %>
+          <%= render partial: 'ill_delivery_info', locals: { f: f, record: record } %>
         </div>
       </div>
     </div>
@@ -65,9 +65,9 @@
       <h1>Bibliographic information for the item requested</h1>
     </div>
     <div class="section-body">
-      <% if book_request? %>
+      <% if book_request?(record) %>
         <%= render partial: "form/ill/book", locals: { f: f, record: record } %>
-      <% elsif scandelivery_request?  %>
+      <% elsif scandelivery_request?(record)  %>
         <%= render partial: "form/ill/scan", locals: { f: f, record: record } %>
       <% else %>
         <%= render partial: "form/ill/article", locals: { f: f, record: record} %>

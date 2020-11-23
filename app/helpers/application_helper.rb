@@ -1,21 +1,26 @@
 module ApplicationHelper
-  def article_request?
-    request_type == 'article'
+  # @param [Hash] record
+  def article_request?(record)
+    request_type(record) == 'article'
   end
 
-  def book_request?
-    request_type == 'book'
+  # @param [Hash] record
+  def book_request?(record)
+    request_type(record) == 'book'
   end
 
-  def scandelivery_request?
-    request_type == 'scandelivery'
+  # @param [Hash] record
+  def scandelivery_request?(record)
+    request_type(record) == 'scandelivery'
   end
 
   def explicit_bbm?
     params[:deliverytype] == 'bbm'
   end
 
-  def request_type
-    params[:requesttype]&.downcase
+  # Check record for the requesttype value, case insensitive
+  # @param [Hash] record
+  def request_type(record)
+    record['requesttype']&.downcase
   end
 end
