@@ -24,15 +24,40 @@ en:
         email: "Email"
         details: "Your Question"
     local_request:
+      heading: "Request from Penn Libraries"
+      messages:
+        comment_limit: "Maximum 256 characters"
       sections:
+        patron: "Your Information"
+        delivery: "Delivery"
+        record: "Item Information"
       fields:
         affiliation: "Affiliation"
-        delivery_method: "Delivery Method"
-        booktitle: "Title"
-        author: "Author"
-        edition: "Edition"
-        publisher: "Publisher"
-        place: "Place of Publication"
-        year: "Year of Publication"
-        isbn: "ISBN"
-        source: "Citation Source"
+        delivery_method: "Method"
+        comment: "Comments"
+        common:
+          source: "Citation Source"
+          volume: "Volume"
+          issue: "Issue"
+          pages: "Pages"
+        book:
+          booktitle: "Title"
+          author: "Author"
+          edition: "Edition"
+          publisher: "Publisher"
+          place: "Place of Publication"
+          year: "Year of Publication"
+          isbn: "ISBN"
+        scan:
+          journal: "Journal/Book Title"
+          author: "Article/Chapter Author"
+          chaptitle: "Article/Chapter Title"
+          rftdate: "Issue Date"
+          isbn: "ISBN/ISSN"
+        article:
+          journal: "Journal Title"
+          article: "Article Title"
+          author: "Article Author"
+          rftdate: "Issue Date"
+
+

@@ -23,4 +23,14 @@ module ApplicationHelper
   def request_type(record)
     record['requesttype']&.downcase
   end
+
+  # Return the current user's username
+  # @return [String]
+  def username_from_headers
+    if Rails.env.development?
+      ENV['DEVELOPMENT_USERNAME']
+    else
+      request.headers['HTTP_REMOTE_USER']&.split('@')&.first || ''
+    end
+  end
 end
