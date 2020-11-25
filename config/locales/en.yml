@@ -2,6 +2,8 @@ en:
   forms:
     common:
       fields:
+        name: "Name"
+        email: "Email"
         submit: "Submit"
     ill:
       fields:
@@ -21,3 +23,16 @@ en:
         name: "Name"
         email: "Email"
         details: "Your Question"
+    local_request:
+      sections:
+      fields:
+        affiliation: "Affiliation"
+        delivery_method: "Delivery Method"
+        booktitle: "Title"
+        author: "Author"
+        edition: "Edition"
+        publisher: "Publisher"
+        place: "Place of Publication"
+        year: "Year of Publication"
+        isbn: "ISBN"
+        source: "Citation Source"

@@ -1,0 +1,30 @@
+<% @page_title = 'Request from Penn Libraries' %>
+
+<%= bootstrap_form_for(@local_request,
+                       url: local_request_path,
+                       # layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10'
+    ) do |f| %>
+
+  <h2>Your Info</h2>
+  <%= f.static_control :name, label: t('forms.common.fields.name') %>
+  <%= f.static_control :affiliation, label: t('forms.local_request.fields.affiliation') %>
+  <%= f.email_field :email, label: t('forms.common.fields.email') %>
+
+  <h2>Delivery</h2>
+  <div class="alert alert-info">
+    Messages about selected delivery method
+  </div>
+  <%= f.select :delivery_method, @delivery_options, label: t('forms.local_request.fields.delivery_method'), prompt: t('forms.ill.messages.delivery_options_blank') %>
+
+  <h2>Item Info</h2>
+  <%= f.text_field :booktitle, label: t('forms.local_request.fields.booktitle') %>
+  <%= f.text_field :author, help: 'Helpful text about this field', label: t('forms.local_request.fields.author') %>
+  <%= f.text_field :edition, label: t('forms.local_request.fields.edition') %>
+  <%= f.text_field :publisher, label: t('forms.local_request.fields.publisher') %>
+  <%= f.text_field :place, label: t('forms.local_request.fields.place') %>
+  <%= f.text_field :year, label: t('forms.local_request.fields.year') %>
+  <%= f.text_field :isbn, label: t('forms.local_request.fields.isbn') %>
+  <%= f.text_field :source, label: t('forms.local_request.fields.source') %>
+
+  <%= f.submit t('forms.common.fields.submit') %>
+<% end %>
