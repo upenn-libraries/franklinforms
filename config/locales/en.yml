@@ -24,6 +24,14 @@ en:
         email: "Email"
         details: "Your Question"
     local_request:
+      delivery_messages:
+        bbm_html: "Please register here, etc."
+        pap_html: "Pickup at Van Pelt Library, etc."
+        digi_html: "Delivery via your ILL account, etc."
+      types:
+        article: "Article Request"
+        book: "Book Request"
+        scan: "Article/Chapter Scanning Request"
       heading: "Request from Penn Libraries"
       messages:
         comment_limit: "Maximum 256 characters"

@@ -4,13 +4,18 @@ class LocalRequestsController < ApplicationController
   before_action :set_user
 
   # show the form
-  def show
+  def new
     @delivery_options = ['PickUp@Penn', 'Books by Mail', 'Digital Delivery']
-    @local_request = LocalRequest.new params
+    @local_request = LocalRequest.new params, @user
   end
 
   # submit the request
   def create
+
+  end
+
+  # show confirmation
+  def show
 
   end
 

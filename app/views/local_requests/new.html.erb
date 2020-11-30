@@ -2,25 +2,30 @@
 
 <h1><%= t('forms.local_request.heading') %></h1>
 
-<%= bootstrap_form_for(@local_request,
-                       url: local_request_path,
-                       # layout: :horizontal, label_col: 'col-sm-6 col-md-2', control_col: 'col-sm-6 col-md-10'
-    ) do |f| %>
+<%= bootstrap_form_for(@local_request) do |f| %>
 
   <h2><%= t('forms.local_request.sections.patron') %></h2>
-  <%= f.static_control :name, label: t('forms.common.fields.name') %>
+  <%= f.static_control :by, label: t('forms.common.fields.name') %>
   <%= f.static_control :affiliation, label: t('forms.local_request.fields.affiliation') %>
   <%= f.email_field :email, label: t('forms.common.fields.email') %>
 
   <h2><%= t('forms.local_request.sections.delivery') %></h2>
-  <div class="alert alert-info">
-    Messages about selected delivery method
-  </div>
   <%= f.select :delivery_method, @delivery_options, label: t('forms.local_request.fields.delivery_method'), prompt: t('forms.ill.messages.delivery_options_blank') %>
+  <div class="alert alert-warning">
+    <p class="hidden bbm-messages">
+      <%= t('forms.local_request.delivery_messages.bbm_html') %>
+    </p>
+    <p class="hidden pap-messages">
+      <%= t('forms.local_request.delivery_messages.pap_html') %>
+    </p>
+    <p class="hidden digi-messages">
+      <%= t('forms.local_request.delivery_messages.digi_html') %>
+    </p>
+  </div>
 
   <h2><%= t('forms.local_request.sections.record') %></h2>
-  <h3><%= @local_request.type %></h3>
-  <%= show_request_type_fields @local_request.type, f %>
+  <h3><%= request_type_message @local_request.type %></h3>
+  <%= request_type_fields @local_request.type, f %>
 
   <%= f.text_area :comments, label: t('forms.local_request.fields.comment'), help: t('forms.local_request.messages.comment_limit') %>
   <%= f.submit t('forms.common.fields.submit') %>

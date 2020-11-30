@@ -1,5 +1,9 @@
 @import 'base/mixins.scss';
 
+.hidden {
+  display: none;
+}
+
 div.section {
   border: 1px solid black;
   padding: 5px;
