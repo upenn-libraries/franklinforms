@@ -5,7 +5,7 @@ class LocalRequestsController < ApplicationController
 
   # show the form
   def new
-    @delivery_options = ['PickUp@Penn', 'Books by Mail', 'Digital Delivery']
+    @delivery_options = ['PickUp@Penn', 'Books by Mail', 'Digital Delivery'] # TODO: delivery options should be tailored to request params
     @local_request = LocalRequest.new params, @user
   end
 
@@ -18,6 +18,9 @@ class LocalRequestsController < ApplicationController
   def show
 
   end
+
+  # example links for testing/demos
+  def test; end
 
   private
 

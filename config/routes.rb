@@ -12,7 +12,11 @@ Rails.application.routes.draw do
   get 'forms/:id' => 'form#view', as: 'form'
   post 'forms/:id' => 'form#submit'
 
-  resource :local_requests, only: [:new, :create, :show]
+  resource :local_requests, only: [:new, :create, :show] do
+    collection do
+      get 'test'
+    end
+  end
 
   #get '*path' => redirect('/')
 end

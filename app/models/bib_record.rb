@@ -1,3 +1,4 @@
+
 class BibRecord
 
   attr_accessor :data
