@@ -10,27 +10,29 @@ class RequestBib
 
   # @param [Object] params
   def initialize(params)
+    @params = params
     author_last_name = params['rft.aulast'].presence || params['aulast'].presence || nil
     self.author = if author_last_name
                     "#{author_last_name}#{params['rft.aufirst'].presence&.prepend(',')}"
                   else
                     params['Author'].presence || params['author'].presence || params['aau'].presence ||
-                        params['au'].presence || params['rft.au'].presence || bib_data['author'].presence || ''
+                        params['au'].presence || params['rft.au'].presence || ''
                   end
-    self.chaptitle = params['chaptitle'].presence
-    self.booktitle = params['title'].presence || params['Book'].presence || params['bookTitle'].presence || params['booktitle'].presence || params['rft.title'].presence || ''
-    self.edition = params['edition'].presence || params['rft.edition'].presence || ''
-    self.publisher = params['publisher'].presence || params['Publisher'].presence || params['rft.pub'].presence   || ''
-    self.place = params['place'].presence || params['PubliPlace'].presence || params['rft.place'].presence || ''
-    self.journal = params['Journal'].presence || params['journal'].presence || params['rft.btitle'].presence || params['rft.jtitle'].presence || params['rft.title'].presence || params['title'].presence || ''
-    self.article = params['Article'].presence || params['article'].presence || params['atitle'].presence || params['rft.atitle'].presence || ''
-    self.rftdate = params['rftdate'].presence || params['rft.date'].presence
-    self.year = params['Year'].presence || params['year'].presence || params['rft.year'] || params['rft.pubyear'].presence || params['rft.pubdate'].presence
-    self.volume = params['Volume'].presence || params['volume'].presence || params['rft.volume'].presence || ''
-    self.issue = params['Issue'].presence || params['issue'].presence || params['rft.issue'].presence || ''
-    self.isbn = params['isbn'].presence || params['ISBN'].presence || params['rft.isbn'].presence || ''
-    self.source = params['source'].presence || 'direct'
-    self.bib_id = params['record_id'].presence || params['id'].presence || params['bibid'].presence || ''
+    self.chaptitle = value_at 'chaptitle'
+    self.booktitle = value_at %w[title Book bookTitle booktitle rft.title], ''
+    self.edition = value_at %w[edition rft.edition], ''
+    self.publisher = value_at %w[publisher Publisher rft.pub], ''
+    self.place = value_at %w[place PubliPlace rft.place], ''
+    self.journal = value_at %w[Journal journal rft.btitle rft.jtitle rft.title title], ''
+    self.article = value_at %w[Article article atitle rft.atitle], ''
+    self.rftdate = value_at %w[rftdate rft.date]
+    self.year = value_at %w[Year year rft.year rft.pubyear rft.pubdate]
+    self.volume = value_at %w[Volume volume rft.volume], ''
+    self.issue = value_at %w[Issue issue rft.issue], ''
+    self.isbn = value_at %w[isbn ISBN rft.isbn], ''
+    self.source = value_at 'source', 'direct'
+
+    self.bib_id = value_at %w[record_id id bibid], ''
 
 
     # TODO: what to do with these? they never appear in a form
@@ -79,5 +81,16 @@ class RequestBib
 
     # bib_data['pages'] = 'none specified' if bib_data['pages'].empty?
 
+  end
+
+  # return the @params value from keys (preference descending order)
+  # or the default
+  # @param [String, Array<String>] preferred_keys
+  # @return [String]
+  def value_at(preferred_keys, default = nil)
+    values = Array.wrap(preferred_keys).reverse.map do |key|
+      @params.dig key
+    end
+    values.compact.pop || default
   end
 end

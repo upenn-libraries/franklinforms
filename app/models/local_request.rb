@@ -1,13 +1,13 @@
 class LocalRequest
   include ActiveModel::Model
 
-  attr_accessor :type, :delivery_method, :request_bib
+  attr_accessor :type, :delivery_method, :request_bib, :comments
   attr_accessor :name, :email, :affiliation
   attr_accessor :by, :for, :user # TODO: how to handle proxy?
 
   delegate :booktitle, :author, :edition, :publisher, :place,
            :year, :isbn, :source, :journal, :chaptitle,
-           :rftdate, :volume, :issue, :pages, :comments, :article,
+           :rftdate, :volume, :issue, :pages, :article,
            to: :request_bib
 
   # TODO: are these different?
