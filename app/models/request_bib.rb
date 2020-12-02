@@ -11,12 +11,11 @@ class RequestBib
   # @param [Object] params
   def initialize(params)
     @params = params
-    author_last_name = params['rft.aulast'].presence || params['aulast'].presence || nil
+    author_last_name = value_at %w[rft.aulast aulast]
     self.author = if author_last_name
                     "#{author_last_name}#{params['rft.aufirst'].presence&.prepend(',')}"
                   else
-                    params['Author'].presence || params['author'].presence || params['aau'].presence ||
-                        params['au'].presence || params['rft.au'].presence || ''
+                    value_at ['Author', 'author', 'aau', 'au', 'rft.au'], ''
                   end
     self.chaptitle = value_at 'chaptitle'
     self.booktitle = value_at %w[title Book bookTitle booktitle rft.title], ''
