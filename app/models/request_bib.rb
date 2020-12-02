@@ -1,9 +1,12 @@
 class RequestBib
 
-  # OpenURL case?
+  # Form fields
   attr_accessor :booktitle, :author, :edition, :publisher, :place,
                 :year, :isbn, :source, :journal, :chaptitle,
                 :rftdate, :volume, :issue, :pages, :article
+
+  # Other OpenURL fields?
+  attr_accessor :pmonth, :sid, :spage, :epage, :pages, :issn, :title
 
   # Alma case
   attr_accessor :mms_id, :bib_id, :holding_id
@@ -15,7 +18,7 @@ class RequestBib
     self.author = if author_last_name
                     "#{author_last_name}#{params['rft.aufirst'].presence&.prepend(',')}"
                   else
-                    value_at ['Author', 'author', 'aau', 'au', 'rft.au'], ''
+                    value_at %w[Author author aau au rft.au], ''
                   end
     self.chaptitle = value_at 'chaptitle'
     self.booktitle = value_at %w[title Book bookTitle booktitle rft.title], ''
@@ -33,53 +36,64 @@ class RequestBib
 
     self.bib_id = value_at %w[record_id id bibid], ''
 
-
-    # TODO: what to do with these? they never appear in a form
-    # bib_data['sid'] = params['sid'].presence || params['rfr_id'].presence || ''
-    # bib_data['pid'] = params['pid'].presence || ''
-    # bib_data['issn'] = params['issn'].presence || params['ISSN'].presence || params['rft.issn'].presence ||''
-    # bib_data['pmonth'] = params['pmonth'].presence || params['rft.month'].presence ||''
-    # bib_data['an'] = params['AN'].presence || ''
-    # bib_data['py'] = params['PY'].presence || ''
-    # bib_data['pb'] = params['PB'].presence || ''
+    # Not in forms but used elsewhere
+    self.pmonth = value_at %w[pmonth rft.month], ''
+    self.sid = value_at %w[sid rfr_id], ''
+    self.issn = value_at %w[issn ISSN rft.issn], ''
 
     # Handles IDs coming like pmid:numbersgohere
-    # unless params['rft_id'].presence.nil?
-    #   parts = params['rft_id'].split(':')
-    #   bib_data[parts[0]] = parts[1]
-    # end
+    # TODO: test
+    if params['rft_id']
+      parts = params['rft_id'].split(':')
+      self.send parts[0], parts[1]
+    end
 
-    # *** Relais/BD sends dates through as rft.date but it may be a book request ***
-    # if(bib_data['sid'] == 'BD' && bib_data['requesttype'] == 'Book')
-    #   bib_data['year'] = params['date'].presence || bib_data['rftdate']
-    # end
+    # Relais/BD sends dates through as rft.date but it may be a book request
+    # TODO: wat
+    if sid == 'BD' && params['requesttype'] == 'Book'
+      self.year = params['date'].presence || rftdate
+    end
 
-    ## Lookup record in Alma on submit?
+    # Make the bookitem booktitle the journal title
+    # TODO: wat
+    self.journal ||= params['bookTitle'].presence  if params['requesttype'] == 'bookitem'
 
-    # *** Make the bookitem booktitle the journal title ***
-    # bib_data['journal'] = params['bookTitle'].presence || bib_data['journal'] if bib_data['requesttype'] == 'bookitem';
+    # scan delivery uses journal title or book title, which ever we have
+    # we should only have one of them
+    self.title = booktitle || journal
 
-    # *** scan delivery uses journal title || book title, which ever we have ***
-    # *** we should only have one of them ***
-    # bib_data['title'] = bib_data['booktitle'].presence || bib_data['journal'].presence;
+    # PAGE HANDLING
 
-    # *** Make a non-inclusive page parameter ***
-    # bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || '';
-    # bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || '';
+    # Make a non-inclusive page parameter
+    self.spage = value_at %w[Spage spage rft.spage], '';
+    self.epage = value_at %w[Epage epage rft.epage], '';
 
-    # if(!params['Pages'].presence.nil? && bib_data['spage'].empty?)
-    #   bib_data['spage'], bib_data['epage'] = params['Pages'].split(/-/);
-    # end
+    # look at the subtlety between 'Pages' versus 'pages' param handling
+    # TODO: why so picky? different sources? try and make this clear
+    # this seems...optimistic
+    if params['Pages'] && spage.empty?
+      page_range = params['Pages'].split(/-/)
+      self.spage = page_range[0]
+      self.epage = page_range[1]
+    end
 
-    # if(params['pages'].presence.nil?)
-    #   bib_data['pages'] = bib_data['spage'];
-    #   bib_data['pages'] += "-#{bib_data['epage']}" unless bib_data['epage'].empty?
-    # else
-    #   bib_data['pages'] = params['pages'].presence
-    # end
+    if params['pages'].blank?
+      self.pages = spage
+      self.pages += "-#{epage}" if epage.present?
+    else
+      self.pages = params['pages'].presence
+    end
 
-    # bib_data['pages'] = 'none specified' if bib_data['pages'].empty?
+    self.pages = 'none specified' if pages.empty?
 
+
+    # TODO: what to do with these? they never appear in a form or elsewhere in code
+    # bib_data['an'] = params['AN'].presence || '' # never referenced elsewhere
+    # bib_data['py'] = params['PY'].presence || '' # never referenced elsewhere
+    # bib_data['pb'] = params['PB'].presence || '' # never referenced elsewhere
+    # bib_data['pid'] = params['pid'].presence || '' # never referenced elsewhere
+
+    ## Lookup record in Alma on submit? # wat why?
   end
 
   # return the @params value from keys (preference descending order)
@@ -91,5 +105,14 @@ class RequestBib
       @params.dig key
     end
     values.compact.pop || default
+  end
+
+  # nice to have
+  def to_h
+    values_hash = HashWithIndifferentAccess.new
+    instance_variables.each do |var|
+      values_hash[var[1..-1]] = self.instance_variable_get var
+    end
+    values_hash
   end
 end
