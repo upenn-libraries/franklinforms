@@ -11,6 +11,8 @@ class RequestBib
   # Alma case
   attr_accessor :mms_id, :bib_id, :holding_id
 
+  # Take raw OpenURL or whatever params and build a RequestBib object
+  # TODO: build object from an Alma::Bib??
   # @param [Object] params
   def initialize(params)
     @params = params

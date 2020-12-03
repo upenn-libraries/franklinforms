@@ -44,8 +44,10 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    alma (0.2.4)
+    alma (0.2.8)
       ezwadl
+      httparty
+      xml-simple
     arel (9.0.0)
     autoprefixer-rails (9.6.1.1)
       execjs
@@ -236,6 +238,7 @@ GEM
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    xml-simple (1.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
 
@@ -243,7 +246,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  alma
+  alma (= 0.2.8)
   blacklight
   bootstrap-sass (~> 3.4.0, >= 3.4.1)
   bootstrap_form (= 2.7.0)

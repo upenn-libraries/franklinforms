@@ -1,5 +1,17 @@
 <% @page_title = 'Request from Penn Libraries' %>
 
+<div class="well">
+  <p>
+    There are <%= @availability.length %> holdings for MMS ID <%= params[:mms_id] %>
+  </p>
+  <% @availability.each do |holding| %>
+    <p><%= holding %></p>
+  <% end %>
+  <p>
+    User is: <%= pp @user %>
+  </p>
+</div>
+
 <h1><%= t('forms.local_request.heading') %></h1>
 
 <%= bootstrap_form_for(@local_request) do |f| %>
@@ -8,16 +20,34 @@
   <div class="row">
     <div class="col-sm-6">
       <%= f.static_control :by, label: t('forms.common.fields.name') do %>
-        <%= 'Pablo Picasso' %>
+        <%= @user.name %>
       <% end %>
     </div>
     <div class="col-sm-6">
       <%= f.static_control :affiliation, label: t('forms.local_request.fields.affiliation') do %>
-        <%= 'Penn Libraries' %>
+        <%= @user.organization %>
       <% end %>
     </div>
   </div>
-  <%= f.email_field :email, label: t('forms.common.fields.email') %>
+  <%= f.email_field :email, label: t('forms.common.fields.email'), value: @user.email %>
+
+  <h2>
+    Item Information
+  </h2>
+  <div class="well">
+    <% if @item %>
+      <p>Item Info</p>
+      <% if @item.available? %>
+        <p>Item is available for PickUp of Books by Mail Delivery</p>
+      <% else %>
+        <p>Item is unavailable. Try <a href="#">Requesting via ILL</a></p>
+      <% end %>
+    <% elsif @holding %>
+      <p>Select an Item!</p>
+    <% else %>
+      <p>Oh dear!?</p>
+    <% end %>
+  </div>
 
   <h2><%= t('forms.local_request.sections.delivery') %></h2>
   <%= f.select :delivery_method, @delivery_options, label: t('forms.local_request.fields.delivery_method'), prompt: t('forms.ill.messages.delivery_options_blank') %>
@@ -34,10 +64,14 @@
   </div>
 
   <h2><%= t('forms.local_request.sections.record') %></h2>
-  <h3><%= request_type_message @local_request.type %></h3>
-  <%= request_type_fields @local_request.type, f %>
 
-  <%= f.text_area :comments, label: t('forms.local_request.fields.comment'), help: t('forms.local_request.messages.comment_limit') %>
+  <!-- legacy form stuff -->
+  <!--  <h3><%#= request_type_message @local_request.type %></h3>-->
+  <%#= request_type_fields @local_request.type, f %>
+
+  <%#= f.text_area :comments, label: t('forms.local_request.fields.comment'), help: t('forms.local_request.messages.comment_limit') %>
+  <!-- end legacy -->
+
   <%= f.submit t('forms.common.fields.submit') %>
 
 <% end %>
