@@ -31,11 +31,13 @@ class LocalRequest
   def request_type_mapping(params)
     # prefer new style over old, while maintaining support
     type_param = params[:request_type] || params[:requesttype]
-    case type_param.to_sym
+    case type_param&.to_sym
     when :ScanDelivery
       :scan
     when *REQUEST_FORM_TYPES
       type_param.to_sym
+    else # default to book request form
+      :book
     end
   end
 

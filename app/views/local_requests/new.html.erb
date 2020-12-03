@@ -5,8 +5,18 @@
 <%= bootstrap_form_for(@local_request) do |f| %>
 
   <h2><%= t('forms.local_request.sections.patron') %></h2>
-  <%= f.static_control :by, label: t('forms.common.fields.name') %>
-  <%= f.static_control :affiliation, label: t('forms.local_request.fields.affiliation') %>
+  <div class="row">
+    <div class="col-sm-6">
+      <%= f.static_control :by, label: t('forms.common.fields.name') do %>
+        <%= 'Pablo Picasso' %>
+      <% end %>
+    </div>
+    <div class="col-sm-6">
+      <%= f.static_control :affiliation, label: t('forms.local_request.fields.affiliation') do %>
+        <%= 'Penn Libraries' %>
+      <% end %>
+    </div>
+  </div>
   <%= f.email_field :email, label: t('forms.common.fields.email') %>
 
   <h2><%= t('forms.local_request.sections.delivery') %></h2>
