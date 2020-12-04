@@ -5,6 +5,8 @@ class LocalRequest
   attr_accessor :name, :email, :affiliation
   attr_accessor :by, :for, :user # TODO: how to handle proxy?
 
+  attr_accessor :title, :section_title, :section_author, :section_pages
+
   delegate :booktitle, :author, :edition, :publisher, :place,
            :year, :isbn, :source, :journal, :chaptitle,
            :rftdate, :volume, :issue, :pages, :article,

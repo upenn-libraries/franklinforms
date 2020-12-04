@@ -30,25 +30,30 @@ class LocalRequestsController < ApplicationController
 
   # @return [AlmaUser]
   def set_user
-    # TODO: see Ezwadl Issue #2 - but can we add brief is we use Alma gem wrapper?
     @user = AlmaUser.new helpers.username_from_headers
   end
 
   def set_holdings
     availability_response = Alma::Bib.get_availability(Array.wrap(params[:mms_id]))
     @holdings = availability_response.availability[params[:mms_id]][:holdings]
+    if @holdings.one? # TODO: this is getting messy
+      @holding = @holdings.find { |holding| holding['holding_id'] == @holdings.first['holding_id'] }
+    end
   end
 
   def set_items
-    @items = Alma::BibItem.find params[:mms_id],
-                                holding_id: params[:holding_id],
-                                user_id: @user.id
+    @items = lookup_items params[:mms_id], params[:holding_id], @user
+    @holding = @holdings.find { |holding| holding['holding_id'] == params[:holding_id] }
   end
 
   def set_item
     @item = @items.find do |item|
       item.item_data.dig('pid') == params[:item_pid]
     end
+  end
+
+  def lookup_items(holding_id, mms_id, user)
+    Alma::BibItem.find mms_id, holding_id: holding_id, expand: 'due_date,due_date_policy', user_id: user.id
   end
 
   # @return [TrueClass, FalseClass]

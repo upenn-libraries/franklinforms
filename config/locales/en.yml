@@ -43,29 +43,14 @@ en:
         affiliation: "Affiliation"
         delivery_method: "Method"
         comment: "Comments"
-        common:
-          source: "Citation Source"
-          volume: "Volume"
-          issue: "Issue"
-          pages: "Pages"
-        book:
-          booktitle: "Title"
-          author: "Author"
-          edition: "Edition"
-          publisher: "Publisher"
-          place: "Place of Publication"
-          year: "Year of Publication"
-          isbn: "ISBN"
-        scan:
-          journal: "Journal/Book Title"
-          author: "Article/Chapter Author"
-          chaptitle: "Article/Chapter Title"
-          rftdate: "Issue Date"
-          isbn: "ISBN/ISSN"
-        article:
-          journal: "Journal Title"
-          article: "Article Title"
-          author: "Article Author"
-          rftdate: "Issue Date"
+        title: "Title"
+        author: "Author"
+        issn: "ISSN"
+        publisher: "Publisher"
+        pub_date: "Date of Publication"
+        section_title: "Article/Chapter Title"
+        section_author: "Article/Chapter Author"
+        section_pages: "Page Range"
+
 
 
