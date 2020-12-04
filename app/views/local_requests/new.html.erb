@@ -2,13 +2,13 @@
 
 <div class="well">
   <p>
-    There are <%= @availability.length %> holdings for MMS ID <%= params[:mms_id] %>
+    There are <%= @holdings.length %> holdings for MMS ID <%= params[:mms_id] %>
   </p>
-  <% @availability.each do |holding| %>
+  <% @holdings.each do |holding| %>
     <p><%= holding %></p>
   <% end %>
   <p>
-    User is: <%= pp @user %>
+    User is: <%= pp @user.to_h %>
   </p>
 </div>
 
@@ -37,12 +37,13 @@
   <div class="well">
     <% if @item %>
       <p>Item Info</p>
-      <% if @item.available? %>
-        <p>Item is available for PickUp of Books by Mail Delivery</p>
+      <%= pp @item.to_json %>
+      <% if @item.in_place? && !@item.non_circulating? %>
+        <p>Item is [in place and not non-circulating and therefore] available for PickUp or Books by Mail Delivery</p>
       <% else %>
         <p>Item is unavailable. Try <a href="#">Requesting via ILL</a></p>
       <% end %>
-    <% elsif @holding %>
+    <% elsif @holdings %>
       <p>Select an Item!</p>
     <% else %>
       <p>Oh dear!?</p>

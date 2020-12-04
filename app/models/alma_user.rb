@@ -1,58 +1,53 @@
-# sort the wheat from the chaff in Alma's (brief) User API response
+# sort the wheat from the chaff in Alma's User API response
 class AlmaUser
-  attr_reader :name, :email, :user_group, :affiliation, :organization, :active
+  attr_reader :id, :name, :email, :user_group, :affiliation,
+              :organization, :active
 
   # @param [String] user_id
+  # @return [AlmaUser]
   def initialize(user_id)
-    api_response = get_brief_user_details user_id
-    @name = name_from api_response
-    @email = email_from api_response
-    @user_group = user_group_from api_response
-    @affiliation = affiliation_from api_response
-    @organization = organization_from api_response
-    @active = active_from api_response
+    user_record = get_user user_id
+    @id = user_record.id
+    @name = user_record.full_name
+    @email = user_record.preferred_email
+    @user_group = user_group_from user_record
+    @affiliation = affiliation_from user_record
+    @organization = organization_from user_record
+    @active = active_from user_record
+  end
+
+  # @return [Hash{Symbol->Unknown}]
+  def to_h
+    { id: id, name: name, email: email, user_group: user_group,
+      affiliation: affiliation, organization: organization }
   end
 
   private
 
   # @param [String] user_id
-  def get_brief_user_details(user_id)
-    user_api_uri = Alma::User.resources.almaws_v1_users.user_id.uri_template(user_id: user_id).chomp('/')
-    response = HTTParty.get "#{user_api_uri}?view=brief&apikey=#{ENV['ALMA_API_KEY']}"
-    response.parsed_response['user']
+  def get_user(user_id)
+    Alma::User.find user_id
   end
 
-  def name_from(api_response)
-    api_response['full_name']
+  def user_group_from(user_record)
+    user_record.user_group['desc']
   end
 
-  def email_from(api_response)
-    emails = api_response.dig 'contact_info', 'emails'
-    preferred_email = emails.find do |_, email_info|
-      email_info['preferred'] == 'true'
-    end
-    preferred_email[1].dig 'email_address'
-  end
-
-  def user_group_from(api_response)
-    api_response.dig 'user_group', 'desc'
-  end
-
-  def affiliation_from(api_response)
-    affiliation_stat = api_response.dig('user_statistics', 'user_statistic')&.find do |stat|
-      stat.dig('category_type', '__content__') == 'AFFILIATION'
+  def affiliation_from(user_record)
+    affiliation_stat = user_record.user_statistic&.find do |stat|
+      stat.dig('category_type', 'value') == 'AFFILIATION'
     end
     affiliation_stat&.dig 'statistic_category', 'desc'
   end
 
-  def organization_from(api_response)
-    organization_stat = api_response.dig('user_statistics', 'user_statistic')&.find do |stat|
-      stat.dig('category_type', '__content__') == 'ORG'
+  def organization_from(user_record)
+    organization_stat = user_record.user_statistic&.find do |stat|
+      stat.dig('category_type', 'value') == 'ORG'
     end
     organization_stat&.dig 'statistic_category', 'desc'
   end
 
-  def active_from(api_response)
-    api_response.dig('status', '__content__') == 'ACTIVE'
+  def active_from(user_record)
+    user_record.status.dig('value') == 'ACTIVE'
   end
 end

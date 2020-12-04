@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'alma', '= 0.2.8'
+gem 'alma', git: 'https://github.com/tulibraries/alma_rb.git', tag: 'v0.3.0'
 gem 'blacklight'
 gem 'bootstrap_form', '= 2.7.0'
 gem 'bootstrap-sass', '~> 3.4.0', '>= 3.4.1'

@@ -1,3 +1,14 @@
+GIT
+  remote: https://github.com/tulibraries/alma_rb.git
+  revision: 87891ba946bf748af10f1d51a71533359dfd13c9
+  tag: v0.3.0
+  specs:
+    alma (0.3.0)
+      activesupport
+      ezwadl
+      httparty
+      xml-simple
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -44,10 +55,6 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    alma (0.2.8)
-      ezwadl
-      httparty
-      xml-simple
     arel (9.0.0)
     autoprefixer-rails (9.6.1.1)
       execjs
@@ -246,7 +253,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  alma (= 0.2.8)
+  alma!
   blacklight
   bootstrap-sass (~> 3.4.0, >= 3.4.1)
   bootstrap_form (= 2.7.0)

@@ -2,7 +2,9 @@ class LocalRequestsController < ApplicationController
   helper LocalRequestsHelpers
 
   before_action :set_user
-  before_action :set_availability
+  before_action :set_holdings, if: :mms_id_present?
+  before_action :set_items, if: :holding_id_present?
+  before_action :set_item, if: :item_id_present?
 
   # show the form
   def new
@@ -32,14 +34,41 @@ class LocalRequestsController < ApplicationController
     @user = AlmaUser.new helpers.username_from_headers
   end
 
-  def set_availability
+  def set_holdings
     availability_response = Alma::Bib.get_availability(Array.wrap(params[:mms_id]))
-    # TODO: narrow response if holding id or item id present
-    @availability = availability_response.availability[params[:mms_id]]['holdings']
+    @holdings = availability_response.availability[params[:mms_id]][:holdings]
+  end
+
+  def set_items
+    @items = Alma::BibItem.find params[:mms_id],
+                                holding_id: params[:holding_id],
+                                user_id: @user.id
+  end
+
+  def set_item
+    @item = @items.find do |item|
+      item.item_data.dig('pid') == params[:item_pid]
+    end
   end
 
   # @return [TrueClass, FalseClass]
-  def has_alma_identifiers?
-    params.key? :mms_id
+  def mms_id_present?
+    param_present? :mms_id
+  end
+
+  # @return [TrueClass, FalseClass]
+  def holding_id_present?
+    param_present? :holding_id
+  end
+
+  # @return [TrueClass, FalseClass]
+  def item_id_present?
+    param_present? :item_pid
+  end
+
+  # @param [Symbol, String] param
+  # @return [TrueClass, FalseClass]
+  def param_present?(param)
+    params.key? param
   end
 end
