@@ -23,6 +23,19 @@
     Item Information
   </h2>
 
+  <div class="row">
+    <div class="col-sm-6">
+      <%= f.static_control :title, label: t('forms.local_request.fields.title') do %>
+        <%= @bib_data['title'] %>
+      <% end %>
+    </div>
+    <div class="col-sm-6">
+      <%= f.static_control :author, label: t('forms.local_request.fields.author') do %>
+        <%= @bib_data['author'] %>
+      <% end %>
+    </div>
+  </div>
+
   <% if @item %>
     <%# TODO: what if unavailable due to ETAS? can eventually check temp location %>
     <% if @item.in_place? && !@item.non_circulating? %>
@@ -34,50 +47,25 @@
         Item is [currently] unavailable. Try <a href="#">Requesting via ILL</a>
       </div>
     <% end %>
+  <% elsif @items %>
+    <div class="alert alert-info">
+      Which particular item are you interested in?
+    </div>
+    <%= f.form_group :item, label: { text: "Item" } do %>
+      <% @items.each do |item| %>
+        <%= f.radio_button :item, item.item_data['pid'], { label: "#{item['bib_data']['title']} - #{item.item_data['description']}" } %>
+      <% end %>
+    <% end %>
   <% else %>
     <div class="alert alert-info">
-      Which Item are you interested in?
-      [show item selection drop-down or radio button? chosen.js for unwieldy select?]
+      Which Holding are you interested in?
     </div>
+    <%= f.form_group :holding, label: { text: "Holding" } do %>
+      <% @holdings.each do |holding| %>
+        <%= f.radio_button :holding, holding.id, { label: holding.radio_button_label, disabled: !holding.available? } %>
+      <% end %>
+    <% end %>
   <% end %>
-
-  <%# TODO: use a disabled control? otherwise we need hidden fields %>
-  <div class="row">
-    <div class="col-sm-4">
-      <%= f.static_control :title, label: t('forms.local_request.fields.title') do %>
-        <%= @item['bib_data']['title'] %>
-      <% end %>
-    </div>
-    <div class="col-sm-4">
-      <%= f.static_control :author, label: t('forms.local_request.fields.author') do %>
-        <%= @item['bib_data']['author'] %>
-      <% end %>
-    </div>
-    <div class="col-sm-4">
-      <%= f.static_control :holding_info, label: '"Holding Info"' do %>
-        <%= @holding['holding_info'] %>
-      <% end %>
-    </div>
-  </div>
-<!--  <div class="row">-->
-<!--    <div class="col-sm-6">-->
-      <%#= f.static_control :publisher, label: t('forms.local_request.fields.publisher') do %>
-        <%#= @item['bib_data']['publisher_const'] %>
-      <%# end %>
-<!--    </div>-->
-<!--    <div class="col-sm-6">-->
-      <%#= f.static_control :pub_date, label: t('forms.local_request.fields.pub_date') do %>
-        <%#= @item['bib_data']['date_of_publication'] %>
-      <%# end %>
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="row">-->
-<!--    <div class="col-sm-6">-->
-      <%#= f.static_control :issn, label: t('forms.local_request.fields.issn') do %>
-        <%#= @item['bib_data']['issn'] %>
-      <%# end %>
-<!--    </div>-->
-<!--  </div>-->
 
   <h2><%= t('forms.local_request.sections.delivery') %></h2>
   <%= f.select :delivery_method, @delivery_options, label: t('forms.local_request.fields.delivery_method'), prompt: t('forms.ill.messages.delivery_options_blank') %>
@@ -93,15 +81,20 @@
     </p>
   </div>
 
-  <h2>Digital Request Information</h2>
-  <div class="alert alert-info">
-    Entire works cannot be delivered electronically. Please specify article or chapter information
-    to enable scan delivery of your request.
-  </div>
+  <section id="digital-request-details">
+    <h2>Digital Request Information</h2>
+    <div class="alert alert-info">
+      Entire works cannot be delivered electronically. Please specify article or chapter information
+      to enable scan delivery of your request.
+    </div>
 
-  <%= f.text_field :section_title, label: t('forms.local_request.fields.section_title') %>
-  <%= f.text_field :section_author, label: t('forms.local_request.fields.section_author') %>
-  <%= f.text_field :section_pages, label: t('forms.local_request.fields.section_pages') %>
+    <%= f.text_field :section_title, label: t('forms.local_request.fields.section_title') %>
+    <%= f.text_field :section_author, label: t('forms.local_request.fields.section_author') %>
+    <%= f.text_field :section_pages, label: t('forms.local_request.fields.section_pages') %>
+  </section>
+
+  <h2>Comments</h2>
+  <%= f.text_area :comments %>
 
   <%= f.submit t('forms.common.fields.submit') %>
 

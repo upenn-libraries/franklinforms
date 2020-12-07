@@ -1,10 +1,9 @@
 class LocalRequestsController < ApplicationController
   helper LocalRequestsHelpers
 
+  before_action :redirect, unless: :mms_id_present?
   before_action :set_user
-  before_action :set_holdings, if: :mms_id_present?
-  before_action :set_items, if: :holding_id_present?
-  before_action :set_item, if: :item_id_present?
+  before_action :set_metadata, if: :mms_id_present?
 
   # show the form
   def new
@@ -28,30 +27,45 @@ class LocalRequestsController < ApplicationController
 
   private
 
+  def redirect
+    # TODO: show error page if no mms_id param found
+  end
+
   # @return [AlmaUser]
   def set_user
     @user = AlmaUser.new helpers.username_from_headers
   end
 
-  def set_holdings
+  def set_metadata
     availability_response = Alma::Bib.get_availability(Array.wrap(params[:mms_id]))
-    @holdings = availability_response.availability[params[:mms_id]][:holdings]
-    if @holdings.one? # TODO: this is getting messy
-      @holding = @holdings.find { |holding| holding['holding_id'] == @holdings.first['holding_id'] }
+    holdings_metadata = availability_response.availability[params[:mms_id]][:holdings]
+    @bib_data = availability_response.bib_data
+    if holdings_metadata.one?
+      @items = set_items holdings_metadata.first['holding_id']
+    else
+      @holdings = holdings_from holdings_metadata
     end
   end
 
-  def set_items
-    @items = lookup_items params[:mms_id], params[:holding_id], @user
-    @holding = @holdings.find { |holding| holding['holding_id'] == params[:holding_id] }
+  # @param [String] holding_id
+  def set_items(holding_id)
+    items = lookup_items holding_id, params[:mms_id].to_s, @user
+    @item = items.first if items.one?
+    items
   end
 
-  def set_item
-    @item = @items.find do |item|
-      item.item_data.dig('pid') == params[:item_pid]
+  # @param [Array] holdings_metadata
+  # @return [Array<AlmaHolding>]
+  def holdings_from(holdings_metadata)
+    holdings_metadata.map do |holding_metadata|
+      AlmaHolding.new holding_metadata
     end
   end
 
+  # @return [Alma::BibItemSet]
+  # @param [String] holding_id
+  # @param [String] mms_id
+  # @param [AlmaUser] user
   def lookup_items(holding_id, mms_id, user)
     Alma::BibItem.find mms_id, holding_id: holding_id, expand: 'due_date,due_date_policy', user_id: user.id
   end
@@ -59,16 +73,6 @@ class LocalRequestsController < ApplicationController
   # @return [TrueClass, FalseClass]
   def mms_id_present?
     param_present? :mms_id
-  end
-
-  # @return [TrueClass, FalseClass]
-  def holding_id_present?
-    param_present? :holding_id
-  end
-
-  # @return [TrueClass, FalseClass]
-  def item_id_present?
-    param_present? :item_pid
   end
 
   # @param [Symbol, String] param
