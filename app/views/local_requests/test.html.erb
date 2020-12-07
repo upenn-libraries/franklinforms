@@ -1,50 +1,72 @@
 <h2>Local Request Sample links</h2>
 
-<p>As they would appear NOW in Franklin, or elsewhere?</p>
-
-<h3>"Unavailable" local book "Wuthering Heights"</h3>
-
 <ul>
   <li>
-    <%= link_to 'Interlibrary Loan', 'http://localhost:3000/local_requests/new?rft.mms_id=994080073503681&rft.stitle=Wuthering+Heights+%2F&rft.pub=Penguin+Books%2C&rft.place=Harmondsworth%2C+Middlesex+%3A&rft.isbn=0410430016+%3A+%28paperb.%29+%3A&rft.btitle=Wuthering+Heights+%2F&rft.genre=book&rft.object_type=BOOK&rft.normalized_isbn=9780410430017&rft.publisher=Penguin+Books%2C&rft.au=Bronte%CC%88%2C+Emily%2C+1818-1848.&rft.pubdate=1975%2C+c1965.&rft.oclcnum=2724293&rft.title=Wuthering+Heights+%2F&requesttype=book&bibid=994080073503681&rfr_id=info%3Asid%2Fprimo.exlibrisgroup.com' %>
+    Book, single holding, available
+    <ol>
+      <li>
+        <%= link_to 'Mathematics as a science of patterns / by Michael D. Resnik.',
+                    new_local_requests_path(mms_id: 9922327423503681) %>
+      </li>
+    </ol>
   </li>
   <li>
-    <%= link_to 'Request Digital Delivery', 'http://localhost:3000/local_requests/new?rft.mms_id=994080073503681&rft.stitle=Wuthering+Heights+%2F&rft.pub=Penguin+Books%2C&rft.place=Harmondsworth%2C+Middlesex+%3A&rft.isbn=0410430016+%3A+%28paperb.%29+%3A&rft.btitle=Wuthering+Heights+%2F&rft.genre=book&rft.object_type=BOOK&rft.normalized_isbn=9780410430017&rft.publisher=Penguin+Books%2C&rft.au=Bronte%CC%88%2C+Emily%2C+1818-1848.&rft.pubdate=1975%2C+c1965.&rft.oclcnum=2724293&rft.title=Wuthering+Heights+%2F&requesttype=book&bibid=994080073503681&rfr_id=info%3Asid%2Fprimo.exlibrisgroup.com' %>
+    Book, single holding, unavailable
+    <ol>
+      <li>
+        Out on loan: <%= link_to 'The structure of scientific revolutions / Thomas S. Kuhn ; with an introductory essay by Ian Hacking.',
+                                 new_local_requests_path(mms_id: 9957534683503681) %>
+      </li>
+      <li>
+        Available, "Not loanable": <%= link_to 'The structure of scientific revolutions.',
+                                               new_local_requests_path(mms_id: 9931904313503681) %>
+      </li>
+    </ol>
   </li>
-  <li>Books by Mail not displayed</li>
-  <li>PickUp@Penn not displayed</li>
+  <li>
+    Book, multiple holdings, mixed availability?
+    <ol>
+      <li>
+        One (item, holding?) not on shelf: <%= link_to 'Being and time. Translated by John Macquarrie & Edward Robinson.',
+                                                      new_local_requests_path(mms_id: 999522773503681) %>
+      </li>
+    </ol>
+  </li>
+  <li>
+    Book, unavailable due to ETAS
+    <ol>
+      <li>
+        Unavailable due to ETAS (3 items or 3 holdings?): <%= link_to 'The structure of scientific revolutions / Thomas S. Kuhn.',
+                                                                      new_local_requests_path(mms_id: 9940779513503681) %>
+      </li>
+    </ol>
+  </li>
 </ul>
 
-<h3>Locally held serial "National Geographic"</h3>
-
 <ul>
   <li>
-    <%= link_to 'Interlibrary Loan', 'http://localhost:3000/local_requests/new?rft.mms_id=99123503681&rft.stitle=National+geographic.&rft.pub=National+Geographic+Society%2C&rft.place=%5BWashington%2C+D.C.%5D+%3A&rft.jtitle=National+geographic.&rft.genre=journal&rft.object_type=JOURNAL&rft.publisher=National+Geographic+Society%2C&rft.normalized_issn=0027-9358&rft.pubdate=%C2%A91959-&rft.oclcnum=6451257&rft.title=National+geographic.&rft.issn=0027-9358&bibid=99123503681&rfr_id=info%3Asid%2Fprimo.exlibrisgroup.com' %>
+    Serial, mixes availability due to ETAS reasons
+    <ol>
+      <li>
+        One holding, P@P shown, ETAS links shown: <%= link_to 'The Philosophical review.', new_local_requests_path(mms_id: 99639913503681) %>
+      </li>
+    </ol>
   </li>
   <li>
-    <%= link_to 'Request Digital Delivery', 'http://localhost:3000/local_requests/new?requesttype=ScanDelivery&rfe_dat=6451257&rfr_id=&rft.atitle=&rft.au=&rft.aufirst=&rft.auinit=&rft.aulast=&rft.date=&rft.doi=&rft.edition=&rft.eisbn=&rft.eissn=&rft.epage=&rft.genre=journal&rft.isbn=&rft.issn=00279358&rft.issue=&rft.jtitle=National+geographic.&rft.month=&rft.number=&rft.place=%5BWashington%2C+D.C.%5D+%3A&rft.pub=National+Geographic+Society%2C&rft.publisher=National+Geographic+Society%2C&rft.pubdate=%C2%A91959-&rft.pubyear=&rft.spage=&rft.stitle=National+geographic.&rft.btitle=&rft.title=National+geographic.&rft.volume=&test=&bibid=99123503681&rfr_id=info%3Asid%2Fprimo.exlibrisgroup.com' %>
+    Serial, mixed availability due to non-ETAS reasons
+    <ol>
+      <li>
+        Some special collection holdings (P@P shown for one but not the other): <%= link_to 'National Geographic.', new_local_requests_path(mms_id: 99123503681) %>
+      </li>
+      <li>
+        One holding shown available for P@P: <%= link_to 'Nous', new_local_requests_path(mms_id: 99640363503681) %>
+      </li>
+    </ol>
   </li>
   <li>
-    <%= link_to(
-          'Kislak Center Item Holding (in place, "not loanable"?!)',
-          'http://localhost:3000/local_requests/new?mms_id=99123503681&holding_id=22367148210003681&item_pid=23581979900003681'
-        ) %>
-  </li>
-</ul>
-
-<h3>Locally held journal "Synthese"</h3>
-
-<ul>
-  <li>
-    <%= link_to 'Interlibrary Loan', 'http://localhost:3000/local_requests/new?rft.mms_id=9920103503681&rft.stitle=Synthese.&rft.pub=Springer+etc&rft.place=Dordrecht+%5Betc.%5D&rft.jtitle=Synthese.&rft.genre=journal&rft.object_type=JOURNAL&rft.publisher=Springer+etc&rft.normalized_issn=0039-7857&rft.pubdate=1936&rft.oclcnum=2009440&rft.title=Synthese.&rft.issn=0039-7857&bibid=9920103503681&rfr_id=info%3Asid%2Fprimo.exlibrisgroup.com' %>
-  </li>
-  <li>
-    <%= link_to 'Request Digital Delivery', 'http://localhost:3000/local_requests/new?requesttype=ScanDelivery&rfe_dat=2009440&rfr_id=&rft.atitle=&rft.au=&rft.aufirst=&rft.auinit=&rft.aulast=&rft.date=&rft.doi=&rft.edition=&rft.eisbn=&rft.eissn=&rft.epage=&rft.genre=journal&rft.isbn=&rft.issn=00397857&rft.issue=&rft.jtitle=Synthese.&rft.month=&rft.number=&rft.place=Dordrecht+%5Betc.%5D&rft.pub=Springer+etc&rft.publisher=Springer+etc&rft.pubdate=1936&rft.pubyear=&rft.spage=&rft.stitle=Synthese.&rft.btitle=&rft.title=Synthese.&rft.volume=&test=&bibid=9920103503681&rfr_id=info%3Asid%2Fprimo.exlibrisgroup.com' %>
-  </li>
-  <li>
-    <%= link_to 'Books by Mail', 'http://localhost:3000/local_requests/new?requesttype=book&deliverytype=bbm&rft.stitle=Synthese.&rft.pub=Springer+etc&rft.place=Dordrecht+%5Betc.%5D&rft.jtitle=Synthese.&rft.genre=journal&rft.object_type=JOURNAL&rft.publisher=Springer+etc&rft.normalized_issn=0039-7857&rft.pubdate=1936&rft.oclcnum=2009440&rft.title=Synthese.&rft.issn=0039-7857&bibid=9920103503681&rfr_id=info%3Asid%2Fprimo.exlibrisgroup.com' %>
-  </li>
-  <li>
-    <%= link_to 'PickUp@Penn (for Item)', 'http://localhost:3000/local_requests/new?mms_id=9920103503681&holding_id=22371292400003681&item_pid=23371291140003681' %>
+    Serial, single holding, available
+    <ol>
+      <li> Synthese: <%= link_to 'Synthese.', new_local_requests_path(mms_id: 9920103503681) %></li>
+    </ol>
   </li>
 </ul>
