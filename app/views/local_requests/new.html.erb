@@ -37,8 +37,7 @@
   </div>
 
   <% if @item %>
-    <%# TODO: what if unavailable due to ETAS? can eventually check temp location %>
-    <% if @item.in_place? && !@item.non_circulating? %>
+    <% if @item.eligible_for_use? %>
       <div class="alert alert-success">
         Item is [in place and not non-circulating and therefore] available for PickUp or Books by Mail Delivery
       </div>

@@ -3,13 +3,11 @@ class LocalRequestsController < ApplicationController
 
   before_action :redirect, unless: :mms_id_present?
   before_action :set_user
-  before_action :set_metadata, if: :mms_id_present?
+  before_action :set_metadata
 
   # show the form
   def new
-    @delivery_options = ['PickUp@Penn', 'Books by Mail', 'Digital Delivery'] # TODO: delivery options should be tailored to request params
-    # @local_request = LocalRequest.new params, @user
-    @local_request = LocalRequest.new({}, @user)
+    @local_request = LocalRequest.new params, @user
   end
 
   # submit the request
