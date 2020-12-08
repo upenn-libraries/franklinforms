@@ -2,7 +2,7 @@
 # otherwise, we have to make an additional API call for bib data access
 class Alma::AvailabilityResponse
   def initialize(response)
-    super(response)
+    @availability = parse_bibs_data(response.each)
     @bib_data = response['bib'].first
   end
 

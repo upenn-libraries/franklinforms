@@ -44,6 +44,14 @@ class LocalRequestsController < ApplicationController
       @items = set_items holdings_metadata.first['holding_id']
     else
       @holdings = holdings_from holdings_metadata
+      # TODO: what if there arent too many items? we could prefetch...
+      available_items = @holdings.map(&:available_items).reduce(0, :+)
+      if (@holdings.length < 5 && available_items < 15) || available_items == @holdings.length
+        item_sets = @holdings.map do |holding|
+          lookup_items holding.id, params[:mms_id].to_s, @user
+        end
+        @items = item_sets.map(&:items).flatten
+      end
     end
   end
 
