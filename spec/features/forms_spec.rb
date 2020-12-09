@@ -25,7 +25,7 @@ RSpec.feature 'Form rendering and submission', type: :feature do
     }
   end
   context 'for ILL' do
-    xscenario 'the form is rendered as expected using param data' do
+    scenario 'the form is rendered as expected using param data' do
       visit form_path({ id: 'ill', requesttype: 'ScanDelivery' }.merge(book_params))
       expect(page).to have_text 'Bibliographic information for the item requested'
       expect(page).to have_field 'Journal/Book Title', with: 'Phenomenology of perception /'
@@ -45,7 +45,7 @@ RSpec.feature 'Form rendering and submission', type: :feature do
     end
   end
   context 'for FacultyEXPRESS' do
-    xscenario 'the form is rendered as expected using param data' do
+    scenario 'the form is rendered as expected using param data' do
       visit form_path({ id: 'ill', requesttype: 'book' }.merge(book_params))
       expect(page).to have_text 'Bibliographic information for the item requested'
       expect(page).to have_field 'Title', with: 'Phenomenology of perception /'
