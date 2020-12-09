@@ -282,7 +282,7 @@ class Illiad
       headers = {'Cookie' => "ILLiadSessionID=test-session"}
     else
       res = HTTParty.post(illserver, body: body, verify: false)
-      sessionid = /=(.*);/.match(res.headers['set-cookie'])[1]
+      sessionid = /ILLiadSessionID=(.*); path=\/; HttpOnly; Secure/.match(res.headers['set-cookie'])[1]
       headers = {'Cookie' => "ILLiadSessionID=#{sessionid}"}
     end
 
