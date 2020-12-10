@@ -211,6 +211,16 @@ class Illiad
     
     username = db.escape unescaped_username # throws exception if #escape is sent nil
 
+    # Very Important Note
+    # As of 12/09/2020, we learned that creating Users in this way is not good. Particularly how
+    # we set the password value to a static value. As of Illiad 9.0, the hashing algorithm changed and
+    # now as of version 9.1 these old hashed password values are seen as invalid and the Illiad web
+    # forms force a password update. This breaks our request submission behavior here, which is no good.
+    # Illiad has added a database trigger to change the current hashed password value we use to a properly
+    # hashed value. This allows us to continue this bad behavior until we can move to make use of Illiad
+    # API methods for user creation and transaction submission.
+    # tl;dr: don't change the hashed password value used here or you'll break everything
+
     query = %Q{INSERT INTO #{tablename}
                  (username, lastname, firstname, ssn, status, emailaddress, phone, department,
                   nvtgc, password, notificationmethod, deliverymethod, loandeliverymethod, cleared, web, address, authtype, articlebillingcategory, loanbillingcategory )
