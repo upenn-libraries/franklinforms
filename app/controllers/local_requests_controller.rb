@@ -3,11 +3,12 @@ class LocalRequestsController < ApplicationController
 
   before_action :redirect, unless: :mms_id_present?
   before_action :set_user
-  before_action :set_metadata
+  before_action :set_metadata, except: :test
 
   # show the form
   def new
     @local_request = LocalRequest.new params, @user
+    @delivery_options = ['PickUp@Penn', 'Books by Mail', 'Request Digital Delivery']
   end
 
   # submit the request
