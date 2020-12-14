@@ -62,16 +62,14 @@
         <div class="panel panel-success">
           <div class="panel-heading" role="tab" id="heading<%= i %>">
             <h4 class="panel-title">
-              <a role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>">
+              <a class="item-select-button" role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
                 <%= holding.label %>
                 <span class="badge pull-right"><%= "#{holding.available_items} #{'item'.pluralize(holding.available_items)} available" %></span>
               </a>
             </h4>
           </div>
           <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
-            <div class="panel-body item-select-container" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
-              <%= 'items api response' %>
-            </div>
+            <div class="panel-body item-select-container"></div>
           </div>
         </div>
       <% else %>
