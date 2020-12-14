@@ -10,7 +10,7 @@ en:
         deliverytype: 'Delivery'
       messages:
         limitation_html: "<strong>NOTE:</strong> Please request only <strong>ONE Article or Book Chapter</strong> per request form. We are not able to supply scans of entire books or journal volumes."
-        delivery_options_blank: "Please select a delivery option"
+        delivery_options_blank: "Please select an item to see delivery options"
         delivery_address_note_html: "If your departmental address is wrong, please email us at %{mail_link}"
     bbm:
       messages:

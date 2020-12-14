@@ -7,8 +7,8 @@ class AlmaHolding < OpenStruct
     self.holding_id
   end
 
-  def radio_button_label
-    "#{self.library} -  #{self.location} - #{self.available_items} #{'item'.pluralize(self.available_items)} available [#{self.id}]"
+  def label
+    "#{library} -  #{location} - #{holding_info}"
   end
 
   def available?

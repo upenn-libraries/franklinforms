@@ -56,14 +56,36 @@
       <% end %>
     <% end %>
   <% else %>
-    <div class="alert alert-info">
-      Which Holding are you interested in?
-    </div>
-    <%= f.form_group :holding, label: { text: "Holding" } do %>
-      <% @record.holdings.each do |holding| %>
-        <%= f.radio_button :holding, holding.id, { label: holding.radio_button_label, disabled: !holding.available? } %>
+    <div class="panel-group" id="holding-accordion" role="tablist" aria-multiselectable="true">
+      <% @record.holdings.each_with_index do |holding, i| %>
+        <% if holding.available? %>
+        <div class="panel panel-success">
+          <div class="panel-heading" role="tab" id="heading<%= i %>">
+            <h4 class="panel-title">
+              <a role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>">
+                <%= holding.label %>
+                <span class="badge pull-right"><%= "#{holding.available_items} #{'item'.pluralize(holding.available_items)} available" %></span>
+              </a>
+            </h4>
+          </div>
+          <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
+            <div class="panel-body item-select-container" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
+              <%= 'items api response' %>
+            </div>
+          </div>
+        </div>
+      <% else %>
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab" id="heading<%= i %>">
+            <h4 class="panel-title">
+              <%= holding.label %>
+              <span class="badge pull-right">No items available</span>
+            </h4>
+          </div>
+        </div>
       <% end %>
     <% end %>
+    </div>
   <% end %>
 
   <h2><%= t('forms.local_request.sections.delivery') %></h2>
@@ -80,7 +102,7 @@
     </p>
   </div>
 
-  <section id="digital-request-details">
+  <section id="digital-request-details" class="hidden">
     <h2>Digital Request Information</h2>
     <div class="alert alert-info">
       Entire works cannot be delivered electronically. Please specify article or chapter information
