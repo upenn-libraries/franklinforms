@@ -18,5 +18,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/alma/:mms_id/holding/:holding_id/items',
+      to: 'holding_items#index', format: :json
+
   #get '*path' => redirect('/')
 end

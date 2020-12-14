@@ -12,6 +12,7 @@ class Alma::AvailabilityResponse
   end
 end
 
+# TODO: the right thing
 class Alma::BibItem
   ETAS_TEMPORARY_LOCATION = 'TBD'
   PHYSICAL_ITEM_DELIVERY_OPTIONS = [:pickup, :booksbymail, :scandeliver]

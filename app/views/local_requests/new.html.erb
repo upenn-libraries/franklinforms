@@ -26,18 +26,18 @@
   <div class="row">
     <div class="col-sm-6">
       <%= f.static_control :title, label: t('forms.local_request.fields.title') do %>
-        <%= @bib_data['title'] %>
+        <%= @record.bib_data['title'] %>
       <% end %>
     </div>
     <div class="col-sm-6">
       <%= f.static_control :author, label: t('forms.local_request.fields.author') do %>
-        <%= @bib_data['author'] %>
+        <%= @record.bib_data['author'] %>
       <% end %>
     </div>
   </div>
 
-  <% if @item %>
-    <% if @item.eligible_for_use? %>
+  <% if @record.items&.one? %>
+    <% if @record.items.first.eligible_for_use? %>
       <div class="alert alert-success">
         Item is [in place and not non-circulating and therefore] available for PickUp or Books by Mail Delivery
       </div>
@@ -46,12 +46,12 @@
         Item is [currently] unavailable. Try <a href="#">Requesting via ILL</a>
       </div>
     <% end %>
-  <% elsif @items %>
+  <% elsif @record.items&.any? %>
     <div class="alert alert-info">
       Which particular item are you interested in?
     </div>
     <%= f.form_group :item, label: { text: "Item" } do %>
-      <% @items.each do |item| %>
+      <% @record.items.each do |item| %>
         <%= f.radio_button :item, item.item_data['pid'], { label: "#{item['bib_data']['title']} - #{item.item_data['description']}" } %>
       <% end %>
     <% end %>
@@ -60,7 +60,7 @@
       Which Holding are you interested in?
     </div>
     <%= f.form_group :holding, label: { text: "Holding" } do %>
-      <% @holdings.each do |holding| %>
+      <% @record.holdings.each do |holding| %>
         <%= f.radio_button :holding, holding.id, { label: holding.radio_button_label, disabled: !holding.available? } %>
       <% end %>
     <% end %>
