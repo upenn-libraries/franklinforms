@@ -11,7 +11,7 @@ class HoldingItemsController < ApplicationController
       params[:mms_id].to_s,
       holding_id: params[:holding_id],
       user_id: @user.id
-    ).items
+    ).items.map(&:for_radio_button)
 
     render json: items
   end

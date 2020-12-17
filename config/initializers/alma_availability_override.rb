@@ -19,13 +19,33 @@ class Alma::BibItem
   RESTRICTED_ITEM_DELIVERY_OPTIONS = [:scandeliver]
   
   # @return [TrueClass, FalseClass]
-  def eligible_for_use?
-    in_place? && !non_circulating? && !etas_restricted?
+  def checkoutable?
+    in_place? &&
+      !non_circulating? &&
+      !etas_restricted? &&
+      !not_loanable?
   end
-  
+
+  # Penn uses "Non-circ" in Alma
+  def non_circulating?
+    circulation_policy.include?('Non-circ')
+  end
+
+  def user_due_date
+    item_data.dig 'due_date'
+  end
+
+  def user_due_date_policy
+    item_data.dig 'due_date_policy'
+  end
+
+  def not_loanable?
+    user_due_date_policy&.include? 'Not loanable'
+  end
+
   # @return [Array]
   def delivery_options
-    if eligible_for_use?
+    if checkoutable?
       PHYSICAL_ITEM_DELIVERY_OPTIONS
     else
       RESTRICTED_ITEM_DELIVERY_OPTIONS
@@ -36,5 +56,25 @@ class Alma::BibItem
   def etas_restricted?
     # is in ETAS temporary location?
     temp_location_name == ETAS_TEMPORARY_LOCATION
+  end
+
+  def label_for_radio_button
+    label_info = [
+      location_name,
+      description,
+      user_due_date_policy
+    ]
+    label_info.reject(&:blank?).join(' - ')
+  end
+
+  # @return [Hash]
+  def for_radio_button
+    {
+      pid: item_data['pid'],
+      label: label_for_radio_button,
+      delivery_options: delivery_options,
+      checkoutable: checkoutable?,
+      etas_restricted: etas_restricted?,
+    }
   end
 end
