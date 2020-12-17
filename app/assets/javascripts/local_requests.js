@@ -1,7 +1,9 @@
+// Add a radio button input and bootsrapy markup for given
+// _item_ inside _container_
 function addItemRadio(container, item) {
     var pid = item['item_data']['pid'];
     var div = document.createElement('div')
-    div.class = 'radio'
+    div.className = 'radio'
     // TODO: add delivery options as data attribute?
     var input = document.createElement('input');
     input.name = "item-select-" + pid;
@@ -20,27 +22,27 @@ function addItemRadio(container, item) {
     container.append(div);
 }
 
+// calculate URL for grabbing item metadata from local API endpoint
 function holdingUrl(mms_id, holding_id) {
     return "/alma/" + mms_id + "/holding/" + holding_id + "/items"
 }
 
 $(document).ready(function() {
+    // event handler for clicking on accordion button for holding
     $('.item-select-button').click(function() {
         var $elem = $(this);
-        var mmsId = $elem.data('mms-id');
-        var holdingId = $elem.data('holding-id');
         var $radioContainer = $elem.closest('div.panel')
             .find('div.item-select-container');
         if($radioContainer.html() === "") {
+            var mmsId = $elem.data('mms-id');
+            var holdingId = $elem.data('holding-id');
             $.getJSON(holdingUrl(mmsId, holdingId))
                 .fail(function() { alert("Oh no!") })
                 .done(function(data) {
-                    // todo only if destination is empty!
                     $.each(data, function(i, item) {
                         addItemRadio($radioContainer, item['item'])
                     });
                 });
         }
-
     });
 });
