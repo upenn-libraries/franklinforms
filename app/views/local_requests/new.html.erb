@@ -87,7 +87,7 @@
   <% end %>
 
   <h2><%= t('forms.local_request.sections.delivery') %></h2>
-  <%= f.select :delivery_method, @delivery_options, label: t('forms.local_request.fields.delivery_method'), prompt: t('forms.ill.messages.delivery_options_blank') %>
+  <%= f.select :delivery_method, [], label: t('forms.local_request.fields.delivery_method'), prompt: t('forms.ill.messages.delivery_options_blank') %>
   <div class="hidden alert alert-warning">
     <p class="hidden bbm-messages">
       <%= t('forms.local_request.delivery_messages.bbm_html') %>

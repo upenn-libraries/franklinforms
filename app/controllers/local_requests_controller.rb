@@ -8,7 +8,6 @@ class LocalRequestsController < ApplicationController
   # show the form
   def new
     @local_request = LocalRequest.new params, @user
-    @delivery_options = ['PickUp@Penn', 'Books by Mail', 'Request Digital Delivery']
   end
 
   # submit the request

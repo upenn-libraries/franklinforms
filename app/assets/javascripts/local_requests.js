@@ -6,21 +6,16 @@ function addItemRadio(container, item) {
     div.className = 'radio'
     // TODO: add delivery options as data attribute?
     var input = document.createElement('input');
-    input.name = "item-select-" + pid;
+    input.name = "item-select";
     input.className = "item-select-radio"
     input.type = 'radio';
     input.value = pid;
-    if(item['delivery_options'].indexOf('scandeliver') > -1) {
-        input.setAttribute('data-scandeliver', 'true')
-    }
-    if(item['delivery_options'].indexOf('pickup') > -1) {
-        input.setAttribute('data-pickup', 'true')
-    }
-    if(item['delivery_options'].indexOf('booksbymail') > -1) {
-        input.setAttribute('data-booksbymail', 'true')
-    }
+    input.setAttribute(
+        'data-delivery',
+        item['delivery_options'].join(':')
+    )
     var label = document.createElement('label');
-    label.htmlFor = "item-select-" + pid;
+    // label.htmlFor = "item-select";
     label.appendChild(input);
     var radio_label_text = document.createTextNode(item['label'])
     label.appendChild(radio_label_text);
@@ -50,5 +45,32 @@ $(document).ready(function() {
                     });
                 });
         }
+    });
+
+    function deliveryOptionLabel(option) {
+        switch (option) {
+            case 'scandeliver':
+                return 'Request Digital Delivery';
+            case 'pickup':
+                return 'PickUp@Penn';
+            case 'booksbymail':
+                return 'Books by Mail';
+        }
+    }
+
+    // event handler for updating delivery option select when item
+    // is chosen
+    $(document).on('click', '.item-select-radio', function() {
+        var deliverySelect = document.getElementById('local_request_delivery_method');
+        // TODO: remove all but the default
+        deliverySelect.innerHTML = '';
+        var deliveryOptions = this.getAttribute('data-delivery').split(":")
+        deliveryOptions.forEach(function(option) {
+            var optionText = deliveryOptionLabel(option);
+            var optionElement = document.createElement('option');
+            optionElement.text = optionText;
+            optionElement.value = option;
+            deliverySelect.appendChild(optionElement);
+        })
     });
 });
