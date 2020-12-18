@@ -17,7 +17,11 @@ class Alma::BibItem
   ETAS_TEMPORARY_LOCATION = 'Van Pelt - Non Circulating'
   PHYSICAL_ITEM_DELIVERY_OPTIONS = [:pickup, :booksbymail, :scandeliver]
   RESTRICTED_ITEM_DELIVERY_OPTIONS = [:scandeliver]
-  
+
+  def pid
+    item_data.dig 'pid'
+  end
+
   # @return [TrueClass, FalseClass]
   def checkoutable?
     in_place? &&

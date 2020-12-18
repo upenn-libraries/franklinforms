@@ -1,0 +1,19 @@
+<div class="well">
+  <% case @local_request.delivery_method %>
+  <% when 'scandeliver' %>
+    <p>Your requested article or chapter will be delivered via email.</p>
+  <% when 'pickup' %>
+    <p>Your requested book will be available for pickup soon!</p>
+  <% when 'booksbymail' %>
+    <p>Your requested book will be delviered via Books by Mail.
+      Are you _really_ sure you're eligible for this service??</p>
+  <% end %>
+  <ul>
+    <li>MMS ID: <%= @local_request.mms_id %></li>
+    <li>Holding ID: <%= @local_request.holding_id %></li>
+    <li>Item PID: <%= @local_request.item_pid %></li>
+  </ul>
+  <div class="well">
+    <%= pp @item.to_json %>
+  </div>
+</div>

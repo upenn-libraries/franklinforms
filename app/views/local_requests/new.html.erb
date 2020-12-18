@@ -4,10 +4,12 @@
 
 <%= bootstrap_form_for(@local_request) do |f| %>
 
+  <%= f.hidden_field :mms_id, value: @record.mms_id %>
+
   <h2><%= t('forms.local_request.sections.patron') %></h2>
   <div class="row">
     <div class="col-sm-6">
-      <%= f.static_control :by, label: t('forms.common.fields.name') do %>
+      <%= f.static_control :name, label: t('forms.common.fields.name') do %>
         <%= @user.name %>
       <% end %>
     </div>
@@ -60,6 +62,9 @@
       <% if @record.holdings.any? %>
         <% @record.holdings.each_with_index do |holding, i| %>
           <% if holding.available? %>
+            <div class="hidden">
+              <%= f.radio_button :holding_id, holding.id, class: 'holding-radio' %>
+            </div>
             <div class="panel panel-success">
               <div class="panel-heading" role="tab" id="heading<%= i %>">
                 <h4 class="panel-title">

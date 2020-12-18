@@ -6,7 +6,6 @@ class HoldingItemsController < ApplicationController
   # return JSON for items for a given holding
   # params mms_id, holding_id
   def index
-    # TODO: limit response size?
     items = AlmaRecord.new(
       params[:mms_id].to_s,
       holding_id: params[:holding_id],

@@ -5,7 +5,7 @@ function addItemRadio(container, item) {
     var div = document.createElement('div')
     div.className = 'radio'
     var input = document.createElement('input');
-    input.name = "item-select";
+    input.name = "local_request[item_pid]";
     input.className = "item-select-radio"
     input.type = 'radio';
     input.value = pid;
@@ -31,6 +31,7 @@ $(document).ready(function() {
     // event handler for clicking on accordion button for holding
     $('.item-select-button').click(function() {
         var $elem = $(this);
+        $elem.closest('input.holding-radio').checked = true;
         var $radioContainer = $elem.closest('div.panel').find('div.item-select-container');
         if($radioContainer.html() === "") {
             var mmsId = $elem.data('mms-id');
