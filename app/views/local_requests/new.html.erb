@@ -57,32 +57,36 @@
     <% end %>
   <% else %>
     <div class="panel-group" id="holding-accordion" role="tablist" aria-multiselectable="true">
-      <% @record.holdings.each_with_index do |holding, i| %>
-        <% if holding.available? %>
-        <div class="panel panel-success">
-          <div class="panel-heading" role="tab" id="heading<%= i %>">
-            <h4 class="panel-title">
-              <a class="item-select-button" role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
-                <%= holding.label %>
-                <span class="badge pull-right"><%= "#{holding.available_items} #{'item'.pluralize(holding.available_items)} available" %></span>
-              </a>
-            </h4>
-          </div>
-          <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
-            <div class="panel-body item-select-container"></div>
-          </div>
-        </div>
+      <% if @record.holdings.any? %>
+        <% @record.holdings.each_with_index do |holding, i| %>
+          <% if holding.available? %>
+            <div class="panel panel-success">
+              <div class="panel-heading" role="tab" id="heading<%= i %>">
+                <h4 class="panel-title">
+                  <a class="item-select-button" role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
+                    <%= holding.label %>
+                    <span class="badge pull-right"><%= "#{holding.available_items} #{'item'.pluralize(holding.available_items)} available" %></span>
+                  </a>
+                </h4>
+              </div>
+              <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
+                <div class="panel-body item-select-container"></div>
+              </div>
+            </div>
+          <% else %>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="heading<%= i %>">
+                <h4 class="panel-title">
+                  <%= holding.label %>
+                  <span class="badge pull-right">No items available</span>
+                </h4>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
       <% else %>
-        <div class="panel panel-default">
-          <div class="panel-heading" role="tab" id="heading<%= i %>">
-            <h4 class="panel-title">
-              <%= holding.label %>
-              <span class="badge pull-right">No items available</span>
-            </h4>
-          </div>
-        </div>
+        <p>No holdings - what's up with that?</p>
       <% end %>
-    <% end %>
     </div>
   <% end %>
 
