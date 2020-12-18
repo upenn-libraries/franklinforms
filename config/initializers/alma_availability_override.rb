@@ -14,7 +14,7 @@ end
 
 # TODO: the right thing
 class Alma::BibItem
-  ETAS_TEMPORARY_LOCATION = 'TBD'
+  ETAS_TEMPORARY_LOCATION = 'Van Pelt - Non Circulating'
   PHYSICAL_ITEM_DELIVERY_OPTIONS = [:pickup, :booksbymail, :scandeliver]
   RESTRICTED_ITEM_DELIVERY_OPTIONS = [:scandeliver]
   
