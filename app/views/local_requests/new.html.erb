@@ -52,7 +52,7 @@
     </div>
     <%= f.form_group :item, label: { text: "Item" } do %>
       <% @record.items.each do |item| %>
-        <%= f.radio_button :item, item.item_data['pid'], { label: "#{item['bib_data']['title']} - #{item.item_data['description']}" } %>
+        <%= f.radio_button :item, item.item_data['pid'], { label: item.label_for_radio_button } %>
       <% end %>
     <% end %>
   <% else %>
