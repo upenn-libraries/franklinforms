@@ -25,16 +25,18 @@ en:
         details: "Your Question"
     local_request:
       delivery_messages:
-        bbm_html: "Please register here, etc."
-        pap_html: "Pickup at Van Pelt Library, etc."
+        bbm_html: "<strong>IMPORTANT!</strong> Users must <a href='https://upenn.libwizard.com/f/books-by-mail'>register for Books by Mail</a> before submitting requests. Please do not submit Books by Mail requests without registering. These requests will be canceled."
+        pap_html: "The <a href='https://guides.library.upenn.edu/circulation/PickUpatPenn'>PickUp@Penn service</a> currently only provides pickup at Van Pelt-Dietrich Library Center, Ground Floor."
         digi_html: "Delivery via your ILL account, etc."
       types:
-        article: "Article Request"
-        book: "Book Request"
-        scan: "Article/Chapter Scanning Request"
+        booksbymail: "Books by Mail"
+        scandeliver: "Request Digital Delivery"
+        pickup: "PickUp@Penn"
       heading: "Request from Penn Libraries"
       messages:
         comment_limit: "Maximum 256 characters"
+        select_an_item: "Please select an item to see delivery options"
+        select_delivery_option: "Please select a delivery method"
       sections:
         patron: "Your Information"
         delivery: "Delivery"

@@ -48,11 +48,11 @@ $(document).ready(function() {
     function deliveryOptionLabel(option) {
         switch (option) {
             case 'scandeliver':
-                return 'Request Digital Delivery';
+                return '<%= I18n.t('forms.local_request.types.scandeliver') %>';
             case 'pickup':
-                return 'PickUp@Penn';
+                return '<%= I18n.t('forms.local_request.types.pickup') %>';
             case 'booksbymail':
-                return 'Books by Mail';
+                return '<%= I18n.t('forms.local_request.types.booksbymail') %>';
         }
     }
 

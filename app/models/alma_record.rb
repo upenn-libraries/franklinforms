@@ -19,6 +19,11 @@ class AlmaRecord
     @items = lookup_items_for(holding_ids, user_id) if should_prefetch_items?
   end
 
+  # @return [TrueClass, FalseClass]
+  def one_item?
+    items&.one?
+  end
+
   private
 
   # Lookup Items in Alma for an array of holding_ids

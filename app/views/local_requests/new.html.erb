@@ -36,10 +36,10 @@
     </div>
   </div>
 
-  <% if @record.items&.one? %>
-    <% if @record.items.first.eligible_for_use? %>
+  <% if @record.one_item? %>
+    <% if @record.items.first.checkoutable? %>
       <div class="alert alert-success">
-        Item is [in place and not non-circulating and therefore] available for PickUp or Books by Mail Delivery
+        Item is [in place and not non-circulating, not ETAS restricted and loanable] available for PickUp or Books by Mail Delivery
       </div>
     <% else %>
       <div class="alert alert-warning">
@@ -97,7 +97,7 @@
     <div id="scandeliver-messages" class="alert alert-warning delivery-messages" style="display: none;">
       <%= t('forms.local_request.delivery_messages.digi_html') %>
     </div>
-    <%= f.select :delivery_method, [], label: t('forms.local_request.fields.delivery_method'), prompt: t('forms.ill.messages.delivery_options_blank') %>
+    <%= f.select :delivery_method, delivery_options_for_select(@record), label: t('forms.local_request.fields.delivery_method'), prompt: placeholder_for_delivery_select(@record) %>
   </section>
 
   <section id="digital-request-details" style="display: none;">
