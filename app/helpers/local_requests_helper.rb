@@ -2,7 +2,7 @@ module LocalRequestsHelper
   # @param [AlmaRecord] record
   def delivery_options_for_select(record)
     if record.one_item?
-      Alma::BibItem::PHYSICAL_ITEM_DELIVERY_OPTIONS
+      record.items.first.delivery_options
         .map do |option|
         [I18n.t("forms.local_request.types.#{option}"), option]
       end
