@@ -86,21 +86,21 @@
     </div>
   <% end %>
 
-  <h2><%= t('forms.local_request.sections.delivery') %></h2>
-  <%= f.select :delivery_method, [], label: t('forms.local_request.fields.delivery_method'), prompt: t('forms.ill.messages.delivery_options_blank') %>
-  <div class="hidden alert alert-warning">
-    <p class="hidden bbm-messages">
+  <section id="delivery-details">
+    <h2><%= t('forms.local_request.sections.delivery') %></h2>
+    <div id="booksbymail-messages" class="alert alert-warning delivery-messages" style="display: none;">
       <%= t('forms.local_request.delivery_messages.bbm_html') %>
-    </p>
-    <p class="hidden pap-messages">
+    </div>
+    <div id="pickup-messages" class="alert alert-warning delivery-messages" style="display: none;">
       <%= t('forms.local_request.delivery_messages.pap_html') %>
-    </p>
-    <p class="hidden digi-messages">
+    </div>
+    <div id="scandeliver-messages" class="alert alert-warning delivery-messages" style="display: none;">
       <%= t('forms.local_request.delivery_messages.digi_html') %>
-    </p>
-  </div>
+    </div>
+    <%= f.select :delivery_method, [], label: t('forms.local_request.fields.delivery_method'), prompt: t('forms.ill.messages.delivery_options_blank') %>
+  </section>
 
-  <section id="digital-request-details" class="hidden">
+  <section id="digital-request-details" style="display: none;">
     <h2>Digital Request Information</h2>
     <div class="alert alert-info">
       Entire works cannot be delivered electronically. Please specify article or chapter information

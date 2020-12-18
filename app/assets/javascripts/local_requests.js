@@ -4,7 +4,6 @@ function addItemRadio(container, item) {
     var pid = item['pid'];
     var div = document.createElement('div')
     div.className = 'radio'
-    // TODO: add delivery options as data attribute?
     var input = document.createElement('input');
     input.name = "item-select";
     input.className = "item-select-radio"
@@ -32,8 +31,7 @@ $(document).ready(function() {
     // event handler for clicking on accordion button for holding
     $('.item-select-button').click(function() {
         var $elem = $(this);
-        var $radioContainer = $elem.closest('div.panel')
-            .find('div.item-select-container');
+        var $radioContainer = $elem.closest('div.panel').find('div.item-select-container');
         if($radioContainer.html() === "") {
             var mmsId = $elem.data('mms-id');
             var holdingId = $elem.data('holding-id');
@@ -72,5 +70,34 @@ $(document).ready(function() {
             optionElement.value = option;
             deliverySelect.appendChild(optionElement);
         })
+        updateDeliveryMessaging(deliverySelect[0].value);
+    });
+
+    // show hide existing panels based on option value
+    function updateDeliveryMessaging(option) {
+        var delivery_message = document.getElementById(option + "-messages");
+        var all_messages = document.getElementsByClassName('delivery-messages');
+        for (var index = 0; index < all_messages.length; index++) {
+            all_messages[index].style.display = 'none';
+        }
+        delivery_message.style.display = 'block';
+    }
+
+    function scanFieldsDisplay(value) {
+        if(value === 'scandeliver') {
+            return '';
+        } else {
+            return 'none';
+        }
+    }
+
+    function toggleScanFields(value) {
+        section = document.getElementById('digital-request-details');
+        section.style.display = scanFieldsDisplay(value);
+    }
+
+    $("#local_request_delivery_method").change(function() {
+        updateDeliveryMessaging(this.value);
+        toggleScanFields(this.value);
     });
 });
