@@ -54,7 +54,7 @@
     </div>
     <%= f.form_group :item, label: { text: "Item" } do %>
       <% @record.items.each do |item| %>
-        <%= f.radio_button :item, item.item_data['pid'], { label: item.label_for_radio_button } %>
+        <%= f.radio_button :item_pid, item.pid, { label: item.label_for_radio_button, class: 'item-select-radio', data: { delivery: item.delivery_options.join(':') } } %>
       <% end %>
     <% end %>
   <% else %>
