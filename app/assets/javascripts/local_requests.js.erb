@@ -27,79 +27,86 @@ function holdingUrl(mms_id, holding_id) {
     return "/alma/" + mms_id + "/holding/" + holding_id + "/items"
 }
 
+// return label (from Rails' I18n config files) for delivery options select
+function deliveryOptionLabel(option) {
+    switch (option) {
+        case 'scandeliver':
+            return '<%= I18n.t('forms.local_request.types.scandeliver') %>';
+        case 'pickup':
+            return '<%= I18n.t('forms.local_request.types.pickup') %>';
+        case 'booksbymail':
+            return '<%= I18n.t('forms.local_request.types.booksbymail') %>';
+    }
+}
+
+// show hide existing panels based on option value
+function updateDeliveryMessaging(option) {
+    var delivery_message = document.getElementById(option + "-messages");
+    var all_messages = document.getElementsByClassName('delivery-messages');
+    for (var index = 0; index < all_messages.length; index++) {
+        all_messages[index].style.display = 'none';
+    }
+    delivery_message.style.display = 'block';
+}
+
+// determine a css display: value for the ScanDeliver form field section
+function scanFieldsDisplay(value) {
+    if(value === 'scandeliver') {
+        return '';
+    } else {
+        return 'none';
+    }
+}
+
+// show or hide the ScanDelvier form fields
+function toggleScanFields(value) {
+    section = document.getElementById('digital-request-details');
+    section.style.display = scanFieldsDisplay(value);
+}
+
 $(document).ready(function() {
     // event handler for clicking on accordion button for holding
-    $('.item-select-button').click(function() {
+    $('.item-select-button').click(function () {
         var $elem = $(this);
         $elem.closest('input.holding-radio').checked = true;
         var $radioContainer = $elem.closest('div.panel').find('div.item-select-container');
-        if($radioContainer.html() === "") {
+        if ($radioContainer.html() === "") {
             var mmsId = $elem.data('mms-id');
             var holdingId = $elem.data('holding-id');
             $.getJSON(holdingUrl(mmsId, holdingId))
-                .fail(function() { alert("Oh no!") })
-                .done(function(data) {
-                    $.each(data, function(i, item) {
+                .fail(function () {
+                    alert("Oh no!")
+                })
+                .done(function (data) {
+                    $.each(data, function (i, item) {
                         addItemRadio($radioContainer, item)
                     });
                 });
         }
     });
 
-    function deliveryOptionLabel(option) {
-        switch (option) {
-            case 'scandeliver':
-                return '<%= I18n.t('forms.local_request.types.scandeliver') %>';
-            case 'pickup':
-                return '<%= I18n.t('forms.local_request.types.pickup') %>';
-            case 'booksbymail':
-                return '<%= I18n.t('forms.local_request.types.booksbymail') %>';
-        }
-    }
-
-    // event handler for updating delivery option select when item
-    // is chosen
-    $(document).on('click', '.item-select-radio', function() {
-        var deliverySelect = document.getElementById('local_request_delivery_method');
-        // TODO: remove all but the default
-        deliverySelect.innerHTML = '';
-        var deliveryOptions = this.getAttribute('data-delivery').split(":")
-        deliveryOptions.forEach(function(option) {
-            var optionText = deliveryOptionLabel(option);
-            var optionElement = document.createElement('option');
-            optionElement.text = optionText;
-            optionElement.value = option;
-            deliverySelect.appendChild(optionElement);
-        })
-        updateDeliveryMessaging(deliverySelect[0].value);
-        toggleScanFields(deliverySelect[0].value);
-    });
-
-    // show hide existing panels based on option value
-    function updateDeliveryMessaging(option) {
-        var delivery_message = document.getElementById(option + "-messages");
-        var all_messages = document.getElementsByClassName('delivery-messages');
-        for (var index = 0; index < all_messages.length; index++) {
-            all_messages[index].style.display = 'none';
-        }
-        delivery_message.style.display = 'block';
-    }
-
-    function scanFieldsDisplay(value) {
-        if(value === 'scandeliver') {
-            return '';
-        } else {
-            return 'none';
-        }
-    }
-
-    function toggleScanFields(value) {
-        section = document.getElementById('digital-request-details');
-        section.style.display = scanFieldsDisplay(value);
-    }
-
-    $("#local_request_delivery_method").change(function() {
+    // update visibility of appropriate messaging and ScanDeliver fields based on the
+    // delivery option select
+    $("#local_request_delivery_method").change(function () {
         updateDeliveryMessaging(this.value);
         toggleScanFields(this.value);
     });
+});
+
+// event handler for updating delivery option select when item
+// is chosen
+$(document).on('click', '.item-select-radio', function() {
+    var deliverySelect = document.getElementById('local_request_delivery_method');
+    // TODO: remove all but the default
+    deliverySelect.innerHTML = '';
+    var deliveryOptions = this.getAttribute('data-delivery').split(":")
+    deliveryOptions.forEach(function(option) {
+        var optionText = deliveryOptionLabel(option);
+        var optionElement = document.createElement('option');
+        optionElement.text = optionText;
+        optionElement.value = option;
+        deliverySelect.appendChild(optionElement);
+    })
+    updateDeliveryMessaging(deliverySelect[0].value);
+    toggleScanFields(deliverySelect[0].value);
 });

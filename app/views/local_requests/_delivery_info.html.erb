@@ -1,0 +1,16 @@
+<section id="delivery-details">
+  <h2><%= t('forms.local_request.sections.delivery') %></h2>
+  <div id="booksbymail-messages" class="alert alert-warning delivery-messages" style="display: none;">
+    <%= t('forms.local_request.delivery_messages.bbm_html') %>
+  </div>
+  <div id="pickup-messages" class="alert alert-warning delivery-messages" style="display: none;">
+    <%= t('forms.local_request.delivery_messages.pap_html') %>
+  </div>
+  <div id="scandeliver-messages" class="alert alert-warning delivery-messages" style="display: none;">
+    <%= t('forms.local_request.delivery_messages.digi_html') %>
+  </div>
+  <%= form.select :delivery_method, delivery_options_for_select(@record),
+                  label: t('forms.local_request.fields.delivery_method'),
+                  prompt: placeholder_for_delivery_select(@record),
+                  selected: digital_delivery_only?(@record) ? 'scandeliver' : ''  %>
+</section>

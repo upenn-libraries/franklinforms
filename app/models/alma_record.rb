@@ -1,5 +1,9 @@
 class AlmaRecord
   attr_accessor :bib_data, :mms_id, :holding_id, :holdings, :items
+
+  # Build AlmaRecord, grabbing availability data and setting
+  # bib_data and holding info
+  # Will pull item info if there isn't too much of it
   # @param [String] mms_id
   def initialize(mms_id, options = {})
     @mms_id = mms_id
@@ -9,16 +13,15 @@ class AlmaRecord
     holdings_metadata = availability_response.availability[mms_id][:holdings]
     @bib_data = availability_response.bib_data
     @holdings = holdings_from holdings_metadata
-
     holding_ids = if @holding_id
                     Array.wrap @holding_id
                   else
                     @holdings.collect(&:id)
                   end
-
     @items = lookup_items_for(holding_ids, user_id) if should_prefetch_items?
   end
 
+  # Is there only one Item?
   # @return [TrueClass, FalseClass]
   def one_item?
     items&.one?

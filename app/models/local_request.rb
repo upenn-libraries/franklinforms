@@ -25,8 +25,10 @@ class LocalRequest
     self.section_pages = data[:section_pages]
   end
 
+  # TODO: validations
+
   def submit
-    # Submit via service
+    # TODO: Submit via service
   end
 
 

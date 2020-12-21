@@ -1,0 +1,9 @@
+<section id="digital-request-details" style="display: <%= digital_delivery_only?(@record) ? 'block' : 'none' %>;">
+  <h2><%= t('forms.local_request.sections.digital') %></h2>
+  <div class="alert alert-info">
+    <%= t('forms.local_request.messages.digital_delivery_warning') %>
+  </div>
+  <%= form.text_field :section_title, label: t('forms.local_request.fields.section_title') %>
+  <%= form.text_field :section_author, label: t('forms.local_request.fields.section_author') %>
+  <%= form.text_field :section_pages, label: t('forms.local_request.fields.section_pages') %>
+</section>

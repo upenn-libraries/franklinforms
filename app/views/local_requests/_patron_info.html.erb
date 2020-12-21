@@ -1,0 +1,10 @@
+<section id="patron-info">
+  <h2><%= t('forms.local_request.sections.patron') %></h2>
+  <%= form.static_control :name, label: t('forms.common.fields.name') do %>
+    <%= @user.name %>
+  <% end %>
+  <%= form.static_control :affiliation, label: t('forms.local_request.fields.affiliation') do %>
+    <%= @user.organization %>
+  <% end %>
+  <%= form.email_field :email, label: t('forms.common.fields.email'), value: @user.email %>
+</section>
