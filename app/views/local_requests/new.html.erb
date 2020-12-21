@@ -3,126 +3,142 @@
 <h1><%= t('forms.local_request.heading') %></h1>
 
 <%= bootstrap_form_for(@local_request) do |f| %>
-
   <%= f.hidden_field :mms_id, value: @record.mms_id %>
-
-  <h2><%= t('forms.local_request.sections.patron') %></h2>
   <div class="row">
-    <div class="col-sm-6">
-      <%= f.static_control :name, label: t('forms.common.fields.name') do %>
-        <%= @user.name %>
-      <% end %>
+    <div class="col-md-3">
+      <section id="patron-info">
+        <h2><%= t('forms.local_request.sections.patron') %></h2>
+        <%= f.static_control :name, label: t('forms.common.fields.name') do %>
+          <%= @user.name %>
+        <% end %>
+        <%= f.static_control :affiliation, label: t('forms.local_request.fields.affiliation') do %>
+          <%= @user.organization %>
+        <% end %>
+        <%= f.email_field :email, label: t('forms.common.fields.email'), value: @user.email %>
+      </section>
     </div>
-    <div class="col-sm-6">
-      <%= f.static_control :affiliation, label: t('forms.local_request.fields.affiliation') do %>
-        <%= @user.organization %>
-      <% end %>
-    </div>
-  </div>
-  <%= f.email_field :email, label: t('forms.common.fields.email'), value: @user.email %>
-
-  <h2>
-    Item Information
-  </h2>
-
-  <div class="row">
-    <div class="col-sm-6">
-      <%= f.static_control :title, label: t('forms.local_request.fields.title') do %>
-        <%= @record.bib_data['title'] %>
-      <% end %>
-    </div>
-    <div class="col-sm-6">
-      <%= f.static_control :author, label: t('forms.local_request.fields.author') do %>
-        <%= @record.bib_data['author'] %>
-      <% end %>
-    </div>
-  </div>
-
-  <% if @record.one_item? %>
-    <% if @record.items.first.checkoutable? %>
-      <div class="alert alert-success">
-        Item is [in place and not non-circulating, not ETAS restricted and loanable] available for PickUp or Books by Mail Delivery
-      </div>
-    <% else %>
-      <div class="alert alert-warning">
-        Item is [currently] unavailable. Try <a href="#">Requesting via ILL</a>
-      </div>
-    <% end %>
-  <% elsif @record.items&.any? %>
-    <div class="alert alert-info">
-      Which particular item are you interested in?
-    </div>
-    <%= f.form_group :item, label: { text: "Item" } do %>
-      <% @record.items.each do |item| %>
-        <%= f.radio_button :item_pid, item.pid, { label: item.label_for_radio_button, class: 'item-select-radio', data: { delivery: item.delivery_options.join(':') } } %>
-      <% end %>
-    <% end %>
-  <% else %>
-    <div class="panel-group" id="holding-accordion" role="tablist" aria-multiselectable="true">
-      <% if @record.holdings.any? %>
-        <% @record.holdings.each_with_index do |holding, i| %>
-          <% if holding.available? %>
-            <div class="hidden">
-              <%= f.radio_button :holding_id, holding.id, class: 'holding-radio' %>
-            </div>
-            <div class="panel panel-success">
-              <div class="panel-heading" role="tab" id="heading<%= i %>">
-                <h4 class="panel-title">
-                  <a class="item-select-button" role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
-                    <%= holding.label %>
-                    <span class="badge pull-right"><%= "#{holding.available_items} #{'item'.pluralize(holding.available_items)} available" %></span>
-                  </a>
-                </h4>
-              </div>
-              <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
-                <div class="panel-body item-select-container"></div>
-              </div>
+    <div class="col-md-9">
+      <section id="item-details">
+        <h2>Item Information</h2>
+        <div class="row">
+          <div class="col-sm-6">
+            <%= f.static_control :title, label: t('forms.local_request.fields.title') do %>
+              <%= @record.bib_data['title'] %>
+            <% end %>
+          </div>
+          <div class="col-sm-6">
+            <%= f.static_control :author, label: t('forms.local_request.fields.author') do %>
+              <%= @record.bib_data['author'] %>
+            <% end %>
+          </div>
+        </div>
+        <% if @record.one_item? %>
+          <% if @record.items.first.checkoutable? %>
+            <div class="alert alert-success">
+              Item is [in place and not non-circulating, not ETAS restricted and loanable] available for PickUp or Books by Mail Delivery
             </div>
           <% else %>
-            <div class="panel panel-default">
-              <div class="panel-heading" role="tab" id="heading<%= i %>">
-                <h4 class="panel-title">
-                  <%= holding.label %>
-                  <span class="badge pull-right">No items available</span>
-                </h4>
-              </div>
+            <div class="alert alert-warning">
+              Item is [currently] unavailable. Try <a href="#">Requesting via ILL</a>
             </div>
           <% end %>
+        <% elsif @record.items&.any? %>
+          <div class="alert alert-info">
+            Which particular item are you interested in?
+          </div>
+          <%= f.form_group :item, label: { text: "Item" } do %>
+            <% @record.items.each do |item| %>
+              <%= f.radio_button :item_pid, item.pid, { label: item.label_for_radio_button, class: 'item-select-radio', data: { delivery: item.delivery_options.join(':') } } %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <div class="panel-group" id="holding-accordion" role="tablist" aria-multiselectable="true">
+            <% if @record.holdings.any? %>
+              <% @record.holdings.each_with_index do |holding, i| %>
+                <% if holding.available? %>
+                  <div class="hidden">
+                    <%= f.radio_button :holding_id, holding.id, class: 'holding-radio' %>
+                  </div>
+                  <div class="panel panel-success">
+                    <div class="panel-heading" role="tab" id="heading<%= i %>">
+                      <h5 class="panel-title">
+                        <div class="row">
+                          <div class="col-md-9">
+                            <a class="item-select-button" role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
+                              <%= holding.label %>
+                            </a>
+                          </div>
+                          <div class="col-md-3">
+                            <span class="badge pull-right"><%= "#{holding.available_items} #{'item'.pluralize(holding.available_items)} available" %></span>
+                          </div>
+                        </div>
+                      </h5>
+                    </div>
+                    <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
+                      <div class="panel-body item-select-container" style="max-height: 250px; overflow-y: auto;"></div>
+                    </div>
+                  </div>
+                <% else %>
+                  <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="heading<%= i %>">
+                      <h4 class="panel-title">
+                        <%= holding.label %>
+                        <span class="badge pull-right">No items available</span>
+                      </h4>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            <% else %>
+              <p>No holdings - what's up with that?</p>
+            <% end %>
+          </div>
         <% end %>
-      <% else %>
-        <p>No holdings - what's up with that?</p>
-      <% end %>
-    </div>
-  <% end %>
+      </section>
 
-  <section id="delivery-details">
-    <h2><%= t('forms.local_request.sections.delivery') %></h2>
-    <div id="booksbymail-messages" class="alert alert-warning delivery-messages" style="display: none;">
-      <%= t('forms.local_request.delivery_messages.bbm_html') %>
     </div>
-    <div id="pickup-messages" class="alert alert-warning delivery-messages" style="display: none;">
-      <%= t('forms.local_request.delivery_messages.pap_html') %>
-    </div>
-    <div id="scandeliver-messages" class="alert alert-warning delivery-messages" style="display: none;">
-      <%= t('forms.local_request.delivery_messages.digi_html') %>
-    </div>
-    <%= f.select :delivery_method, delivery_options_for_select(@record), label: t('forms.local_request.fields.delivery_method'), prompt: placeholder_for_delivery_select(@record) %>
-  </section>
+  </div>
 
-  <section id="digital-request-details" style="display: none;">
-    <h2>Digital Request Information</h2>
-    <div class="alert alert-info">
-      Entire works cannot be delivered electronically. Please specify article or chapter information
-      to enable scan delivery of your request.
+  <div class="row">
+    <div class="col-md-12">
+      <section id="digital-request-details" style="display: none;">
+        <h2>Digital Request Information</h2>
+        <div class="alert alert-info">
+          Entire works cannot be delivered electronically. Please specify article or chapter information
+          to enable scan delivery of your request.
+        </div>
+
+        <%= f.text_field :section_title, label: t('forms.local_request.fields.section_title') %>
+        <%= f.text_field :section_author, label: t('forms.local_request.fields.section_author') %>
+        <%= f.text_field :section_pages, label: t('forms.local_request.fields.section_pages') %>
+      </section>
     </div>
+  </div>
 
-    <%= f.text_field :section_title, label: t('forms.local_request.fields.section_title') %>
-    <%= f.text_field :section_author, label: t('forms.local_request.fields.section_author') %>
-    <%= f.text_field :section_pages, label: t('forms.local_request.fields.section_pages') %>
-  </section>
+  <div class="row">
+    <div class="col-md-6">
+      <section id="delivery-details">
+        <h2><%= t('forms.local_request.sections.delivery') %></h2>
+        <div id="booksbymail-messages" class="alert alert-warning delivery-messages" style="display: none;">
+          <%= t('forms.local_request.delivery_messages.bbm_html') %>
+        </div>
+        <div id="pickup-messages" class="alert alert-warning delivery-messages" style="display: none;">
+          <%= t('forms.local_request.delivery_messages.pap_html') %>
+        </div>
+        <div id="scandeliver-messages" class="alert alert-warning delivery-messages" style="display: none;">
+          <%= t('forms.local_request.delivery_messages.digi_html') %>
+        </div>
+        <%= f.select :delivery_method, delivery_options_for_select(@record), label: t('forms.local_request.fields.delivery_method'), prompt: placeholder_for_delivery_select(@record) %>
+      </section>
 
-  <h2>Comments</h2>
-  <%= f.text_area :comments %>
+    </div>
+    <div class="col-md-6">
+      <section id="comments">
+        <h2>Comments</h2>
+        <%= f.text_area :comments %>
+      </section>
+    </div>
+  </div>
 
   <%= f.submit t('forms.common.fields.submit') %>
 
