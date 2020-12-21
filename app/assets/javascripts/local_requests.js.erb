@@ -72,6 +72,7 @@ $(document).ready(function() {
             deliverySelect.appendChild(optionElement);
         })
         updateDeliveryMessaging(deliverySelect[0].value);
+        toggleScanFields(deliverySelect[0].value);
     });
 
     // show hide existing panels based on option value
