@@ -34,6 +34,8 @@
         </div>
         <% if @record.one_item? %>
           <% if @record.items.first.checkoutable? %>
+            <%= f.hidden_field :holding_id, value: @record.holdings.first.id %>
+            <%= f.hidden_field :item_pid, value: @record.items.first.pid %>
             <div class="alert alert-success">
               Item is [in place and not non-circulating, not ETAS restricted and loanable] available for PickUp or Books by Mail Delivery
             </div>
