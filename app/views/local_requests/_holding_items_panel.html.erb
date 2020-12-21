@@ -1,0 +1,19 @@
+<div class="panel panel-success">
+  <div class="panel-heading" role="tab" id="heading<%= i %>">
+    <h5 class="panel-title">
+      <div class="row">
+        <div class="col-md-9">
+          <a class="holding-select-button" role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
+            <%= holding.label %>
+          </a>
+        </div>
+        <div class="col-md-3">
+          <span class="badge pull-right"><%= holding.available_items %></span>
+        </div>
+      </div>
+    </h5>
+  </div>
+  <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
+    <div class="panel-body item-select-container" style="max-height: 250px; overflow-y: auto;"></div>
+  </div>
+</div>

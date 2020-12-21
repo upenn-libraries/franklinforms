@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-sm-6">
+    <%= form.static_control :title, label: t('forms.local_request.fields.title') do %>
+      <%= @record.bib_data['title'] %>
+    <% end %>
+  </div>
+  <div class="col-sm-6">
+    <%= form.static_control :author, label: t('forms.local_request.fields.author') do %>
+      <%= @record.bib_data['author'] %>
+    <% end %>
+  </div>
+</div>

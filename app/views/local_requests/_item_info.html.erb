@@ -1,17 +1,6 @@
 <section id="item-details">
   <h2><%= t('forms.local_request.sections.record') %></h2>
-  <div class="row">
-    <div class="col-sm-6">
-      <%= form.static_control :title, label: t('forms.local_request.fields.title') do %>
-        <%= @record.bib_data['title'] %>
-      <% end %>
-    </div>
-    <div class="col-sm-6">
-      <%= form.static_control :author, label: t('forms.local_request.fields.author') do %>
-        <%= @record.bib_data['author'] %>
-      <% end %>
-    </div>
-  </div>
+  <%= render 'item_bib_info', form: form %>
   <% if @record.one_item? %>
     <%= form.hidden_field :holding_id, value: @record.holdings.first.id %>
     <%= form.hidden_field :item_pid, value: @record.items.first.pid %>
@@ -30,37 +19,21 @@
     </div>
     <%= form.form_group :item, label: { text: "Item" } do %>
       <% @record.items.each do |item| %>
-        <%= form.radio_button :item_pid, item.pid, { label: item.label_for_radio_button, class: 'item-select-radio', data: { delivery: item.delivery_options.join(':') } } %>
+        <%= form.radio_button :item_pid, item.pid,
+                              label: item.label_for_radio_button,
+                              class: 'item-select-radio',
+                              data: { delivery: item.delivery_options.join(':') } %>
       <% end %>
     <% end %>
   <% else %>
     <div class="panel-group" id="holding-accordion" role="tablist" aria-multiselectable="true">
       <% if @record.holdings.any? %>
+        <%= form.hidden_field :holding_id, id: 'holding-id' %>
         <% @record.holdings.each_with_index do |holding, i| %>
           <% if holding.available? %>
-            <div class="hidden">
-              <%= form.radio_button :holding_id, holding.id, class: 'holding-radio' %>
-            </div>
-            <div class="panel panel-success">
-              <div class="panel-heading" role="tab" id="heading<%= i %>">
-                <h5 class="panel-title">
-                  <div class="row">
-                    <div class="col-md-9">
-                      <a class="item-select-button" role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
-                        <%= holding.label %>
-                      </a>
-                    </div>
-                    <div class="col-md-3">
-                      <span class="badge pull-right"><%= "#{holding.available_items} #{'item'.pluralize(holding.available_items)} available" %></span>
-                    </div>
-                  </div>
-                </h5>
-              </div>
-              <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
-                <div class="panel-body item-select-container" style="max-height: 250px; overflow-y: auto;"></div>
-              </div>
-            </div>
+            <%= render 'holding_items_panel', holding: holding, i: i %>
           <% else %>
+            <%# TODO: these items may still be eligible for ScanDelivery %>
             <div class="panel panel-default">
               <div class="panel-heading" role="tab" id="heading<%= i %>">
                 <h4 class="panel-title">

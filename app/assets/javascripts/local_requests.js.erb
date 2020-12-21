@@ -1,3 +1,6 @@
+// LocalRequest form Javascript - a hodgepodge of jQuery and vanilla JS
+// i'm trying :/
+
 // Add a radio button input and bootsrapy markup for given
 // _item_ inside _container_
 function addItemRadio(container, item) {
@@ -66,13 +69,13 @@ function toggleScanFields(value) {
 
 $(document).ready(function() {
     // event handler for clicking on accordion button for holding
-    $('.item-select-button').click(function () {
+    $('.holding-select-button').click(function () {
         var $elem = $(this);
-        $elem.closest('input.holding-radio').checked = true;
+        var holdingId = $elem.data('holding-id');
+        $('input#holding-id').val(holdingId);
         var $radioContainer = $elem.closest('div.panel').find('div.item-select-container');
         if ($radioContainer.html() === "") {
             var mmsId = $elem.data('mms-id');
-            var holdingId = $elem.data('holding-id');
             $.getJSON(holdingUrl(mmsId, holdingId))
                 .fail(function () {
                     alert("Oh no!")
