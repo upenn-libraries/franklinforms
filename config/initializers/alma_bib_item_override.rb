@@ -62,9 +62,19 @@ class Alma::BibItem
     label_info = [
       location_name,
       description,
-      user_due_date_policy
+      user_policy_display(user_due_date_policy)
     ]
     label_info.reject(&:blank?).join(' - ')
+  end
+
+  # @param [String] raw_policy
+  def user_policy_display(raw_policy)
+    case raw_policy
+    when 'Not loanable'
+      'Digital Delivery Only'
+    else
+      raw_policy
+    end
   end
 
   # Hash of data used to build Item radio button client side
