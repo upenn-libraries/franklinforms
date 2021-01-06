@@ -32,19 +32,7 @@
       <% if @record.holdings.any? %>
         <%= form.hidden_field :holding_id, id: 'holding-id' %>
         <% @record.holdings.each_with_index do |holding, i| %>
-          <% if holding.available? %>
-            <%= render 'holding_items_panel', holding: holding, i: i %>
-          <% else %>
-            <%# TODO: these items may still be eligible for ScanDelivery %>
-            <div class="panel panel-default">
-              <div class="panel-heading" role="tab" id="heading<%= i %>">
-                <h4 class="panel-title">
-                  <%= holding.label %>
-                  <span class="badge pull-right">No items available</span>
-                </h4>
-              </div>
-            </div>
-          <% end %>
+          <%= render 'holding_items_panel', holding: holding, i: i %>
         <% end %>
       <% else %>
         <p>No holdings - what's up with that?</p>
