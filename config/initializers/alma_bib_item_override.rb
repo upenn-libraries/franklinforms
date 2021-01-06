@@ -72,6 +72,8 @@ class Alma::BibItem
     case raw_policy
     when 'Not loanable'
       'Digital Delivery Only'
+    when 'End of Year'
+      'Return by End of Year'
     else
       raw_policy
     end

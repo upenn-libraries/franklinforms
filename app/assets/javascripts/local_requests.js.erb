@@ -4,25 +4,27 @@
 // Add a radio button input and bootsrapy markup for given
 // _item_ inside _container_
 function addItemRadio(container, item) {
-    var pid = item['pid'];
-    var div = document.createElement('div')
-    div.className = 'radio'
-    var input = document.createElement('input');
+    var pid = item["pid"];
+    var col = document.createElement("div");
+    col.className = "col-md-4";
+    var radio = document.createElement("div");
+    radio.className = "radio";
+    var input = document.createElement("input");
     input.name = "local_request[item_pid]";
-    input.className = "item-select-radio"
-    input.type = 'radio';
+    input.className = "item-select-radio";
+    input.type = "radio";
     input.value = pid;
     input.setAttribute(
-        'data-delivery',
-        item['delivery_options'].join(':')
+        "data-delivery",
+        item['delivery_options'].join(":")
     )
-    var label = document.createElement('label');
-    // label.htmlFor = "item-select";
+    var label = document.createElement("label");
+    var radio_label_text = document.createTextNode(item["label"])
     label.appendChild(input);
-    var radio_label_text = document.createTextNode(item['label'])
+    col.appendChild(radio);
     label.appendChild(radio_label_text);
-    div.appendChild(label);
-    container.append(div);
+    radio.appendChild(label);
+    container.append(col);
 }
 
 // calculate URL for grabbing item metadata from local API endpoint
@@ -82,7 +84,12 @@ $(document).ready(function() {
                 })
                 .done(function (data) {
                     $.each(data, function (i, item) {
-                        addItemRadio($radioContainer, item)
+                        if(i % 3 === 0) {
+                            row = document.createElement("div");
+                            row.className = "row";
+                            $radioContainer.append(row);
+                        }
+                        addItemRadio(row, item);
                     });
                 });
         }
