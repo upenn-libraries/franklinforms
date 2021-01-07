@@ -31,9 +31,9 @@ class AlmaApiClient
              pickup_location_library: request.pickup_location,
              comment: request.comments }.to_json
     response = self.class.post request_url(request.mms_id, request.holding_id, request.item_pid),
-                             headers: headers,
-                             query: query,
-                             body: body
+                               headers: headers,
+                               query: query,
+                               body: body
     if response.success?
       # hooray
     else
