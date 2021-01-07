@@ -13,14 +13,14 @@ class LocalRequestsController < ApplicationController
   # submit the request
   def create
     @local_request = LocalRequest.new @user, params
-    # get item for validating request
-    @item = Alma::BibItem.find(
-      @local_request.mms_id,
-      holding_id: @local_request.holding_id
-    ).reject do |item| # ugly
-      item.pid != @local_request.item_pid
-    end.first
-    # @local_request.submit
+    item = AlmaApiClient.new.find_item_for @local_request
+    if item
+      @local_request.bib_item = item
+    else
+      # identifiers in POST body somehow invalid
+    end
+    @local_request.submit
+    # TODO: redirect to confirmation message @ #show
   end
 
   # show confirmation

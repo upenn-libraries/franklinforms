@@ -1,10 +1,11 @@
 class LocalRequest
   include ActiveModel::Model
 
-  attr_accessor :delivery_method, :comments
+  attr_accessor :delivery_method, :comments, :pickup_location
   attr_accessor :user, :name, :email, :affiliation
   attr_accessor :section_title, :section_author, :section_pages
   attr_accessor :item_pid, :mms_id, :holding_id
+  attr_accessor :bib_item
 
   REQUEST_TYPES = [:book, :scan]
 
@@ -17,6 +18,9 @@ class LocalRequest
     self.mms_id = data[:mms_id]
     self.email = data[:email]
     self.comments = data[:comments]
+    # NOTE: In COVID times, pickup location is always VanP
+    # self.pickup_location = data[:pickup_location] || 'VanPeltLib'
+    self.pickup_location = 'VanPeltLib'
     self.delivery_method = data[:delivery_method]
     self.holding_id = data[:holding_id]
     self.item_pid = data[:item_pid]
@@ -28,7 +32,12 @@ class LocalRequest
   # TODO: validations
 
   def submit
-    # TODO: Submit via service
+    alma_api = AlmaApiClient.new
+    if delivery_method == 'pickup'
+      alma_api.create_item_request self
+    else
+      # Illiad request
+    end
   end
 
 
