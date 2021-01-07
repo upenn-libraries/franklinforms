@@ -12,18 +12,21 @@
       <div class="alert alert-warning">
         <%= t('forms.local_request.messages.unavailable_html', ill_link: '#') %>
       </div>
+      <p>Should we allow digital delivery request for an unavailable item?</p>
     <% end %>
   <% elsif @record.items&.any? %>
     <div class="alert alert-info">
       <%= t('forms.local_request.messages.item_prompt') %>
     </div>
     <%= form.form_group :item, label: { text: "Item" } do %>
-      <div class="item-select-container" style="max-height: 250px; overflow-y: auto;">
+      <div class="row item-select-container" style="max-height: 250px; overflow-y: auto;">
         <% @record.items.each do |item| %>
+          <div class="col-md-4">
             <%= form.radio_button :item_pid, item.pid,
                                   label: item.label_for_radio_button,
                                   class: 'item-select-radio',
                                   data: { delivery: item.delivery_options.join(':') } %>
+          </div>
         <% end %>
       </div>
     <% end %>

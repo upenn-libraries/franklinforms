@@ -74,6 +74,8 @@ class Alma::BibItem
       'Digital Delivery Only'
     when 'End of Year'
       'Return by End of Year'
+    when 'End of Term'
+      'Return by End of Term'
     else
       raw_policy
     end
