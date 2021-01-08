@@ -1,14 +1,17 @@
 require 'rails_helper'
 
-# TODO: webmock
 RSpec.describe AlmaRecord, type: :model do
+  include MockAlmaApi
   describe '#initialize' do
     context 'for a single item book holding' do
       let(:mms_id) { '9922327423503681' }
       let(:record) do
         AlmaRecord.new mms_id
       end
-
+      before do
+        stub_bib_get_success
+        stub_items_get_success
+      end
       it 'has a bib_data hash' do
         expect(record.bib_data).to be_a Hash
       end

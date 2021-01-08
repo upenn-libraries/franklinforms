@@ -9,6 +9,22 @@ module MockAlmaApi
     )
   end
 
+  def stub_bib_get_success
+    stub(
+      :get,
+      "#{Alma.configuration.region}/almaws/v1/bibs?expand=p_avail,e_avail,d_avail&mms_id=9922327423503681",
+      'bib_get_success.json'
+    )
+  end
+
+  def stub_items_get_success
+    stub(
+      :get,
+      "#{Alma.configuration.region}/almaws/v1/bibs/9922327423503681/holdings/22410814720003681/items?expand=due_date,due_date_policy&limit=100&user_id=GUEST",
+      'items_get_success.json'
+    )
+  end
+
   def stub_item_get_success
     stub(
       :get,
