@@ -2,6 +2,7 @@ class AlmaApiClient
   include HTTParty
 
   class ItemNotFound < StandardError; end
+  class RequestFailed < StandardError; end
 
   base_uri Alma.configuration.region
 
@@ -34,10 +35,9 @@ class AlmaApiClient
                                headers: headers,
                                query: query,
                                body: body
-    if response.success?
-      # hooray
-    else
-      # get error code
+    if response['errorsExist']
+      raise RequestFailed, 'Request failed'
+      # boo, get error code
       # 401890 User with identifier X of type Y was not found.
       # 401129 No items can fulfill the submitted request.
       # 401136 Failed to save the request: Patron has active request for selected item.
@@ -48,6 +48,9 @@ class AlmaApiClient
       # 60328 Item for request was not found.
       # 60331 Failed to create request.
       # 401652 General Error - An error has occurred while processing the request.
+    else
+      true
+      # hooray!
     end
   end
 

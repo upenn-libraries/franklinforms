@@ -25,6 +25,22 @@ module MockAlmaApi
     )
   end
 
+  def stub_request_post_success
+    stub(
+      :post,
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/3456/requests?apikey=test_api_key&format=json&user_id=&user_id_type=all_unique",
+      'request_post_success.json'
+    )
+  end
+
+  def stub_request_post_failure
+    stub(
+      :post,
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/9876/requests?apikey=test_api_key&format=json&user_id=&user_id_type=all_unique",
+      'request_post_failure.json'
+    )
+  end
+
   private
 
   # @param [Symbol] http_method
