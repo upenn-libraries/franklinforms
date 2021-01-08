@@ -12,10 +12,10 @@ class AlmaApiClient
   def find_item_for(request)
     response = self.class.get item_url(request.mms_id, request.holding_id, request.item_pid),
                               query: default_query
-    if response.success?
-      Alma::BibItem.new response
-    else
+    if response['errorsExist']
       raise ItemNotFound, "Item can't be found for: #{request.item_pid}"
+    else
+      Alma::BibItem.new response
     end
   end
 
