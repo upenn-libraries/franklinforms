@@ -83,9 +83,10 @@ $(document).ready(function() {
                     alert("Oh no!")
                 })
                 .done(function (data) {
+                    var row;
                     $.each(data, function (i, item) {
                         if(i % 3 === 0) {
-                            var row = document.createElement("div");
+                            row = document.createElement("div");
                             row.className = "row";
                             $radioContainer.append(row);
                         }
