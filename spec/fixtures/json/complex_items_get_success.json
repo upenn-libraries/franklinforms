@@ -2,31 +2,32 @@
   "item": [
     {
       "bib_data": {
-        "mms_id": "1234",
-        "title": "Mathematics as a science of patterns /",
-        "author": "Resnik, Michael D.",
+        "mms_id": "1111",
+        "title": "Being and time.",
+        "author": "Heidegger, Martin,",
         "issn": null,
-        "isbn": "0198236085 (hb)",
+        "isbn": null,
         "complete_edition": "",
         "network_number": [
-          "(PU)2232742-penndb-Voyager",
-          "2232742",
-          "NHDG97-B17544",
-          "(OCoLC)36011733",
-          "(OCoLC)ocm36011733"
+          "(PU)952277-penndb-Voyager",
+          "952277",
+          "(CaOTULAS)159508682",
+          "(CStRLIN)PAUG88-B37833",
+          "(OCoLC)372138",
+          "(OCoLC)ocm00372138"
         ],
-        "place_of_publication": "Oxford : New York :",
-        "date_of_publication": "1997.",
-        "publisher_const": "Oxford University Press",
-        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/bibs/9922327423503681"
+        "place_of_publication": "New York,",
+        "date_of_publication": "[1962]",
+        "publisher_const": "Harper",
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/bibs/1111"
       },
       "holding_data": {
-        "holding_id": "2345",
+        "holding_id": "2222",
         "call_number_type": {
           "value": "0",
           "desc": "Library of Congress classification"
         },
-        "call_number": "QA8.4 .R473 1997",
+        "call_number": "B3279.H48 S43 1962",
         "accession_number": "",
         "copy_id": "0",
         "in_temp_location": false,
@@ -47,16 +48,16 @@
           "value": "",
           "desc": null
         },
-        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/bibs/1234/holdings/2345"
+        "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/bibs/1111/holdings/2222"
       },
       "item_data": {
-        "pid": "3456",
-        "barcode": "31198022078369",
+        "pid": "3333",
+        "barcode": "31198017469615",
         "creation_date": "2017-06-06Z",
-        "modification_date": "2021-01-08Z",
+        "modification_date": "2020-11-23Z",
         "base_status": {
-          "value": "0",
-          "desc": "Item not in place"
+          "value": "1",
+          "desc": "Item in place"
         },
         "awaiting_reshelving": false,
         "physical_material_type": {
@@ -73,7 +74,7 @@
         },
         "po_line": "",
         "is_magnetic": false,
-        "arrival_date": "1998-02-12Z",
+        "arrival_date": "1997-06-12Z",
         "year_of_issue": "",
         "enumeration_a": "",
         "enumeration_b": "",
@@ -91,8 +92,8 @@
         "description": "",
         "receiving_operator": "import",
         "process_type": {
-          "value": "HOLDSHELF",
-          "desc": "Hold Shelf"
+          "value": "",
+          "desc": null
         },
         "inventory_number": "",
         "inventory_price": "",
@@ -116,12 +117,12 @@
         "fulfillment_note": "",
         "due_date_policy": "Please log in for loan and request information",
         "internal_note_1": "",
-        "internal_note_2": "",
+        "internal_note_2": "Extra barcodes: 31198017222493",
         "internal_note_3": "ON_RESERVE: N | RESERVE_CHARGES: 0 | RECALLS_PLACED: 0 | HOLDS_PLACED: 0 | HISTORICAL_BOOKINGS: 0 | SHORT_LOAN_CHARGES: 0 | ",
         "statistics_note_1": "",
         "statistics_note_2": "",
         "statistics_note_3": "",
-        "requested": true,
+        "requested": false,
         "edition": null,
         "imprint": null,
         "language": null,
@@ -130,7 +131,7 @@
           "desc": null
         }
       },
-      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/bibs/1234/holdings/2345/items/3456"
+      "link": "https://api-na.hosted.exlibrisgroup.com/almaws/v1/bibs/1111/holdings/2222/items/3333"
     }
   ],
   "total_record_count": 1

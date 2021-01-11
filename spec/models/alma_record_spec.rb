@@ -4,7 +4,7 @@ RSpec.describe AlmaRecord, type: :model do
   include MockAlmaApi
   describe '#initialize' do
     context 'for a single item book holding' do
-      let(:mms_id) { '9922327423503681' }
+      let(:mms_id) { '1234' }
       let(:record) do
         AlmaRecord.new mms_id
       end
@@ -23,9 +23,12 @@ RSpec.describe AlmaRecord, type: :model do
       end
     end
     context 'for a complex record with many holdings' do
-      let(:mms_id) { '99123503681' }
+      let(:mms_id) { '1111' }
       let(:record) do
         AlmaRecord.new mms_id
+      end
+      before do
+        stub_complex_bib_get_success
       end
       it 'has a bib_data hash' do
         expect(record.bib_data).to be_a Hash
@@ -39,10 +42,14 @@ RSpec.describe AlmaRecord, type: :model do
       end
     end
     context 'with a holding specified' do
-      let(:mms_id) { '99123503681' }
-      let(:holding_id) { '22367148200003681' }
+      let(:mms_id) { '1111' }
+      let(:holding_id) { '2222' }
       let(:record) do
         AlmaRecord.new mms_id, holding_id: holding_id
+      end
+      before do
+        stub_complex_bib_get_success
+        stub_complex_items_get_success
       end
       it 'has an array of Items' do
         expect(record.items).to be_an Array
