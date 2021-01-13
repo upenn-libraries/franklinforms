@@ -144,6 +144,52 @@ class Illiad
     return userinfo
   end
 
+  # @param [User] user
+  # @param [Object] params
+  def self.conflicting_user_info?(user, illiad_user)
+    user.data['dept'] != illiad_user['department'] ||
+      user.data['illoffice'] != illiad_user['nvtgc'] ||
+      user.data['status'] != illiad_user['status'] ||
+      user.data['emailAddr'] != illiad_user['emailaddress'] ||
+      user.data['phone'] != illiad_user['phone']
+  end
+
+  # Lookup Illiad user and modify User data as needed
+  # Intended as a drop-in replacement for getIlliadUserInfo
+  # @param [User] user
+  # @param [Object] params
+  # @return [Hash]
+  def self.user_info(user, params)
+    illiad_user = IlliadApi.new.get_user user.data['proxied_for']
+    return unless illiad_user
+
+    # update user object info as needed
+    user.data['emailAddr'] = params['email'].presence || illiad_user['emailaddress'].presence || user.data['email'] || ''
+    user.data['phone'] = illiad_user['phone'] || ''
+    user.data['cleared'] = illiad_user['cleared'] || ''
+    user.data['delivery'] = ''
+
+    ill_office = getILLOffice(user.data)
+    
+    if illiad_user['status'].blank?
+      # user has no status yet - they were probably just created?
+      user.data['illiadrecord'] = 'new'
+      user.data['illoffice'] = ill_office
+    elsif conflicting_user_info?(user, illiad_user)
+      user.data['illiadrecord'] = 'modify'
+      user.data['dept'] = illiad_user['department']
+      user.data['illoffice'] = illiad_user['nvtgc'] || ill_office
+      user.data['delivery'] = illiad_user['address'] || user.data['delivery']
+      user.data['status'] = illiad_user['status'] || user.data['status']
+    else
+      user.data['illiadrecord'] = 'nochange'
+    end
+    
+    user.data['illoffice_name'] = @illoffices[user.data['illoffice']]
+    
+    user.data
+  end
+
   # no DB
   # @param [Hash] userinfo
   def self.getCorrectedDeptDetails(userinfo)
@@ -261,6 +307,93 @@ class Illiad
     db.close
   end
 
+  def self.api_submit(user, bib_data, params, api = IlliadApi.new)
+    # Add availability info from Alma for book requests (?)
+    if bib_data['requesttype'] != 'ScanDelivery' && params['bibid']
+      availability_notes = FranklinAvailability.getAvailabilityNotes params['bibid']
+      bib_data['comments'].concat "\n", availability_notes, "\n"
+    end
+    # Add proxy info for proxy requests
+    bib_data['comments'].concat('  Proxied by ' + user.data['proxied_by']) if user.proxy_request?
+    # deliverytype either comes from Franklin as 'bbm' param
+    # or is set by the Delivery Options drop down in the book request version
+    # of the ILL form. we ship this to ILLiad via the item_info_1 field
+    delivery_option = case params[:deliverytype]
+                      when 'bbm'
+                        # explicit BBM case (user clicked 'Books by Mail' in Franklin)
+                        'Books by Mail'
+                      when 'Books by Mail', 'Van Pelt Library'
+                        params[:deliverytype]
+                      else
+                        ''
+                      end
+    # if the request is explicitly BBM, and we're sure its a 'book' request, prepend the BBM
+    if params[:deliverytype] == 'bbm' && params[:requesttype].downcase == 'book'
+      bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
+    end
+    request_data = case params[:deliverytype].downcase
+                   when 'book'
+                     book_request_body user, bib_data, delivery_option
+                   when 'scandelivery'
+                     scandelivery_request_body user, bib_data
+                   else
+                     other_request_body user, bib_data
+                   end
+    api.transaction request_data
+  end
+
+  def self.book_request_body(user, bib_data, delivery_option)
+    { Username: user.data['proxied_for'],
+      ProcessType: 'Borrowing', # I think this is correct (DocDel, Lending are other options)
+      LoanAuthor: bib_data['author'],
+      LoanTitle: bib_data['booktitle'],
+      LoanPublisher: bib_data['publisher'],
+      LoanPlace: bib_data['place'],
+      LoanDate: bib_data['rftdate'] || bib_data['year'],
+      LoanEdition: bib_data['edition'],
+      ISSN: bib_data['isbn'],
+      ESPNumber: bib_data['pmid'],
+      Notes: bib_data['comments'],
+      CitedIn: bib_data['sid'],
+      ItemInfo1: delivery_option }
+  end
+
+  def self.scandelivery_request_body(user, bib_data)
+    { Username: user.data['proxied_for'],
+      ProcessType: 'Borrowing', # I think this is correct (DocDel, Lending are other options)
+      PhotoJournalTitle: bib_data['title'],
+      PhotoJournalVolume: bib_data['volume'],
+      PhotoJournalIssue: bib_data['issue'],
+      PhotoJournalMonth: bib_data['pmonth'],
+      PhotoJournalYear: bib_data['rftdate'] || bib_data['year'],
+      PhotoJournalInclusivePages: bib_data['pages'],
+      ISSN: bib_data['issn'] || bib_data['isbn'],
+      ESPNumber: bib_data['pmid'],
+      PhotoArticleAuthor: bib_data['author'],
+      PhotoArticleTitle: bib_data['chaptitle'],
+      Notes: bib_data['comments'],
+      CitedIn: bib_data['sid']
+    }
+  end
+
+  def self.other_request_body(user, bib_data)
+    { Username: user.data['proxied_for'],
+      ProcessType: 'Borrowing', # I think this is correct (DocDel, Lending are other options)
+      PhotoJournalTitle: bib_data['journal'],
+      PhotoJournalVolume: bib_data['volume'],
+      PhotoJournalIssue: bib_data['issue'],
+      PhotoJournalMonth: bib_data['pmonth'],
+      PhotoJournalYear: bib_data['rftdate'],
+      PhotoJournalInclusivePages: bib_data['pages'],
+      ISSN: bib_data['issn'],
+      ESPNumber: bib_data['pmid'],
+      PhotoArticleAuthor: bib_data['author'],
+      PhotoArticleTitle: bib_data['article'],
+      Notes: bib_data['comments'],
+      CitedIn: bib_data['sid'],
+    }
+  end
+
   # uses web service
   def self.submit(user, bib_data, params)
 
@@ -336,7 +469,7 @@ class Illiad
               ISSN: bib_data['issn'].presence || bib_data['isbn'].presence,
               ESPNumber: bib_data['pmid'],
               PhotoArticleAuthor: bib_data['author'],
-              PhotoArticleTitle: bib_data['chaptitle'],
+              PhotoArticleTitle: bib_data['chaptitle'] || 'none supplied',
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
 	      CitedIn: bib_data['sid'],
