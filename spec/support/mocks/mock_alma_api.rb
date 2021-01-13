@@ -15,6 +15,7 @@ module MockAlmaApi
       "#{Alma.configuration.region}/almaws/v1/bibs?expand=p_avail,e_avail,d_avail&mms_id=1234",
       'bib_get_success.json'
     )
+
   end
 
   def stub_complex_bib_get_success
@@ -76,7 +77,7 @@ module MockAlmaApi
   private
 
   # @param [Symbol] http_method
-  # @param [String] uri
+  # @param [String, Regexp] uri
   # @param [String] response_fixture filename
   def stub(http_method, uri, response_fixture)
     stub_request(http_method, uri)

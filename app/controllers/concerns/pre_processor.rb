@@ -8,28 +8,24 @@ module PreProcessor
                  request.headers['HTTP_REMOTE_USER']&.split('@')&.first || ''
                end
     case form_id
-      when 'fixit', 'enhanced', 'course', 'booksbymail', 'inprocess', 'onorder', 'booksbymail'
-        record = Alma::Bib.find([params[:bibid]], {expand: :p_avail})
-        holdings_response = Alma::Bib.resources.almaws_v1_bibs.mms_id_holdings.get(Alma::Bib.query_merge(mms_id: params[:bibid]));
-        holdings = Hash[[holdings_response['holdings']['holding'] || []].flatten.map {|h| ["#{h['location']['desc']}", h['holding_id']]}]
-        return {record: BibRecord.new((record.first.response unless record.has_error?)),
-                holdings: holdings,
-                user: User.new(username),
-                params: params}
+      when 'fixit', 'enhanced', 'course', 'booksbymail', 'inprocess', 'onorder'
+        record = Alma::Bib.get_availability([params[:bibid]], {expand: :p_avail})
+        holdings = record.availability[params[:bibid]][:holdings].map do |holding|
+          [holding['location'], holding['holding_id']]
+        end
+        return { record: BibRecord.new((record.bib_data if record.bib_data.present?)),
+                 holdings: holdings,
+                 user: User.new(username),
+                 params: params }
       when 'missing'
-        record = Alma::Bib.find([params[:bibid]], {expand: :p_avail})
-        holdings = Alma::Bib.resources.almaws_v1_bibs.mms_id_holdings.get(Alma::Bib.query_merge(mms_id: params[:bibid]));
-        #xml = Nokogiri::XML(Alma::Bib.resources.almaws_v1_bibs.get(Alma::Bib.query_merge(mms_id: params[:bibid], expand: 'p_avail')).body)
-        #holding_tags = xml.xpath('.//datafield[@tag="AVA"]')
-        #holdings = Hash[holding_tags.map {|h| 
-          #[h.xpath('.//subfield[@code="t"]').text, h.xpath('.//subfield[@code="0"]').text]
-        #}]
-        return {record: BibRecord.new((record.first.response unless record.has_error?)),
-                holdings: Hash[holdings['holdings']['holding'].map {|h| ["#{h['location']['desc']}", h['holding_id']]}],
-                #holdings: Hash[holdings['holdings']['holding'].map {|h| ["#{h['call_number']} (#{h['location']['desc']})", h['holding_id']]}],
-                #holdings: holdings,
-                user: User.new(username),
-                params: params}
+        record = Alma::Bib.get_availability([params[:bibid]], {expand: :p_avail})
+        holdings = record.availability[params[:bibid]][:holdings].map do |holding|
+          [holding['location'], holding['holding_id']]
+        end
+        return { record: BibRecord.new((record.first.response unless record.has_error?)),
+                 holdings: holdings,
+                 user: User.new(username),
+                 params: params }
       when 'aeon'
       when 'help'
         return { params: params }
