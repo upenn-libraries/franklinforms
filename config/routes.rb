@@ -12,6 +12,14 @@ Rails.application.routes.draw do
   get 'forms/:id' => 'form#view', as: 'form'
   post 'forms/:id' => 'form#submit'
 
+  resource :local_requests, only: [:new, :create, :show] do
+    collection do
+      get 'test'
+    end
+  end
+
+  get '/alma/:mms_id/holding/:holding_id/items',
+      to: 'holding_items#index', format: :json
 
   #get '*path' => redirect('/')
 end

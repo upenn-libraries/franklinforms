@@ -1,0 +1,77 @@
+<h2>Local Request Sample links</h2>
+
+<ul>
+  <li>
+    Book, single holding, available
+    <ol>
+      <li>
+        <%= link_to 'Mathematics as a science of patterns / by Michael D. Resnik.',
+                    new_local_requests_path(mms_id: 9922327423503681) %>
+      </li>
+    </ol>
+  </li>
+  <li>
+    Book, single holding, unavailable
+    <ol>
+      <li>
+        Out on loan: <%= link_to 'The structure of scientific revolutions / Thomas S. Kuhn ; with an introductory essay by Ian Hacking.',
+                                 new_local_requests_path(mms_id: 9957534683503681) %>
+      </li>
+      <li>
+        Available, "Not loanable": <%= link_to 'The structure of scientific revolutions.',
+                                               new_local_requests_path(mms_id: 9931904313503681) %>
+      </li>
+    </ol>
+  </li>
+  <li>
+    Book, multiple holdings, mixed availability?
+    <ol>
+      <li>
+        One (item, holding?) not on shelf: <%= link_to 'Being and time. Translated by John Macquarrie & Edward Robinson.',
+                                                      new_local_requests_path(mms_id: 999522773503681) %>
+      </li>
+    </ol>
+  </li>
+  <li>
+    Book, unavailable due to ETAS
+    <ol>
+      <li>
+        Unavailable due to ETAS (3 items or 3 holdings?): <%= link_to 'The structure of scientific revolutions / Thomas S. Kuhn.',
+                                                                      new_local_requests_path(mms_id: 9940779513503681) %>
+      </li>
+    </ol>
+  </li>
+</ul>
+
+<ul>
+  <li>
+    Serial, mixed availability due to ETAS reasons
+    <ol>
+      <li>
+        One holding, P@P shown, ETAS links shown: <%= link_to 'The Philosophical review.', new_local_requests_path(mms_id: 99639913503681) %>
+      </li>
+    </ol>
+  </li>
+  <li>
+    Serial, mixed availability due to non-ETAS reasons
+    <ol>
+      <li>
+        Some special collection holdings (P@P shown for one but not the other): <%= link_to 'National Geographic.', new_local_requests_path(mms_id: 99123503681) %>
+      </li>
+      <li>
+        One holding shown available for P@P: <%= link_to 'Nous', new_local_requests_path(mms_id: 99640363503681) %>
+      </li>
+    </ol>
+  </li>
+  <li>
+    Serial, single holding, available
+    <ol>
+      <li> Synthese: <%= link_to 'Synthese.', new_local_requests_path(mms_id: 9920103503681) %></li>
+    </ol>
+  </li>
+</ul>
+
+<ul>
+  <li><%= link_to 'NEJM', new_local_requests_path(mms_id: 99147513503681) %></li>
+  <li></li>
+</ul>

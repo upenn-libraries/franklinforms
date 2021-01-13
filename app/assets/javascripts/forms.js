@@ -2,10 +2,13 @@ function submit_fixit() {
   return form_validate(['email', 'title']);
 }
 
+// no longer used in ILL form
 function submit_ill() {
-  return form_validate(['email', 'booktitle', 'chaptitle', 'pages', 'journal', 'article', 'rftdate', 'year', 'author']);
+  return form_validate(['email', 'booktitle', 'chaptitle', 'pages', 'journal',
+      'article', 'rftdate', 'year', 'author']);
 }
 
+// BBM form is no longer used
 function submit_booksbymail() {
   return form_validate(['email', 'title', 'author']);
 }

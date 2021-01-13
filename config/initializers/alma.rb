@@ -1,6 +1,4 @@
 Alma.configure do |config|
-  # You have to set te apikey 
-  config.apikey     = ENV['ALMA_API_KEY']
-  # Alma gem defaults to querying Ex Libris's North American Api servers. You can override that here.
-  # config.region   = "https://api-eu.hosted.exlibrisgroup.com
+  config.apikey = Rails.env.test? ? 'test_api_key' : ENV['ALMA_API_KEY']
+  config.timeout = 10
 end

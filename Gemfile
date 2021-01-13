@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'alma'
+gem 'alma', git: 'https://github.com/tulibraries/alma_rb.git', tag: 'v0.3.0'
 gem 'blacklight'
-gem 'bootstrap_form'
+gem 'bootstrap_form', '= 2.7.0'
 gem 'bootstrap-sass', '~> 3.4.0', '>= 3.4.1'
 gem 'coffee-rails'
 gem 'dbi'
@@ -22,7 +22,6 @@ gem 'tzinfo-data'
 gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
-  gem 'byebug', platform: :mri
   gem 'capybara'
   gem 'dotenv-rails'
   gem 'rspec-rails'
@@ -35,4 +34,3 @@ end
 group :test do
   gem 'webmock'
 end
-

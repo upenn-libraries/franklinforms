@@ -1,0 +1,29 @@
+<div class="panel panel-<%= holding.available? ? 'success' : 'warning' %>">
+  <div class="panel-heading" role="tab" id="heading<%= i %>">
+    <h5 class="panel-title">
+      <div class="row">
+        <div class="col-md-9">
+          <a class="holding-select-button" role="button" data-toggle="collapse" data-parent="#holding-accordion" href="#collapse<%= i %>" aria-expanded="false" aria-controls="collapse<%= i %>" data-mms-id="<%= @record.mms_id %>" data-holding-id="<%= holding.id %>">
+            <%= holding.label %>
+          </a>
+        </div>
+        <div class="col-md-3">
+        <% if holding.available? %>
+          <span class="badge pull-right">
+            <% if holding.available_items > 0 %>
+              <%= holding.available_items %> Available
+            <% else %>
+              Available
+            <% end %>
+          </span>
+        <% else %>
+          <span class="badge badge-warning pull-right">Scan Delivery only</span>
+        <% end %>
+        </div>
+      </div>
+    </h5>
+  </div>
+  <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
+    <div class="panel-body item-select-container" style="max-height: 250px; overflow-y: auto;"></div>
+  </div>
+</div>

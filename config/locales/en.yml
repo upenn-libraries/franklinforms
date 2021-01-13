@@ -2,15 +2,20 @@ en:
   forms:
     common:
       fields:
+        name: "Name"
+        email: "Email"
         submit: "Submit"
     ill:
+      fields:
+        deliverytype: 'Delivery'
       messages:
+        limitation_html: "<strong>NOTE:</strong> Please request only <strong>ONE Article or Book Chapter</strong> per request form. We are not able to supply scans of entire books or journal volumes."
+        delivery_options_blank: "Please select an item to see delivery options"
         delivery_address_note_html: "If your departmental address is wrong, please email us at %{mail_link}"
     bbm:
       messages:
-        delivery_address_note_html: "<p>Deliver to my Books by Mail address</p><p>Are you registered for Books by Mail? If not, please %{read_this} before submitting requests."
-        registration_html: "<span class='bold'>NOTE:</span> <span class='red'>Registration is required</span> (click %{registration_link} to register) to use Books by Mail. Please do not submit Books by Mail requests until you have received your registration confirmation email. These requests will be cancelled."
-        chop_circ: 'NOTE: Due to local circulation policies items from the Pennsylvania Hospital Collection cannot be requested via Books by Mail.'
+        delivery_address_note_html: "<h3>This item will be delivered to your Books by Mail address</h3>"
+        registration_html: "<span class='bold'>NOTE:</span> <span class='red'>Registration is required</span> (click %{registration_link} to register) to use Books by Mail. Requests made prior to registration will be cancelled."
     help:
       page_title: "Request Help"
       message: "Please provide details about the resource you were trying to find."
@@ -18,3 +23,43 @@ en:
         name: "Name"
         email: "Email"
         details: "Your Question"
+    local_request:
+      heading: "Request from Penn Libraries"
+      buttons:
+        submit: "Submit Request"
+        back: "Back to Franklin"
+      delivery_messages:
+        bbm_html: "<strong>IMPORTANT!</strong> Users must <a href='https://upenn.libwizard.com/f/books-by-mail'>register for Books by Mail</a> before submitting requests. Please do not submit Books by Mail requests without registering. These requests will be canceled."
+        pap_html: "The <a href='https://guides.library.upenn.edu/circulation/PickUpatPenn'>PickUp@Penn service</a> currently only provides pickup at Van Pelt-Dietrich Library Center, Ground Floor."
+        digi_html: "Delivery via your ILL account, etc."
+      types:
+        booksbymail: "Books by Mail"
+        scandeliver: "Request Digital Delivery"
+        pickup: "PickUp@Penn"
+      messages:
+        unavailable_html: "Item is currently unavailable for loan. Try <a href='%{ill_link}'>requesting via Interlibrary Loan</a> if you require a physical copy."
+        digital_delivery_warning: "Entire works cannot be delivered electronically. Please specify article or chapter information to enable scan delivery of your request."
+        comment_limit: "Maximum 256 characters"
+        item_prompt: "Which particular item are you interested in?"
+        select_an_item: "Please select an item to see delivery options"
+        select_delivery_option: "Please select a delivery method"
+      sections:
+        patron: "Your Information"
+        delivery: "Delivery"
+        record: "Item Information"
+        digital: "Digital Request Information"
+      fields:
+        affiliation: "Affiliation"
+        delivery_method: "Method"
+        comment: "Comments"
+        title: "Title"
+        author: "Author"
+        issn: "ISSN"
+        publisher: "Publisher"
+        pub_date: "Date of Publication"
+        section_title: "Article/Chapter Title"
+        section_author: "Article/Chapter Author"
+        section_pages: "Page Range"
+
+
+

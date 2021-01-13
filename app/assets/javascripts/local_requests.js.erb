@@ -1,0 +1,123 @@
+// LocalRequest form Javascript - a hodgepodge of jQuery and vanilla JS
+// i'm trying :/
+
+// Add a radio button input and bootsrapy markup for given
+// _item_ inside _container_
+function addItemRadio(container, item) {
+    var pid = item["pid"];
+    var col = document.createElement("div");
+    col.className = "col-md-4";
+    var radio = document.createElement("div");
+    radio.className = "radio";
+    var input = document.createElement("input");
+    input.name = "local_request[item_pid]";
+    input.className = "item-select-radio";
+    input.type = "radio";
+    input.value = pid;
+    input.setAttribute(
+        "data-delivery",
+        item['delivery_options'].join(":")
+    )
+    var label = document.createElement("label");
+    var radio_label_text = document.createTextNode(item["label"])
+    label.appendChild(input);
+    col.appendChild(radio);
+    label.appendChild(radio_label_text);
+    radio.appendChild(label);
+    container.append(col);
+}
+
+// calculate URL for grabbing item metadata from local API endpoint
+function holdingUrl(mms_id, holding_id) {
+    return "/alma/" + mms_id + "/holding/" + holding_id + "/items"
+}
+
+// return label (from Rails' I18n config files) for delivery options select
+function deliveryOptionLabel(option) {
+    switch (option) {
+        case 'scandeliver':
+            return '<%= I18n.t('forms.local_request.types.scandeliver') %>';
+        case 'pickup':
+            return '<%= I18n.t('forms.local_request.types.pickup') %>';
+        case 'booksbymail':
+            return '<%= I18n.t('forms.local_request.types.booksbymail') %>';
+    }
+}
+
+// show hide existing panels based on option value
+function updateDeliveryMessaging(option) {
+    var delivery_message = document.getElementById(option + "-messages");
+    var all_messages = document.getElementsByClassName('delivery-messages');
+    for (var index = 0; index < all_messages.length; index++) {
+        all_messages[index].style.display = 'none';
+    }
+    delivery_message.style.display = 'block';
+}
+
+// determine a css display: value for the ScanDeliver form field section
+function scanFieldsDisplay(value) {
+    if(value === 'scandeliver') {
+        return '';
+    } else {
+        return 'none';
+    }
+}
+
+// show or hide the ScanDeliver form fields
+function toggleScanFields(value) {
+    section = document.getElementById('digital-request-details');
+    section.style.display = scanFieldsDisplay(value);
+}
+
+$(document).ready(function() {
+    // event handler for clicking on accordion button for holding
+    $('.holding-select-button').click(function () {
+        var $elem = $(this);
+        var holdingId = $elem.data('holding-id');
+        $('input#holding-id').val(holdingId);
+        var $radioContainer = $elem.closest('div.panel').find('div.item-select-container');
+        if ($radioContainer.html() === "") {
+            var mmsId = $elem.data('mms-id');
+            $.getJSON(holdingUrl(mmsId, holdingId))
+                .fail(function () {
+                    alert("Oh no!")
+                })
+                .done(function (data) {
+                    var row;
+                    $.each(data, function (i, item) {
+                        if(i % 3 === 0) {
+                            row = document.createElement("div");
+                            row.className = "row";
+                            $radioContainer.append(row);
+                        }
+                        addItemRadio(row, item);
+                    });
+                });
+        }
+    });
+
+    // update visibility of appropriate messaging and ScanDeliver fields based on the
+    // delivery option select
+    $("#local_request_delivery_method").change(function () {
+        updateDeliveryMessaging(this.value);
+        toggleScanFields(this.value);
+    });
+});
+
+// event handler for updating delivery option select when item
+// is chosen
+$(document).on('click', '.item-select-radio', function() {
+    var deliverySelect = document.getElementById('local_request_delivery_method');
+    // TODO: remove all but the default
+    deliverySelect.innerHTML = '';
+    var deliveryOptions = this.getAttribute('data-delivery').split(":")
+    deliveryOptions.forEach(function(option) {
+        var optionText = deliveryOptionLabel(option);
+        var optionElement = document.createElement('option');
+        optionElement.text = optionText;
+        optionElement.value = option;
+        deliverySelect.appendChild(optionElement);
+    })
+    updateDeliveryMessaging(deliverySelect[0].value);
+    toggleScanFields(deliverySelect[0].value);
+});

@@ -1,0 +1,45 @@
+<section id="item-details">
+  <h2><%= t('forms.local_request.sections.record') %></h2>
+  <%= render 'item_bib_info', form: form %>
+  <% if @record.one_item? %>
+    <%= form.hidden_field :holding_id, value: @record.holdings.first.id %>
+    <%= form.hidden_field :item_pid, value: @record.items.first.pid %>
+    <% if @record.items.first.checkoutable? %>
+      <div class="alert alert-success">
+        Item is [in place and not non-circulating, not ETAS restricted and loanable] available for PickUp or Books by Mail Delivery
+      </div>
+    <% else %>
+      <div class="alert alert-warning">
+        <%= t('forms.local_request.messages.unavailable_html', ill_link: '#') %>
+      </div>
+      <p>Should we allow digital delivery request for an unavailable item?</p>
+    <% end %>
+  <% elsif @record.items&.any? %>
+    <div class="alert alert-info">
+      <%= t('forms.local_request.messages.item_prompt') %>
+    </div>
+    <%= form.form_group :item, label: { text: "Item" } do %>
+      <div class="row item-select-container" style="max-height: 250px; overflow-y: auto;">
+        <% @record.items.each do |item| %>
+          <div class="col-md-4">
+            <%= form.radio_button :item_pid, item.pid,
+                                  label: item.label_for_radio_button,
+                                  class: 'item-select-radio',
+                                  data: { delivery: item.delivery_options.join(':') } %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="panel-group" id="holding-accordion" role="tablist" aria-multiselectable="true">
+      <% if @record.holdings.any? %>
+        <%= form.hidden_field :holding_id, id: 'holding-id' %>
+        <% @record.holdings.each_with_index do |holding, i| %>
+          <%= render 'holding_items_panel', holding: holding, i: i %>
+        <% end %>
+      <% else %>
+        <p>No holdings - what's up with that?</p>
+      <% end %>
+    </div>
+  <% end %>
+</section>
