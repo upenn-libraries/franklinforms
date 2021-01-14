@@ -19,7 +19,7 @@ class IlliadApi
   # @return [String, nil]
   def transaction(transaction_data)
     options = @default_options
-    options[:body] = transaction_data
+    options[:body] = transaction_data.to_json
     response = self.class.post('/transaction', options)
     parsed_response = JSON.parse response.body
     if parsed_response.key? 'TransactionNumber'

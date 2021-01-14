@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe IlliadApi, type: :model do
-  include IlliadApiMocks
+  include MockIlliadApi
   let(:api) { IlliadApi.new }
   context 'api book request submit' do
     let(:user) do
@@ -17,7 +17,7 @@ RSpec.describe IlliadApi, type: :model do
       }
     end
     it 'returns a transaction number' do
-      mock_book_transaction
+      stub_transaction_post_success
       body = Illiad.book_request_body user, bib_data_book, 'test'
       response = api.transaction body
       expect(response).to eq '123456'
@@ -34,14 +34,14 @@ RSpec.describe IlliadApi, type: :model do
     end
     context 'lookup' do
       it 'returns user info' do
-        mock_get_user_transaction
+        stub_user_get_success
         response = api.get_user 'testuser'
         expect(response&.keys).to include :username, :emailaddress
       end
     end
     context 'create' do
       it 'returns newly created user info' do
-        mock_create_user_transaction
+        stub_user_post_success
         response = api.create_user user_info
         expect(response&.dig(:username)).to eq 'testuser'
       end
