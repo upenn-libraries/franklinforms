@@ -45,7 +45,7 @@ module MockAlmaApi
   def stub_item_get_success
     stub(
       :get,
-      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/3456?apikey=test_api_key&format=json",
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/3456?apikey=test-alma-apikey&format=json",
       'alma/item_get_success.json'
     )
   end
@@ -53,7 +53,7 @@ module MockAlmaApi
   def stub_item_get_failure
     stub(
       :get,
-      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/9876?apikey=test_api_key&format=json",
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/9876?apikey=test-alma-apikey&format=json",
       'alma/item_get_failure.json'
     )
   end
@@ -61,7 +61,7 @@ module MockAlmaApi
   def stub_request_post_success
     stub(
       :post,
-      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/3456/requests?apikey=test_api_key&format=json&user_id=&user_id_type=all_unique",
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/3456/requests?apikey=test-alma-apikey&format=json&user_id=&user_id_type=all_unique",
       'alma/request_post_success.json'
     )
   end
@@ -69,7 +69,7 @@ module MockAlmaApi
   def stub_request_post_failure
     stub(
       :post,
-      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/9876/requests?apikey=test_api_key&format=json&user_id=&user_id_type=all_unique",
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/9876/requests?apikey=test-alma-apikey&format=json&user_id=&user_id_type=all_unique",
       'alma/request_post_failure.json'
     )
   end
