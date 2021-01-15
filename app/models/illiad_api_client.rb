@@ -1,5 +1,10 @@
-class IlliadApi
+class IlliadApiClient
   include HTTParty
+
+  class UserNotFound < StandardError; end
+  class RequestFailed < StandardError; end
+  class InvalidRequest < StandardError; end
+
   base_uri ENV['ILLIAD_API_BASE_URI']
 
   def initialize
@@ -25,8 +30,7 @@ class IlliadApi
     if parsed_response.key? 'TransactionNumber'
       parsed_response['TransactionNumber']
     else
-      Rails.logger.error "Illiad API request failure: #{response.message}"
-      nil
+      raise RequestFailed, response.message
     end
   end
 
@@ -34,7 +38,7 @@ class IlliadApi
   # @param [String] username
   # @return [Hash, nil] parsed response
   def get_user(username)
-    respond_to self.class.get("/users/#{username}", @default_options)
+    respond_to self.class.get("/users/#{username}", @default_options), UserNotFound
   end
 
   # Create an Illiad user with a username, at least
@@ -42,37 +46,19 @@ class IlliadApi
   # @return [Hash, nil]
   def create_user(user_info)
     options = @default_options
-    return unless valid? user_info
+    raise InvalidRequest unless valid? user_info
 
-    user_info["NotificationPreferences"] = notification_preferences
-    options[:body] = user_info
+    options[:body] = user_info.to_json
     respond_to self.class.post('/users', options)
   end
 
   private
 
-  # @return [Array]
-  def notification_preferences
-    activities = %w[ClearedUser PasswordReset RequestCancelled RequestOther
-      RequestOverdue RequestPickup RequestShipped RequestElectronicDelivery]
-    notification_entries activities
-  end
-
-  # @param [Array] activities
-  # @return [Array<Array<String>>]
-  def notification_entries(activities)
-    activities.map do |activity_type|
-      { "ActivityType" => activity_type,
-        "NotificationType" => "Email" }
-    end
-
-  end
-
-  def respond_to(response)
+  def respond_to(response, exception_class = RequestFailed)
     if response.code == 200
       JSON.parse(response.body).transform_keys { |k| k.downcase.to_sym }
     else
-      nil
+      raise exception_class, response.body
     end
   end
 

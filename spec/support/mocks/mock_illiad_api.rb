@@ -3,33 +3,76 @@ module MockIlliadApi
   def stub_transaction_post_success
     stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/transaction")
       .with(
-        body: book_transaction_data,
+        body: json_string('illiad/transaction_post_body.json'),
         headers: default_headers
       ).to_return(
-        status: 200, body: json_string('illiad/transaction_post_success.json'), headers: {}
+        status: 200,
+        body: json_string('illiad/transaction_post_success.json'),
+        headers: {}
+      )
+  end
+
+  def stub_transaction_post_failure
+    stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/transaction")
+      .with(
+        body: "\"invalid-json\"",
+        headers: default_headers
+      ).to_return(
+        status: 400,
+        body: json_string('illiad/transaction_post_failure.json'),
+        headers: {}
       )
   end
 
   def stub_user_get_success
     stub_request(:get, "#{ENV['ILLIAD_API_BASE_URI']}/users/testuser")
-      .with(headers: default_headers)
-      .to_return(status: 200, body: json_string('illiad/user_success_response.json'), headers: {})
+      .with(
+        headers: default_headers
+      )
+      .to_return(
+        status: 200,
+        body: json_string('illiad/user_success_response.json'),
+        headers: {}
+      )
+  end
+
+  def stub_user_get_failure
+    stub_request(:get, "#{ENV['ILLIAD_API_BASE_URI']}/users/irrealuser")
+      .with(
+        headers: default_headers
+      )
+      .to_return(
+        status: 404,
+        body: json_string('illiad/user_get_failure.json'),
+        headers: {}
+      )
   end
 
   def stub_user_post_success
     stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/users")
       .with(
-        body: "Username=testuser&LastName=User&FirstName=Test&EMailAddress=testuser%40upenn.edu&NotificationPreferences[][ActivityType]=ClearedUser&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=PasswordReset&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestCancelled&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestOther&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestOverdue&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestPickup&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestShipped&NotificationPreferences[][NotificationType]=Email&NotificationPreferences[][ActivityType]=RequestElectronicDelivery&NotificationPreferences[][NotificationType]=Email",        headers: default_headers
+        body: json_string('illiad/user_post_body.json'),
+        headers: default_headers
       ).to_return(
-        status: 200, body: json_string('illiad/user_success_response.json'), headers: {}
+        status: 200,
+        body: json_string('illiad/user_success_response.json'),
+        headers: {}
       )
   end
 
-  private
-
-  def book_transaction_data
-    '{"Username":"testuser","ProcessType":"Borrowing","LoanAuthor":"B Franklin","LoanTitle":"Autobiography","LoanPublisher":"Penn Press","LoanPlace":"Philadelphia, PA","LoanDate":"2020","LoanEdition":null,"ISSN":null,"ESPNumber":null,"Notes":null,"CitedIn":null,"ItemInfo1":"test"}'
+  def stub_user_post_failure
+    stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/users")
+      .with(
+        body: "{ \"Username\":\"value\" }",
+        headers: default_headers
+      ).to_return(
+      status: 400,
+      body: '',
+      headers: {}
+    )
   end
+
+  private
 
   def default_headers
     { 'Accept' => 'application/json; version=1',

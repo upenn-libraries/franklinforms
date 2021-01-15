@@ -10,6 +10,8 @@ class AlmaApiClient
     Alma.configuration.apikey
   end
 
+  # @param [LocalRequest] request
+  # @return [Alma::BibItem]
   def find_item_for(request)
     response = self.class.get item_url(request.mms_id, request.holding_id, request.item_pid),
                               query: default_query
