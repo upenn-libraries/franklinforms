@@ -3,7 +3,7 @@ class LocalRequest
 
   attr_accessor :delivery_method, :comments, :pickup_location
   attr_accessor :user, :name, :email, :affiliation
-  attr_accessor :section_title, :section_author, :section_pages
+  attr_accessor :section_title, :section_author, :section_pages, :section_volume, :section_issue
   attr_accessor :item_pid, :mms_id, :holding_id
   attr_accessor :bib_item
 

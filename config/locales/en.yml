@@ -60,6 +60,13 @@ en:
         section_title: "Article/Chapter Title"
         section_author: "Article/Chapter Author"
         section_pages: "Page Range"
-
+        section_volume: "Volume"
+        section_issue: "Issue"
+      help:
+        section_title: "Title or number indication section of work to be digitized."
+        section_author: "Author(s) of section to be digitized."
+        section_pages: "Page range of section to be digitized."
+        section_volume: "Volume containing section for digitization."
+        section_issue: "Issue containing section for digitization."
 
 

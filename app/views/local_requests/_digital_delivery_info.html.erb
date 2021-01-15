@@ -3,7 +3,27 @@
   <div class="alert alert-info">
     <%= t('forms.local_request.messages.digital_delivery_warning') %>
   </div>
-  <%= form.text_field :section_title, label: t('forms.local_request.fields.section_title') %>
-  <%= form.text_field :section_author, label: t('forms.local_request.fields.section_author') %>
-  <%= form.text_field :section_pages, label: t('forms.local_request.fields.section_pages') %>
+  <%= form.text_field :section_title,
+                      required: true,
+                      label: t('forms.local_request.fields.section_title'),
+                      help: t('forms.local_request.help.section_title') %>
+  <%= form.text_field :section_author,
+                      required: true,
+                      label: t('forms.local_request.fields.section_author'),
+                      help: t('forms.local_request.help.section_author') %>
+  <%= form.text_field :section_pages,
+                      label: t('forms.local_request.fields.section_pages'),
+                      help: t('forms.local_request.help.section_pages') %>
+  <div class="row">
+    <div class="col-md-6">
+      <%= form.text_field :section_volume,
+                          label: t('forms.local_request.fields.section_volume'),
+                          help: t('forms.local_request.help.section_volume') %>
+    </div>
+    <div class="col-md-6">
+      <%= form.text_field :section_issue,
+                          label: t('forms.local_request.fields.section_issue'),
+                          help: t('forms.local_request.help.section_issue') %>
+    </div>
+  </div>
 </section>
