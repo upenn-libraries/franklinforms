@@ -40,7 +40,8 @@ RSpec.describe IlliadApiClient, type: :model do
         'Username' => 'testuser',
         'LastName' => 'User',
         'FirstName' => 'Test',
-        'EMailAddress' => 'testuser@upenn.edu'
+        'EMailAddress' => 'testuser@upenn.edu',
+        'NVTGC' => 'VPL'
       }
     end
     context 'lookup' do
@@ -71,10 +72,10 @@ RSpec.describe IlliadApiClient, type: :model do
       context 'failure' do
         it 'raises an InvalidRequest exception if user data is invalid' do
           expect {
-            api.create_user({ bad: :data })
+            api.create_user({})
           }.to raise_error IlliadApiClient::InvalidRequest
         end
-        it 'raises an InvalidRequest exception if response indicates invalidity' do
+        it 'raises an InvalidRequest exception if response code indicates invalidity' do
           stub_user_post_failure
           expect {
             api.create_user({ "Username": "test" })

@@ -5,6 +5,10 @@ class IlliadApiClient
   class RequestFailed < StandardError; end
   class InvalidRequest < StandardError; end
 
+  # Illiad API documentation states that _only_ Username is required. User create
+  # requests fail, though, with an empty 400 response if NVTGC is not also specified.
+  CREATE_USER_REQUIRED_FIELDS = %w[Username NVTGC]
+
   base_uri ENV['ILLIAD_API_BASE_URI']
 
   def initialize
@@ -46,7 +50,7 @@ class IlliadApiClient
   # @return [Hash, nil]
   def create_user(user_info)
     options = @default_options
-    raise InvalidRequest unless valid? user_info
+    raise InvalidRequest unless has_required_user_fields? user_info
 
     options[:body] = user_info.to_json
     respond_to self.class.post('/users', options)
@@ -65,8 +69,8 @@ class IlliadApiClient
   # Checks if user_info includes minimum required Illiad API fields
   # @param [Hash] user_info
   # @return [TrueClass, FalseClass]
-  def valid?(user_info)
-    user_info&.dig('Username').present?
+  def has_required_user_fields?(user_info = {})
+    (CREATE_USER_REQUIRED_FIELDS - user_info.keys).empty?
   end
 
   def headers
