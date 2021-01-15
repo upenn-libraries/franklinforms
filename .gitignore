@@ -18,6 +18,7 @@
 
 # Ignore ENV files
 .env*
+!.env.test
 !.env.example
 
 # Ignore bash scripts
