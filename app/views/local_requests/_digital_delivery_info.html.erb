@@ -1,7 +1,7 @@
 <section id="digital-request-details" style="display: <%= digital_delivery_only?(@record) ? 'block' : 'none' %>;">
   <h2><%= t('forms.local_request.sections.digital') %></h2>
   <div class="alert alert-info">
-    <%= t('forms.local_request.messages.digital_delivery_warning') %>
+    <%= t('forms.local_request.messages.digital_delivery_warning_html') %>
   </div>
   <%= form.text_field :section_title,
                       required: true,
