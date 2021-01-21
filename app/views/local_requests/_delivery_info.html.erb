@@ -12,5 +12,5 @@
   <%= form.select :delivery_method, delivery_options_for_select(@record),
                   label: t('forms.local_request.fields.delivery_method'),
                   prompt: placeholder_for_delivery_select(@record),
-                  selected: digital_delivery_only?(@record) ? 'scandeliver' : ''  %>
+                  selected: show_digital_delivey_fields?(@record, @local_request) ? 'scandeliver' : @local_request.delivery_method  %>
 </section>

@@ -4,28 +4,33 @@ class LocalRequestsController < ApplicationController
   before_action :redirect, unless: :mms_id_present?
   before_action :set_user
   before_action :set_record, only: :new
+  before_action :set_request, except: :test
 
   # show the form
   def new
-    @local_request = LocalRequest.new @user
+    @local_request.valid? if params[:has_errors]
   end
 
   # submit the request
   def create
-    @local_request = LocalRequest.new @user, params
     item = AlmaApiClient.new.find_item_for @local_request
     if item
       @local_request.bib_item = item
     else
       # identifiers in POST body somehow invalid
+      # TODO: pass along error message
+      redirect_to new_local_requests_path
     end
-    @local_request.submit
-    # TODO: redirect to confirmation message @ #show
+    if @local_request.valid?
+      @local_request.submit
+      redirect_to local_requests_path params: @local_request.to_h
+    else
+      redirect_to new_local_requests_path params: @local_request.to_h
+    end
   end
 
   # show confirmation
   def show
-
   end
 
   # example links for testing/demos
@@ -35,6 +40,10 @@ class LocalRequestsController < ApplicationController
 
   def redirect
     # TODO: show error page if no mms_id param found
+  end
+
+  def set_request
+    @local_request = LocalRequest.new @user, params
   end
 
   def set_record

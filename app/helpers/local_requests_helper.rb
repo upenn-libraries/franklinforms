@@ -28,7 +28,10 @@ module LocalRequestsHelper
   # used when rendering delivery options form elements
   # server-side
   # @param [AlmaRecord] record
-  def digital_delivery_only?(record)
+  # @param [LocalRequest] request
+  def show_digital_delivey_fields?(record, request)
+    return true if request.scandeliver_request?
+
     # if there's more that one item, it's too hard to decide
     return false unless record.one_item?
 

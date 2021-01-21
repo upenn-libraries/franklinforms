@@ -1,4 +1,4 @@
-<section id="digital-request-details" style="display: <%= digital_delivery_only?(@record) ? 'block' : 'none' %>;">
+<section id="digital-request-details" style="display: <%= show_digital_delivey_fields?(@record, @local_request) ? 'block' : 'none' %>;">
   <h2><%= t('forms.local_request.sections.digital') %></h2>
   <div class="alert alert-info">
     <%= t('forms.local_request.messages.digital_delivery_warning_html') %>
