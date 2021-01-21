@@ -44,6 +44,7 @@ RSpec.describe AlmaRecord, type: :model do
       it 'requires the delivery method to be in the item\'s set of supported delivery methods' do
         scandeliver_request.valid?
         expect(scandeliver_request.errors.details).to have_key :delivery_method
+        expect(scandeliver_request.errors.details[:delivery_method].first[:error]).to eq :inclusion
       end
     end
   end
