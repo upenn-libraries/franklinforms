@@ -24,6 +24,8 @@
     </h5>
   </div>
   <div id="collapse<%= i %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<%= i %>">
-    <div class="panel-body item-select-container" style="max-height: 250px; overflow-y: auto;"></div>
+    <div class="panel-body item-select-container spinner" role="alert" aria-live="assertive">
+      <p class="sr-only loading-message">Loading available items...</p>
+    </div>
   </div>
 </div>

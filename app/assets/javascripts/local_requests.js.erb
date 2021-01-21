@@ -76,10 +76,11 @@ $(document).ready(function() {
         var holdingId = $elem.data('holding-id');
         $('input#holding-id').val(holdingId);
         var $radioContainer = $elem.closest('div.panel').find('div.item-select-container');
-        if ($radioContainer.html() === "") {
+        if (!$radioContainer.hasClass('populated')) {
             var mmsId = $elem.data('mms-id');
             $.getJSON(holdingUrl(mmsId, holdingId))
                 .fail(function () {
+//                    TODO: something else
                     alert("Oh no!")
                 })
                 .done(function (data) {
@@ -92,6 +93,9 @@ $(document).ready(function() {
                         }
                         addItemRadio(row, item);
                     });
+                    $radioContainer.addClass('populated');
+                    $radioContainer.removeClass('spinner');
+                    $radioContainer.find('.loading-message').remove();
                 });
         }
     });
