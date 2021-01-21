@@ -1,0 +1,11 @@
+<%= form.hidden_field :holding_id, value: @record.holdings.first.id %>
+<%= form.hidden_field :item_pid, value: @record.items.first.pid %>
+<% if @record.items.first.checkoutable? %>
+  <div class="alert alert-success">
+    Item is [in place and not non-circulating, not ETAS restricted and loanable] available for PickUp or Books by Mail Delivery
+  </div>
+<% else %>
+  <div class="alert alert-warning">
+    <%= t('forms.local_request.messages.unavailable_html', ill_link: '#') %>
+  </div>
+<% end %>
