@@ -6,7 +6,7 @@ RSpec.describe AlmaApiClient, type: :model do
   let(:api) { described_class.new }
   let(:user) { AlmaUser.new('testuser') }
 
-  before { stub_user_get_success }
+  before { stub_alma_user_get_success }
 
   describe '#find_item_for' do
     context 'existing items' do

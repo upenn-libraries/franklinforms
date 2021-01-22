@@ -10,16 +10,18 @@ RSpec.describe IlliadApiClient, type: :model do
     context 'success' do
       let(:bib_data_book) do
         {
-          'author' => 'B Franklin',
-          'booktitle' => 'Autobiography',
-          'publisher' => 'Penn Press',
-          'place' => 'Philadelphia, PA',
-          'year' => '2020'
+          'author' => 'Resnik, Michael D.',
+          'booktitle' => 'Mathematics as a science of patterns /',
+          'publisher' => 'Oxford University Press',
+          'place' => 'Oxford : New York :',
+          'year' => '1997.',
+          'isbn' => '0198236085 (hb)',
+          'edition' => ''
         }
       end
       it 'returns a transaction number' do
         stub_transaction_post_success
-        body = Illiad.book_request_body user, bib_data_book, 'test'
+        body = Illiad.book_request_body user, bib_data_book, 'booksbymail'
         response = api.transaction body
         expect(response).to eq '123456'
       end
@@ -47,14 +49,14 @@ RSpec.describe IlliadApiClient, type: :model do
     context 'lookup' do
       context 'success' do
         it 'returns user info' do
-          stub_user_get_success
+          stub_illiad_user_get_success
           response = api.get_user 'testuser'
           expect(response&.keys).to include :username, :emailaddress
         end
       end
       context 'failure' do
         it 'raises an exception' do
-          stub_user_get_failure
+          stub_illiad_user_get_failure
           expect {
             api.get_user 'irrealuser'
           }.to raise_error IlliadApiClient::UserNotFound
@@ -64,7 +66,7 @@ RSpec.describe IlliadApiClient, type: :model do
     context 'create' do
       context 'success' do
         it 'returns newly created user info' do
-          stub_user_post_success
+          stub_illiad_user_post_success
           response = api.create_user user_info
           expect(response&.dig(:username)).to eq 'testuser'
         end
@@ -76,7 +78,7 @@ RSpec.describe IlliadApiClient, type: :model do
           }.to raise_error IlliadApiClient::InvalidRequest
         end
         it 'raises an InvalidRequest exception if response code indicates invalidity' do
-          stub_user_post_failure
+          stub_illiad_user_post_failure
           expect {
             api.create_user({ "Username": "test" })
           }.to raise_error IlliadApiClient::InvalidRequest

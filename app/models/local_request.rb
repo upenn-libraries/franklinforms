@@ -49,13 +49,9 @@ class LocalRequest
   # @return [TrueClass, String, nil]
   def submit
     confirmation = if delivery_method == 'pickup'
-                     # AlmaApiClient.new.create_item_request self # raises exception on error
-                     puts "Submitted to Alma: #{self}"
-                     'alma1234'
+                     AlmaApiClient.new.create_item_request self
                    else
-                     # IlliadApiClient.new.transaction self.for_illiad # raises exception on error
-                     puts "Submitted to ILLiad: #{self.for_illiad}"
-                     'ill5678'
+                     IlliadApiClient.new.transaction self.for_illiad
                    end
     self.confirmation = confirmation
   rescue StandardError => e
@@ -90,8 +86,28 @@ class LocalRequest
   end
 
   def for_illiad
-    # TODO: hash for use by ILL API method
-    to_h
+    case delivery_method
+    when 'booksbymail'
+      # map data to old-style bib_data values
+      bib_data = HashWithIndifferentAccess.new({
+        proxied_for: user.id,
+        author: bib_item['bib_data']['author'],
+        booktitle: bib_item['bib_data']['title'],
+        publisher: bib_item['bib_data']['publisher_const'],
+        place: bib_item['bib_data']['place_of_publication'],
+        rftdate: bib_item['bib_data']['date_of_publication'],
+        year: bib_item['bib_data']['date_of_publication'],
+        edition: bib_item['bib_data']['complete_edition'],
+        isbn: bib_item['bib_data']['isbn'],
+        pmid: nil, # TODO: this appears to never be set in Illiad.bib_data
+        comments: comments,
+      })
+      Illiad.book_request_body user, bib_data, delivery_method
+    when 'scandeliver'
+      Illiad.scandelivery_request_body user, to_h
+    when 'pickup'
+      Illiad.book_request_body user, to_h, delivery_method
+    end
   end
 
   # @return [TrueClass, FalseClass]

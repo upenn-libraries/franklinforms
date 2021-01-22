@@ -1,4 +1,5 @@
 {
+  "primary_id": "testuser",
   "full_name": "Test User",
   "user_group": { "value": "TEST" },
   "contact_info": { "email": [{ "preferred": "true", "email_address": "test@upenn.edu" }] },

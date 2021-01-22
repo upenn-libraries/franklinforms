@@ -343,7 +343,9 @@ class Illiad
   end
 
   def self.book_request_body(user, bib_data, delivery_option)
-    { Username: user.data['proxied_for'],
+    username = user.is_a?(AlmaUser) ? user.id : user.data['proxied_for']
+    # TODO: validate delivery_option here?
+    { Username: username,
       ProcessType: 'Borrowing', # I think this is correct (DocDel, Lending are other options)
       LoanAuthor: bib_data['author'],
       LoanTitle: bib_data['booktitle'],

@@ -24,7 +24,7 @@ module MockIlliadApi
       )
   end
 
-  def stub_user_get_success
+  def stub_illiad_user_get_success
     stub_request(:get, "#{ENV['ILLIAD_API_BASE_URI']}/users/testuser")
       .with(
         headers: default_headers
@@ -36,7 +36,7 @@ module MockIlliadApi
       )
   end
 
-  def stub_user_get_failure
+  def stub_illiad_user_get_failure
     stub_request(:get, "#{ENV['ILLIAD_API_BASE_URI']}/users/irrealuser")
       .with(
         headers: default_headers
@@ -48,7 +48,7 @@ module MockIlliadApi
       )
   end
 
-  def stub_user_post_success
+  def stub_illiad_user_post_success
     stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/users")
       .with(
         body: json_string('illiad/user_post_body.json'),
@@ -60,7 +60,7 @@ module MockIlliadApi
       )
   end
 
-  def stub_user_post_failure
+  def stub_illiad_user_post_failure
     stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/users")
       .with(
         body: "{ \"Username\":\"value\" }",

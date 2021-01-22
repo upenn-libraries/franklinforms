@@ -1,7 +1,7 @@
 module MockAlmaApi
   include JsonFixtures
 
-  def stub_user_get_success
+  def stub_alma_user_get_success
     stub(
       :get,
       "#{Alma.configuration.region}/almaws/v1/users/testuser?expand=fees,requests,loans",
@@ -61,7 +61,7 @@ module MockAlmaApi
   def stub_request_post_success
     stub(
       :post,
-      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/3456/requests?apikey=test-alma-apikey&format=json&user_id=&user_id_type=all_unique",
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/3456/requests?apikey=test-alma-apikey&format=json&user_id=testuser&user_id_type=all_unique",
       'alma/request_post_success.json'
     )
   end
@@ -69,7 +69,7 @@ module MockAlmaApi
   def stub_request_post_failure
     stub(
       :post,
-      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/9876/requests?apikey=test-alma-apikey&format=json&user_id=&user_id_type=all_unique",
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/9876/requests?apikey=test-alma-apikey&format=json&user_id=testuser&user_id_type=all_unique",
       'alma/request_post_failure.json'
     )
   end

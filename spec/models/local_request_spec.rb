@@ -1,11 +1,50 @@
 require 'rails_helper'
 
-RSpec.describe AlmaRecord, type: :model do
+RSpec.describe LocalRequest, type: :model do
   include MockAlmaApi
+  include MockIlliadApi
 
   let(:user) { AlmaUser.new('testuser') }
 
-  before { stub_user_get_success }
+  before { stub_alma_user_get_success }
+
+  context 'submission' do
+    context 'via ILLiad API' do
+      let(:api) { IlliadApiClient.new }
+      context 'success' do
+        context 'BBM' do
+          before do
+            stub_item_get_success
+            stub_transaction_post_success
+          end
+          let(:local_request) do
+            request = LocalRequest.new(
+              user,
+              delivery_method: 'booksbymail',
+              requestor_email: user.email,
+              mms_id: '1234', holding_id: '2345', item_pid: '3456'
+            )
+            request.bib_item = AlmaApiClient.new.find_item_for request
+            request
+          end
+          it 'submits and returns a transaction code' do
+            expect(local_request.submit).to eq '123456'
+          end
+        end
+      end
+      context 'failure' do
+
+      end
+    end
+    context 'via Alma API' do
+      context 'success' do
+
+      end
+      context 'failure' do
+
+      end
+    end
+  end
 
   context "validations" do
     let(:request) { LocalRequest.new(user) }
