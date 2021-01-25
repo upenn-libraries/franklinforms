@@ -7,10 +7,12 @@ class LocalRequest
   attr_accessor :user, :requestor_email
   attr_accessor :section_title, :section_author, :section_pages, :section_volume, :section_issue
   attr_accessor :item_pid, :mms_id, :holding_id
-  attr_accessor :bib_item, :confirmation
+  attr_accessor :confirmation
+
   attr_reader :status
 
   validates_presence_of :requestor_email, :delivery_method
+  validates_presence_of :bib_item, message: I18n.t('forms.local_request.messages.bib_item_validation')
   validates_inclusion_of :delivery_method, in: :delivery_options, if: :bib_item_present?
   with_options if: :scandeliver_request? do
     validates_presence_of :section_title, :section_author
@@ -36,6 +38,10 @@ class LocalRequest
     self.section_pages = data[:section_pages]
     self.section_volume = data[:section_volume]
     self.section_issue = data[:section_issue]
+  end
+
+  def bib_item
+    @bib_item ||= AlmaApiClient.new.find_item_for self
   end
 
   def requestor_affiliation

@@ -6,6 +6,12 @@ RSpec.describe LocalRequest, type: :model do
 
   let(:user) { AlmaUser.new('testuser') }
 
+  # @param [Hash] additional_params
+  def identifiers_and(additional_params)
+    identifiers = { mms_id: '1234', holding_id: '2345', item_pid: '3456' }
+    identifiers.merge additional_params
+  end
+
   before { stub_alma_user_get_success }
 
   context 'submission' do
@@ -18,14 +24,12 @@ RSpec.describe LocalRequest, type: :model do
             stub_transaction_post_success
           end
           let(:local_request) do
-            request = LocalRequest.new(
+            LocalRequest.new(
               user,
               delivery_method: 'booksbymail',
               requestor_email: user.email,
               mms_id: '1234', holding_id: '2345', item_pid: '3456'
             )
-            request.bib_item = AlmaApiClient.new.find_item_for request
-            request
           end
           it 'submits and returns a transaction code' do
             expect(local_request.submit).to eq '123456'
@@ -47,7 +51,8 @@ RSpec.describe LocalRequest, type: :model do
   end
 
   context "validations" do
-    let(:request) { LocalRequest.new(user) }
+    before { stub_item_get_success }
+    let(:request) { LocalRequest.new(user, mms_id: '1234', holding_id: '2345', item_pid: '3456') }
     it 'requires a requestor_email value to be present' do
       request.valid?
       expect(request.errors.details).to have_key :requestor_email
@@ -61,7 +66,7 @@ RSpec.describe LocalRequest, type: :model do
     context 'for scandeliver request' do
       let(:scandeliver_request) do
         LocalRequest.new user,
-                         { delivery_method: 'scandeliver' }
+                         delivery_method: 'scandeliver', mms_id: '1234', holding_id: '2345', item_pid: '3456'
       end
       it 'requires additional field values to be present' do
         scandeliver_request.valid?
@@ -73,12 +78,10 @@ RSpec.describe LocalRequest, type: :model do
     context 'for supported delivery methods' do
       before { stub_item_get_success }
       let(:scandeliver_request) do
-        request = LocalRequest.new(
+        LocalRequest.new(
           user, mms_id: '1234', holding_id: '2345', item_pid: '3456',
           delivery_method: 'horseandbuggy'
         )
-        request.bib_item = AlmaApiClient.new.find_item_for request
-        request
       end
       it 'requires the delivery method to be in the item\'s set of supported delivery methods' do
         scandeliver_request.valid?

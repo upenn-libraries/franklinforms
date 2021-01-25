@@ -13,14 +13,6 @@ class LocalRequestsController < ApplicationController
 
   # submit the request
   def create
-    item = AlmaApiClient.new.find_item_for @local_request
-    if item
-      @local_request.bib_item = item
-    else
-      # identifiers in POST body somehow invalid
-      # TODO: pass along error message
-      redirect_to new_local_requests_path
-    end
     if @local_request.valid?
       @local_request.submit
       redirect_to local_requests_path params: @local_request.to_h

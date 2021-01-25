@@ -37,6 +37,7 @@ en:
         scandeliver: "Request Digital Delivery"
         pickup: "PickUp@Penn"
       messages:
+        bib_item_validation: "Unable to get an Item from Alma based on the given identifiers."
         unavailable_html: "Item is currently unavailable for loan. Try <a href='%{ill_link}'>requesting via Interlibrary Loan</a> if you require a physical copy."
         digital_delivery_warning_html: "<p>Entire works cannot be delivered electronically. Please specify article or chapter information to enable scan delivery of your request.</p><p>Please request only one article or book chapter per request.</p>"
         comment_limit: "Maximum 256 characters"
