@@ -3,14 +3,9 @@ require 'rails_helper'
 RSpec.describe LocalRequest, type: :model do
   include MockAlmaApi
   include MockIlliadApi
+  include AlmaSpecHelpers
 
   let(:user) { AlmaUser.new('testuser') }
-
-  # @param [Hash] additional_params
-  def identifiers_and(additional_params)
-    identifiers = { mms_id: '1234', holding_id: '2345', item_pid: '3456' }
-    identifiers.merge additional_params
-  end
 
   before { stub_alma_user_get_success }
 
@@ -26,9 +21,7 @@ RSpec.describe LocalRequest, type: :model do
           let(:local_request) do
             LocalRequest.new(
               user,
-              delivery_method: 'booksbymail',
-              requestor_email: user.email,
-              mms_id: '1234', holding_id: '2345', item_pid: '3456'
+              item_identifiers(delivery_method: 'booksbymail', requestor_email: user.email)
             )
           end
           it 'submits and returns a transaction code' do
@@ -52,7 +45,7 @@ RSpec.describe LocalRequest, type: :model do
 
   context "validations" do
     before { stub_item_get_success }
-    let(:request) { LocalRequest.new(user, mms_id: '1234', holding_id: '2345', item_pid: '3456') }
+    let(:request) { LocalRequest.new(user, item_identifiers) }
     it 'requires a requestor_email value to be present' do
       request.valid?
       expect(request.errors.details).to have_key :requestor_email
@@ -63,10 +56,17 @@ RSpec.describe LocalRequest, type: :model do
       expect(request.errors.details).to have_key :delivery_method
       expect(request.errors.details[:delivery_method].first[:error]).to eq :blank
     end
+    context 'for the bib_item' do
+      let(:malformed_request) { LocalRequest.new user } # no identifiers
+      it 'requires valid alma item identifiers' do
+        expect {
+          malformed_request.bib_item
+        }.to raise_error ArgumentError, 'Insufficient identifiers set'
+      end
+    end
     context 'for scandeliver request' do
       let(:scandeliver_request) do
-        LocalRequest.new user,
-                         delivery_method: 'scandeliver', mms_id: '1234', holding_id: '2345', item_pid: '3456'
+        LocalRequest.new user, item_identifiers(delivery_method: 'scandeliver')
       end
       it 'requires additional field values to be present' do
         scandeliver_request.valid?
@@ -78,10 +78,8 @@ RSpec.describe LocalRequest, type: :model do
     context 'for supported delivery methods' do
       before { stub_item_get_success }
       let(:scandeliver_request) do
-        LocalRequest.new(
-          user, mms_id: '1234', holding_id: '2345', item_pid: '3456',
-          delivery_method: 'horseandbuggy'
-        )
+        LocalRequest.new(user,
+                         item_identifiers(delivery_method: 'horseandbuggy'))
       end
       it 'requires the delivery method to be in the item\'s set of supported delivery methods' do
         scandeliver_request.valid?

@@ -2,27 +2,24 @@ require 'rails_helper'
 
 RSpec.describe AlmaApiClient, type: :model do
   include MockAlmaApi
+  include AlmaSpecHelpers
 
   let(:api) { described_class.new }
   let(:user) { AlmaUser.new('testuser') }
 
+  # TODO: mock user object
   before { stub_alma_user_get_success }
 
   describe '#find_item_for' do
     context 'existing items' do
-      let(:request) do
-        LocalRequest.new(
-          user,
-          { local_request: {
-            mms_id: '1234', holding_id: '2345', item_pid: '3456'
-          } }
-        )
-      end
-
+      let(:request) { LocalRequest.new(user, item_identifiers) }
       before { stub_item_get_success }
 
       it 'find existing items' do
-        item = api.find_item_for request
+        item = api.find_item_for(
+          mms_id: request.mms_id, holding_id: request.holding_id,
+          item_pid: request.item_pid
+        )
         expect(item).to be_a Alma::BibItem
         expect(item.pid).to eq '3456'
       end
@@ -32,14 +29,12 @@ RSpec.describe AlmaApiClient, type: :model do
       let(:bad_request) do
         LocalRequest.new(
           user,
-          { local_request: {
-            mms_id: '1234', holding_id: '2345', item_pid: '9876'
-          } }
+          item_identifiers(item_pid: '9876') # overwrite item_pid
         )
       end
       before { stub_item_get_failure }
       it 'raises exception if item not found' do
-        expect { api.find_item_for(bad_request) }.to(
+        expect { api.find_item_for(bad_request.identifiers) }.to(
           raise_error(AlmaApiClient::ItemNotFound)
         )
       end
@@ -50,10 +45,7 @@ RSpec.describe AlmaApiClient, type: :model do
       let(:request) do
         LocalRequest.new(
           user,
-          { local_request: {
-            mms_id: '1234', holding_id: '2345', item_pid: '3456',
-            pickup_location: 'TestLib', comments: 'Blah blah'
-          } }
+          item_identifiers(pickup_location: 'TestLib', comments: 'Blah blah')
         )
       end
       before { stub_request_post_success }
@@ -66,10 +58,8 @@ RSpec.describe AlmaApiClient, type: :model do
       let(:request) do
         LocalRequest.new(
           user,
-          { local_request: {
-            mms_id: '1234', holding_id: '2345', item_pid: '9876',
-            pickup_location: 'TestLib', comments: 'Blah blah'
-          } }
+          item_identifiers(item_pid: '9876', pickup_location: 'TestLib',
+                           comments: 'Blah blah')
         )
       end
       before { stub_request_post_failure }

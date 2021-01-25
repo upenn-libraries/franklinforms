@@ -10,13 +10,16 @@ class AlmaApiClient
     Alma.configuration.apikey
   end
 
-  # @param [LocalRequest] request
+  # @param [Hash] identifiers
   # @return [Alma::BibItem]
-  def find_item_for(request)
-    response = self.class.get item_url(request.mms_id, request.holding_id, request.item_pid),
+  def find_item_for(identifiers)
+    unless all_identifiers_set?(identifiers)
+      raise ArgumentError, 'Insufficient identifiers set'
+    end
+    response = self.class.get item_url(identifiers),
                               query: default_query
     if response['errorsExist']
-      raise ItemNotFound, "Item can't be found for: #{request.item_pid}"
+      raise ItemNotFound, "Item can't be found for: #{identifiers[:item_pid]}"
     else
       Alma::BibItem.new response
     end
@@ -62,11 +65,21 @@ class AlmaApiClient
     { apikey: apikey, format: 'json' }
   end
 
+  # Check if identifiers are sufficient to attempt an item lookup
+  # @param [Hash] identifiers
+  # @return [TrueClass, FalseClass]
+  def all_identifiers_set?(identifiers)
+    identifiers[:mms_id].present? &&
+      identifiers[:holding_id].present? &&
+      identifiers[:item_pid].present?
+  end
+
   def request_url(mms_id, holding_id, item_id)
     "/almaws/v1/bibs/#{mms_id}/holdings/#{holding_id}/items/#{item_id}/requests"
   end
 
-  def item_url(mms_id, holding_id, item_id)
-    "/almaws/v1/bibs/#{mms_id}/holdings/#{holding_id}/items/#{item_id}"
+  # @param [Hash] identifiers
+  def item_url(identifiers)
+    "/almaws/v1/bibs/#{identifiers[:mms_id]}/holdings/#{identifiers[:holding_id]}/items/#{identifiers[:item_pid]}"
   end
 end

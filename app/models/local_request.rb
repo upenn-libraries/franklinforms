@@ -40,8 +40,17 @@ class LocalRequest
     self.section_issue = data[:section_issue]
   end
 
+  def identifiers
+    { mms_id: mms_id, holding_id: holding_id, item_pid: item_pid }
+  end
+
+  # Get Item record from Alma based on accumulated identifiers
+  # TODO: handle no item_pid case
+  # @return [Alma::BibItem]
   def bib_item
-    @bib_item ||= AlmaApiClient.new.find_item_for self
+    @bib_item ||= AlmaApiClient.new.find_item_for identifiers
+  rescue StandardError => e
+    raise ArgumentError, e.message
   end
 
   def requestor_affiliation
@@ -52,6 +61,7 @@ class LocalRequest
     user.name
   end
 
+  # TODO: service
   # @return [TrueClass, String, nil]
   def submit
     confirmation = if delivery_method == 'pickup'
