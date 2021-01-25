@@ -29,7 +29,7 @@ RSpec.describe IlliadApiClient, type: :model do
     context 'failure' do
       it 'fails' do
         stub_transaction_post_failure
-        body = 'invalid-json'
+        body = 'invalid-body'
         expect {
           api.transaction body
         }.to raise_error IlliadApiClient::RequestFailed
