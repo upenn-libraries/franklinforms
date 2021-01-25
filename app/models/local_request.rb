@@ -120,7 +120,23 @@ class LocalRequest
       })
       Illiad.book_request_body user, bib_data, delivery_method
     when 'scandeliver'
-      Illiad.scandelivery_request_body user, to_h
+      bib_data = HashWithIndifferentAccess.new({
+        title: bib_item['bib_data']['title'],
+        volume: section_volume,
+        issue: section_issue,
+        pmonth: '',
+        rftdate: bib_item['bib_data']['date_of_publication'],
+        year: '',
+        pages: section_pages,
+        issn: '',
+        isbn: bib_item['bib_data']['isbn'],
+        pmid: '',
+        author: bib_item['bib_data']['author'],
+        chaptitle: section_title,
+        comments: comments,
+        sid: ''
+      })
+      Illiad.scandelivery_request_body user, bib_data
     when 'pickup'
       Illiad.book_request_body user, to_h, delivery_method
     end

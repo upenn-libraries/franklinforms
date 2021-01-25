@@ -1,6 +1,7 @@
 <div class="panel-group" id="holding-accordion" role="tablist" aria-multiselectable="true">
   <% if @record.holdings.any? %>
     <%= form.hidden_field :holding_id, id: 'holding-id' %>
+    <%# TODO: if page loads with validation errors, show selected item (from params?) %>
     <% @record.holdings.each_with_index do |holding, i| %>
       <%= render 'holding_items_panel', holding: holding, i: i %>
     <% end %>

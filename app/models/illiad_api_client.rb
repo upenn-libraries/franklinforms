@@ -28,7 +28,7 @@ class IlliadApiClient
   # @return [String, nil]
   def transaction(transaction_data)
     options = @default_options
-    options[:body] = transaction_data.to_json
+    options[:body] = transaction_data
     response = self.class.post('/transaction', options)
     parsed_response = JSON.parse response.body
     if parsed_response.key? 'TransactionNumber'

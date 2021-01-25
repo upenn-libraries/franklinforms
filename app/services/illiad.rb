@@ -361,7 +361,8 @@ class Illiad
   end
 
   def self.scandelivery_request_body(user, bib_data)
-    { Username: user.data['proxied_for'],
+    username = user.is_a?(AlmaUser) ? user.id : user.data['proxied_for']
+    { Username: username,
       ProcessType: 'Borrowing', # I think this is correct (DocDel, Lending are other options)
       PhotoJournalTitle: bib_data['title'],
       PhotoJournalVolume: bib_data['volume'],
