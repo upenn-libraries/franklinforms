@@ -51,7 +51,7 @@ module MockIlliadApi
   def stub_illiad_user_post_success
     stub_request(:post, "#{ENV['ILLIAD_API_BASE_URI']}/users")
       .with(
-        body: json_string('illiad/user_post_body.json'),
+        body: 'Username=testuser&LastName=User&FirstName=Test&EMailAddress=testuser%40upenn.edu&NVTGC=VPL',
         headers: default_headers
       ).to_return(
         status: 200,

@@ -52,7 +52,7 @@ class IlliadApiClient
     options = @default_options
     raise InvalidRequest unless has_required_user_fields? user_info
 
-    options[:body] = user_info.to_json
+    options[:body] = user_info
     respond_to self.class.post('/users', options)
   end
 
