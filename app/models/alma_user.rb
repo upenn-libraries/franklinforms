@@ -1,11 +1,12 @@
 # sort the wheat from the chaff in Alma's User API response
 class AlmaUser
-  attr_reader :id, :name, :email, :user_group, :affiliation,
+  attr_reader :pennkey, :id, :name, :email, :user_group, :affiliation,
               :organization, :active
 
   # @param [String] user_id
   # @return [AlmaUser]
   def initialize(user_id)
+    @pennkey = user_id
     user_record = get_user user_id
     @id = user_record.id
     @name = user_record.full_name
