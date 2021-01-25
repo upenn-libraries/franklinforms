@@ -86,7 +86,7 @@ class LocalRequest
       delivery_method: delivery_method,
       pickup_location: pickup_location,
       comments: comments,
-      status: status,
+      confirmation: confirmation,
       has_errors: errors.any?
     }
     if scandeliver_request?
