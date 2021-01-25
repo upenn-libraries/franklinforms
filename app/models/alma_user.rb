@@ -27,6 +27,8 @@ class AlmaUser
   # @param [String] user_id
   def get_user(user_id)
     Alma::User.find user_id
+  rescue Net::OpenTimeout => e
+    raise AlmaApiClient::Timeout, "Problem with Alma API: #{e.message}"
   end
 
   def user_group_from(user_record)

@@ -19,6 +19,8 @@ class AlmaRecord
                     @holdings.collect(&:id)
                   end
     @items = lookup_items_for(holding_ids, user_id) if should_prefetch_items?
+  rescue Net::OpenTimeout => e
+    raise AlmaApiClient::Timeout, "Problem with Alma API: #{e.message}"
   end
 
   # Is there only one Item?
@@ -42,6 +44,8 @@ class AlmaRecord
         limit: 100
       )
     end.map(&:items).flatten
+  rescue Net::OpenTimeout => e
+    raise AlmaApiClient::Timeout, "Problem with Alma API: #{e.message}"
   end
 
   # Turn Alma's holdings data hash into AlmaHoldings

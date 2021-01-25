@@ -1,10 +1,14 @@
 class LocalRequestsController < ApplicationController
   include AlmaUserLookup
 
-  before_action :redirect, unless: :mms_id_present?
+  before_action :redirect, only: :new, unless: :mms_id_present?
   before_action :set_user
   before_action :set_record, only: :new
   before_action :set_request, except: :test
+
+  rescue_from AlmaApiClient::Timeout do |exception|
+    redirect(exception.message)
+  end
 
   # show the form
   def new
@@ -30,8 +34,8 @@ class LocalRequestsController < ApplicationController
 
   private
 
-  def redirect
-    # TODO: show error page if no mms_id param found
+  def redirect(message = nil)
+    redirect_to new_local_requests_path, flash: { error: message }
   end
 
   def set_request

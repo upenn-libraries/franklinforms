@@ -3,6 +3,7 @@ class AlmaApiClient
 
   class ItemNotFound < StandardError; end
   class RequestFailed < StandardError; end
+  class Timeout < StandardError; end
 
   base_uri Alma.configuration.region
 
