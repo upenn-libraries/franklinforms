@@ -122,6 +122,11 @@ $(document).on('click', '.item-select-radio', function() {
         optionElement.value = option;
         deliverySelect.appendChild(optionElement);
     })
+    // TODO: set holding ID if radio has holding-id data attrib
+    var $holdingIdInput = document.getElementById("selected-item-holding-id-input");
+    if($holdingIdInput) {
+        $holdingIdInput.value = this.getAttribute('data-holding-id');
+    }
     updateDeliveryMessaging(deliverySelect[0].value);
     toggleScanFields(deliverySelect[0].value);
 });
