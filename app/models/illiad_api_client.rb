@@ -56,7 +56,49 @@ class IlliadApiClient
     respond_to self.class.post('/users', options)
   end
 
+  # @param [AlmaUser] alma_user
+  def get_or_create_illiad_user(alma_user)
+    user = get_user alma_user.pennkey
+    return user if user
+    
+    create_user illiad_data_from alma_user
+  rescue RequestFailed => e
+    # ?
+  end
+
+  # @param [LocalRequest] local_request
+  def transaction_data_from(local_request)
+    {
+      # TODO: mapping
+    }
+  end
+  
   private
+
+  # Sufficient mapped data to create an ILLiad user
+  # @param [AlmaUser] alma_user
+  def illiad_data_from(alma_user)
+    {
+      'Username' => alma_user.pennkey,
+      'LastName' => alma_user.last_name,
+      'FirstName' => alma_user.first_name,
+      'EMailAddress' => alma_user.email,
+      'NVTGC' => 'VPL',
+      'Status' => alma_user.user_group,
+      'Department' => alma_user.affiliation,
+      'PlainTextPassword' => Illiad::DEFAULT_PASSWORD,
+      'Address' => '', # TODO: get it from alma_user preferred address
+      # from here on, just setting things that we've normally set. many of these could be frivolous
+      'NotificationMethod' => 'Electronic',
+      'DeliveryMethod' => 'Mail to Address',
+      'LoanDeliveryMethod' => 'Hold for Pickup',
+      'Cleared' => true,
+      'Web' => true, # TODO: question this
+      'AuthType' => 'Default',
+      'ArticleBillingCategory' => 'Exempt',
+      'LoanBillingCategory' => 'Exempt'
+    }
+  end
 
   def respond_to(response, exception_class = RequestFailed)
     if response.code == 200

@@ -60,6 +60,14 @@ class AlmaApiClient
     end
   end
 
+  # @param [LocalRequest] local_request
+  # @return [Hash] data for Alma API
+  def request_data_from(local_request)
+    {
+    #   TODO: map data
+    }
+  end
+
   private
 
   def default_query

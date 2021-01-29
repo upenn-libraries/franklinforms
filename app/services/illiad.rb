@@ -1,5 +1,7 @@
 class Illiad
 
+  DEFAULT_PASSWORD = ENV['ILLIAD_USER_PASSWORD']
+
   # These options are used by Illiad rules to properly route requests.
   # Do not alter them without first consulting ILL staff.
   ILL_PICKUP_OPTIONS = [['Van Pelt Library'], ['Books by Mail']]
@@ -258,10 +260,42 @@ class Illiad
     username = db.escape unescaped_username # throws exception if #escape is sent nil
 
     query = %Q{INSERT INTO #{tablename}
-                 (username, lastname, firstname, ssn, status, emailaddress, phone, department,
-                  nvtgc, password, notificationmethod, deliverymethod, loandeliverymethod, cleared, web, address, authtype, articlebillingcategory, loanbillingcategory )
+                 (username, lastname, firstname,
+                  ssn,
+                  status,
+                  emailaddress,
+                  phone,
+                  department,
+                  nvtgc, 
+                  password, 
+                  notificationmethod,
+                  deliverymethod,
+                  loandeliverymethod,
+                  cleared,
+                  web,
+                  address,
+                  authtype,
+                  articlebillingcategory,
+                  loanbillingcategory
+                 )
                  VALUES
-                 ('#{username}', '#{db.escape userinfo['last_name']}', '#{db.escape userinfo['first_name']}', '#{db.escape userinfo['penn_id']}', '#{db.escape userinfo['status']}', '#{db.escape userinfo['emailAddr']}', '#{db.escape userinfo['phone']}', '#{db.escape department}', '#{db.escape userinfo['illoffice']}', '#{ENV['ILLIAD_USER_PASSWORD_HASH']}', 'Electronic', 'Mail to Address','Hold for Pickup','Yes', 'Yes', '#{db.escape userinfo['delivery']}', 'Default', 'Exempt', 'Exempt' )
+                 ('#{username}', '#{db.escape userinfo['last_name']}', '#{db.escape userinfo['first_name']}',
+                  '#{db.escape userinfo['penn_id']}',
+                  '#{db.escape userinfo['status']}',
+                  '#{db.escape userinfo['emailAddr']}',
+                  '#{db.escape userinfo['phone']}',
+                  '#{db.escape department}',
+                  '#{db.escape userinfo['illoffice']}',
+                  '#{ENV['ILLIAD_USER_PASSWORD_HASH']}',
+                  'Electronic',
+                  'Mail to Address',
+                  'Hold for Pickup',
+                  'Yes',
+                  'Yes',
+                  '#{db.escape userinfo['delivery']}',
+                  'Default',
+                  'Exempt',
+                  'Exempt' )
     }
 
     result = db.execute(query).do
@@ -412,7 +446,7 @@ class Illiad
 
     illserver = "https://#{ENV['ILLIAD_DBHOST']}/illiad/illiad.dll"
 
-    body = {ILLiadForm: 'Logon', Username: userinfo['proxied_for'], Password: ENV['ILLIAD_USER_PASSWORD'], SubmitButton: 'Logon to ILLiad'}
+    body = {ILLiadForm: 'Logon', Username: userinfo['proxied_for'], Password: DEFAULT_PASSWORD, SubmitButton: 'Logon to ILLiad'}
 
     if Rails.env.development?
       headers = {'Cookie' => "ILLiadSessionID=test-session"}

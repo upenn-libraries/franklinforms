@@ -17,8 +17,9 @@ class LocalRequestsController < ApplicationController
 
   # submit the request
   def create
-    if @local_request.valid?
-      @local_request.submit
+    # TODO: validity? before_action?
+    submission = SubstitutionContext.submit @local_request, @user
+    if submission
       redirect_to local_requests_path params: @local_request.to_h
     else
       redirect_to new_local_requests_path params: @local_request.to_h

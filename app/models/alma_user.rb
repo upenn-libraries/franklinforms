@@ -1,7 +1,7 @@
 # sort the wheat from the chaff in Alma's User API response
 class AlmaUser
-  attr_reader :pennkey, :id, :name, :email, :user_group, :affiliation,
-              :organization, :active
+  attr_reader :pennkey, :id, :name, :first_name, :last_name, :email,
+              :user_group, :affiliation, :organization, :active
 
   # @param [String] user_id
   # @return [AlmaUser]
@@ -10,6 +10,8 @@ class AlmaUser
     user_record = get_user user_id
     @id = user_record.id
     @name = user_record.full_name
+    @first_name = user_record.preferred_first_name
+    @last_name = user_record.preferred_last_name
     @email = user_record.preferred_email
     @user_group = user_group_from user_record
     @affiliation = affiliation_from user_record
