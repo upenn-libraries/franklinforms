@@ -2,15 +2,22 @@
   <%= t('forms.local_request.messages.item_prompt') %>
 </div>
 <%= form.hidden_field :holding_id, id: 'selected-item-holding-id-input' %>
-<%= form.form_group :item, label: { text: "Item" } do %>
-  <div class="row item-select-container" style="max-height: 250px; overflow-y: auto;">
-    <% @record.items.each do |item| %>
-      <div class="col-md-4">
-        <%= form.radio_button :item_pid, item.pid,
-                              label: item.label_for_radio_button,
-                              class: 'item-select-radio',
-                              data: { delivery: item.delivery_options.join(':'), holding_id: item['holding_data']['holding_id'] } %>
-      </div>
+  <% if params[:chosen] %>
+    <%# TODO: set data attribs, JS events, holding_id value, etc. %>
+    <%= form.form_group :item do %>
+      <%= form.select :item_pid, @record.items.collect { |i| [i.label_for_radio_button, i.pid] }, { label: 'Item', include_blank: false, selected: params[:item_pid] }, { class: 'chosen-select' } %>
     <% end %>
-  </div>
-<% end %>
+  <% else %>
+    <%= form.form_group :item, label: { text: "Item" } do %>
+      <div class="row item-select-container" style="max-height: 250px; overflow-y: auto;">
+      <% @record.items.each do |item| %>
+        <div class="col-md-4">
+          <%= form.radio_button :item_pid, item.pid,
+                                label: item.label_for_radio_button,
+                                class: 'item-select-radio',
+                                data: { delivery: item.delivery_options.join(':'), holding_id: item['holding_data']['holding_id'] } %>
+        </div>
+      <% end %>
+    <% end %>
+    </div>
+  <% end %>

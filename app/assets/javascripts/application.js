@@ -12,5 +12,13 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require chosen-jquery
 //= require_tree .
 //= require bootstrap
+
+$(document).ready(function() {
+   $('.chosen-select').chosen({
+       allow_single_deselect: true,
+       width: '100%'
+   });
+});
