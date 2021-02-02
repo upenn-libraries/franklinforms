@@ -20,11 +20,11 @@ class LocalRequestsController < ApplicationController
     # TODO: validity? before_action?
     submission_response = RequestSubmissionService.submit @local_request
     if submission_response[:status] == :success
-      # TODO: pass along confirmation message
-      redirect_to local_requests_path params: @local_request.to_h, notice: submission_response[:message]
+      redirect_to local_requests_path(params: @local_request.to_h),
+                  flash: { success: submission_response[:message] }
     else
-      # TODO: pass along error message
-      redirect_to new_local_requests_path params: @local_request.to_h, error: submission_response[:message]
+      redirect_to new_local_requests_path(params: @local_request.to_h),
+                  flash: { error: submission_response[:message] }
     end
   end
 
