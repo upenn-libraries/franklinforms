@@ -14,9 +14,7 @@ class LocalRequest
   validates_presence_of :requestor_email, :delivery_method
   validates_presence_of :bib_item, message: I18n.t('forms.local_request.messages.bib_item_validation')
   validates_inclusion_of :delivery_method, in: :delivery_options, if: :bib_item_present?
-  with_options if: :scandeliver_request? do
-    validates_presence_of :section_title, :section_author
-  end
+  validates_presence_of :section_title, :section_author, if: :scandeliver_request?
 
   # @param [AlmaUser] user
   # @param [Object] params

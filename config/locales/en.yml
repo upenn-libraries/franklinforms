@@ -44,6 +44,7 @@ en:
         item_prompt: "Which particular item are you interested in?"
         select_an_item: "Please select an item to see delivery options"
         select_delivery_option: "Please select a delivery method"
+        invalid_request: "Request is invalid. See errors below."
       sections:
         patron: "Your Information"
         delivery: "Delivery"
@@ -69,5 +70,3 @@ en:
         section_pages: "Page range of the article or chapter to be digitized."
         section_volume: "Volume containing article or chapter for digitization."
         section_issue: "Issue containing article for digitization."
-
-

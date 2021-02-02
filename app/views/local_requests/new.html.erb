@@ -5,7 +5,6 @@
 <h1><%= t('forms.local_request.heading') %></h1>
 <%= bootstrap_form_for(@local_request) do |form| %>
   <%= form.hidden_field :mms_id, value: @record.mms_id %>
-  <%= form.error_summary %>
   <div class="row">
     <div class="col-md-3">
       <%= render 'patron_info', form: form %>
