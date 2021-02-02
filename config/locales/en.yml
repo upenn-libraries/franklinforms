@@ -45,6 +45,7 @@ en:
         select_an_item: "Please select an item to see delivery options"
         select_delivery_option: "Please select a delivery method"
         invalid_request: "Request is invalid. See errors below."
+        invalid_deliver_to: "PennKey specified for delivery is not valid"
       sections:
         patron: "Your Information"
         delivery: "Delivery"
@@ -53,6 +54,7 @@ en:
       fields:
         affiliation: "Affiliation"
         delivery_method: "Method"
+        deliver_to: "Deliver To"
         comment: "Comments"
         title: "Title"
         author: "Author"
@@ -65,6 +67,7 @@ en:
         section_volume: "Volume"
         section_issue: "Issue"
       help:
+        deliver_to: "PennKey of recipient for electronic materials."
         section_title: "Article Title or Chapter Title (or Chapter Number, if there is no title) to be digitized."
         section_author: "Author(s) of article or chapter to be digitized."
         section_pages: "Page range of the article or chapter to be digitized."

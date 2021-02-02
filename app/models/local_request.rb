@@ -5,7 +5,8 @@ class LocalRequest
 
   attr_accessor :delivery_method, :comments, :pickup_location
   attr_accessor :user, :requestor_email
-  attr_accessor :section_title, :section_author, :section_pages, :section_volume, :section_issue
+  attr_accessor :section_title, :section_author, :section_pages, :section_volume,
+                :section_issue, :deliver_to
   attr_accessor :item_pid, :mms_id, :holding_id
   attr_accessor :confirmation
 
@@ -15,6 +16,8 @@ class LocalRequest
   validates_presence_of :bib_item, message: I18n.t('forms.local_request.messages.bib_item_validation')
   validates_inclusion_of :delivery_method, in: :delivery_options, if: :bib_item_present?
   validates_presence_of :section_title, :section_author, if: :scandeliver_request?
+
+  validate :deliver_to_pennkey_exists, if: :deliver_to_specified
 
   # @param [AlmaUser] user
   # @param [Object] params
@@ -36,6 +39,7 @@ class LocalRequest
     self.section_pages = data[:section_pages]
     self.section_volume = data[:section_volume]
     self.section_issue = data[:section_issue]
+    self.deliver_to = data[:deliver_to]
   end
 
   def identifiers
@@ -89,7 +93,8 @@ class LocalRequest
         section_author: section_author,
         section_pages: section_pages,
         section_volume: section_volume,
-        section_issue: section_issue
+        section_issue: section_issue,
+        deliver_to: deliver_to
       })
     end
     data
@@ -100,7 +105,7 @@ class LocalRequest
     when 'booksbymail'
       # map data to old-style bib_data values
       bib_data = HashWithIndifferentAccess.new({
-        proxied_for: user.id,
+        proxied_for: user.pennkey,
         author: bib_item['bib_data']['author'],
         booktitle: bib_item['bib_data']['title'],
         publisher: bib_item['bib_data']['publisher_const'],
@@ -115,6 +120,7 @@ class LocalRequest
       Illiad.book_request_body user, bib_data, delivery_method
     when 'scandeliver'
       bib_data = HashWithIndifferentAccess.new({
+        proxied_for: deliver_to || user.pennkey,
         title: bib_item['bib_data']['title'],
         volume: section_volume,
         issue: section_issue,
@@ -144,10 +150,20 @@ class LocalRequest
   private
 
   def bib_item_present?
-    self.bib_item.present?
+    bib_item.present?
   end
 
   def delivery_options
-    self.bib_item.delivery_options.map(&:to_s)
+    bib_item.delivery_options.map(&:to_s)
+  end
+
+  def deliver_to_specified
+    deliver_to.present?
+  end
+
+  def deliver_to_pennkey_exists
+    AlmaUser.new deliver_to
+  rescue Alma::User::ResponseError
+    errors.add(:deliver_to, I18n.t('forms.local_request.messages.invalid_deliver_to'))
   end
 end
