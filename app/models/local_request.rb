@@ -61,17 +61,13 @@ class LocalRequest
     user.name
   end
 
-  # TODO: service
-  # @return [TrueClass, String, nil]
-  def submit
-    confirmation = if delivery_method == 'pickup'
-                     AlmaApiClient.new.create_item_request self
-                   else
-                     IlliadApiClient.new.transaction self.for_illiad
-                   end
-    self.confirmation = confirmation
-  rescue StandardError => e
-    raise RequestFailed, e.message
+  # @return [Symbol]
+  def target_system
+    if delivery_method.in? %w[booksbymail scandeliver]
+      :illiad
+    elsif delivery_method.in? %w[pickup]
+      :alma
+    end
   end
 
   # @return [Hash{Symbol->String}]

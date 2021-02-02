@@ -17,18 +17,17 @@ class AlmaApiClient
     unless all_identifiers_set?(identifiers)
       raise ArgumentError, 'Insufficient identifiers set'
     end
+
     response = self.class.get item_url(identifiers),
                               query: default_query
-    if response['errorsExist']
-      raise ItemNotFound, "Item can't be found for: #{identifiers[:item_pid]}"
-    else
-      Alma::BibItem.new response
-    end
+    raise ItemNotFound, "Item can't be found for: #{identifiers[:item_pid]}" if response['errorsExist']
+
+    Alma::BibItem.new response
   end
 
   # see: https://developers.exlibrisgroup.com/alma/apis/docs/bibs/UE9TVCAvYWxtYXdzL3YxL2JpYnMve21tc19pZH0vcmVxdWVzdHM=/
   def create_title_request(request); end
-  
+
   # @param [LocalRequest] request
   def create_item_request(request)
     query = default_query.merge({ user_id: request.user.id, user_id_type: 'all_unique' })
@@ -42,7 +41,7 @@ class AlmaApiClient
                                query: query,
                                body: body
     if response['errorsExist']
-      raise RequestFailed, 'Request failed'
+      raise RequestFailed, 'Alma Request submission failed' # TODO: error message details
       # boo, get error code
       # 401890 User with identifier X of type Y was not found.
       # 401129 No items can fulfill the submitted request.
@@ -58,14 +57,6 @@ class AlmaApiClient
       true
       # hooray!
     end
-  end
-
-  # @param [LocalRequest] local_request
-  # @return [Hash] data for Alma API
-  def request_data_from(local_request)
-    {
-    #   TODO: map data
-    }
   end
 
   private

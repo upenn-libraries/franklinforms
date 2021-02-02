@@ -1,36 +1,54 @@
+# frozen_string_literal: true
+
+# Send requests to a service
+# TODO: confirmation emails?
 class RequestSubmissionService
-  # Receive a request (currently a LocalRequest, but later a more abstract Request?)
-  # Return a hash if success { status: :success }
-  # Return a hash if failed { status: :failed, message: '' }
+  class RequestFailed < StandardError; end
+
   # @param [LocalRequest] request
-  # @param [AlmaUser] alma_user
-  def self.submit(request, alma_user)
+  def self.submit(request)
+    response = submission_response_for request
+    { status: :success,
+      message: "Submission successful. Confirmation number is #{response}" }
+  rescue StandardError => e
+    { status: :failure, message: e.message }
+  end
+
+  # @param [LocalRequest] request
+  def self.submission_response_for(request)
     case request.target_system
     when :alma
-      alma_request AlmaApiClient.request_data_from request
+      alma_request request
     when :illiad
-      illiad_transaction IlliadApiClient.transaction_data_from(request), alma_user
+      illiad_transaction request
     else
-      raise ArgumentError, "Unsupported submission target system: #{request.target_system}"
+      raise ArgumentError,
+            "Unsupported submission target system: #{request.target_system}"
     end
   end
 
-  # @param [Hash] transaction_data
+  # @param [LocalRequest] request
   # @param [AlmaUser] alma_user
-  def self.illiad_transaction(transaction_data, alma_user)
-    illiad_user = get_or_create_illiad_user(alma_user)
-    data = {} # TODO: get data in proper format
-    IlliadApiClient.new.transaction transaction_data
+  # @param [IlliadApiClient] api
+  def self.illiad_transaction(request, api = IlliadApiClient.new)
+    api.get_or_create_illiad_user request.user
+    data = illiad_transaction_data_from request
+    api.transaction data
+  rescue StandardError => e
+    raise RequestFailed, e.message
   end
 
-  def self.alma_request(request_data)
-    AlmaApiClient.new.create_item_request request_data
+  # @param [LocalRequest] request_data
+  # @param [AlmaApiClient] api
+  def self.alma_request(request, api = AlmaApiClient.new)
+    api.create_item_request request
+  rescue StandardError => e
+    raise RequestFailed => e.message
   end
 
-  # maybe one day?
-  # def self.aeon_transaction(request)
-  #
-  # end
-
-
+  # @param [LocalRequest] local_request
+  # @return [Hash] data for Alma API
+  def self.illiad_transaction_data_from(local_request)
+    local_request.for_illiad
+  end
 end

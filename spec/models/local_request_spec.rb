@@ -9,41 +9,7 @@ RSpec.describe LocalRequest, type: :model do
 
   before { stub_alma_user_get_success }
 
-  context 'submission' do
-    context 'via ILLiad API' do
-      let(:api) { IlliadApiClient.new }
-      context 'success' do
-        context 'BBM' do
-          before do
-            stub_item_get_success
-            stub_transaction_post_success
-          end
-          let(:local_request) do
-            LocalRequest.new(
-              user,
-              item_identifiers(delivery_method: 'booksbymail', requestor_email: user.email)
-            )
-          end
-          it 'submits and returns a transaction code' do
-            expect(local_request.submit).to eq '123456'
-          end
-        end
-      end
-      context 'failure' do
-
-      end
-    end
-    context 'via Alma API' do
-      context 'success' do
-
-      end
-      context 'failure' do
-
-      end
-    end
-  end
-
-  context "validations" do
+  context 'validations' do
     before { stub_item_get_success }
     let(:request) { LocalRequest.new(user, item_identifiers) }
     it 'requires a requestor_email value to be present' do

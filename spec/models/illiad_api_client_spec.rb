@@ -30,9 +30,9 @@ RSpec.describe IlliadApiClient, type: :model do
       it 'fails' do
         stub_transaction_post_failure
         body = 'invalid-body'
-        expect {
+        expect do
           api.transaction body
-        }.to raise_error IlliadApiClient::RequestFailed
+        end.to raise_error IlliadApiClient::RequestFailed
       end
     end
   end
