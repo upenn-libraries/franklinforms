@@ -122,13 +122,13 @@ class LocalRequest
       username = deliver_to || user.pennkey
       bib_data = HashWithIndifferentAccess.new({
         title: bib_item['bib_data']['title'],
-        volume: section_volume,
-        issue: section_issue,
+        volume: section_volume.presence || bib_item['item_data']['enumeration_a'],
+        issue: section_issue.presence || bib_item['item_data']['chronology_i'],
         pmonth: '',
         rftdate: bib_item['bib_data']['date_of_publication'],
-        year: '',
+        year: bib_item['bib_data']['date_of_publication'],
         pages: section_pages,
-        issn: '',
+        issn: bib_item['bib_data']['issn'],
         isbn: bib_item['bib_data']['isbn'],
         pmid: '',
         author: bib_item['bib_data']['author'],
