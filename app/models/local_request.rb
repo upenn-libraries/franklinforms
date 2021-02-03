@@ -105,7 +105,6 @@ class LocalRequest
     when 'booksbymail'
       # map data to old-style bib_data values
       bib_data = HashWithIndifferentAccess.new({
-        proxied_for: user.pennkey,
         author: bib_item['bib_data']['author'],
         booktitle: 'BBM ' + bib_item['bib_data']['title'], # NOTE: BBM prefixed to trigger ILLiad routing rule
         publisher: bib_item['bib_data']['publisher_const'],
@@ -117,7 +116,7 @@ class LocalRequest
         pmid: nil, # TODO: this appears to never be set in Illiad.bib_data
         comments: comments,
       })
-      Illiad.book_request_body user, bib_data, delivery_method
+      Illiad.book_request_body user.pennkey, bib_data, delivery_method
     when 'scandeliver'
       username = deliver_to || user.pennkey
       bib_data = HashWithIndifferentAccess.new({
