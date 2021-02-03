@@ -73,5 +73,33 @@
 
 <ul>
   <li><%= link_to 'NEJM', new_local_requests_path(mms_id: 99147513503681) %></li>
-  <li></li>
+  <li><%= test_link_element 'Science', 9915957333503681 %></li>
+</ul>
+
+<h2>From Katherine's List</h2>
+
+<p>Athenaeum</p>
+
+<ul>
+  <li><%= test_link_element '1,000 places...', 9977416590603681 %></li>
+</ul>
+
+<p>No Item Record</p>
+
+<ul>
+  <li><%= test_link_element 'Versuch einer kritik..', 9915368123503681 %></li>
+</ul>
+
+<p>Multi-part</p>
+
+<ul>
+  <li><%= test_link_element 'Monograph', 9910000673503681 %></li>
+  <li><%= test_link_element 'Monograph (w/ chosen)', 9910000673503681, chosen: 1 %></li>
+  <li><%= test_link_element 'w/ Hathi links', 9935550973503681 %></li>
+</ul>
+
+<p>Serials</p>
+
+<ul>
+  <li><%= test_link_element 'Not Currently Received?', 9923503681 %></li>
 </ul>

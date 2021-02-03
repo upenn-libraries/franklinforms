@@ -39,4 +39,13 @@ module LocalRequestsHelper
     # circulation options
     true unless record.items.first.checkoutable?
   end
+
+  def test_link_element(label, mms_id, additional_params = {})
+    params = { mms_id: mms_id }.merge! additional_params
+    link_to(label, new_local_requests_path(params)) + ' / ' +
+      link_to(
+        'Franklin Record',
+        "https://franklin.library.upenn.edu/catalog/FRANKLIN_#{mms_id}"
+      )
+  end
 end
