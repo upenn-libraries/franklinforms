@@ -6,11 +6,11 @@ class LocalRequest
   attr_accessor :delivery_method, :comments, :pickup_location
   attr_accessor :user, :requestor_email
   attr_accessor :section_title, :section_author, :section_pages, :section_volume,
-                :section_issue, :deliver_to
+                :section_issue
   attr_accessor :item_pid, :mms_id, :holding_id
   attr_accessor :confirmation
 
-  attr_reader :status
+  attr_reader :status, :deliver_to, :recipient_user
 
   validates_presence_of :requestor_email, :delivery_method
   validates_presence_of :bib_item, message: I18n.t('forms.local_request.messages.bib_item_validation')
@@ -107,7 +107,7 @@ class LocalRequest
       bib_data = HashWithIndifferentAccess.new({
         proxied_for: user.pennkey,
         author: bib_item['bib_data']['author'],
-        booktitle: bib_item['bib_data']['title'],
+        booktitle: 'BBM ' + bib_item['bib_data']['title'], # NOTE: BBM prefixed to trigger ILLiad routing rule
         publisher: bib_item['bib_data']['publisher_const'],
         place: bib_item['bib_data']['place_of_publication'],
         rftdate: bib_item['bib_data']['date_of_publication'],
@@ -119,8 +119,8 @@ class LocalRequest
       })
       Illiad.book_request_body user, bib_data, delivery_method
     when 'scandeliver'
+      username = deliver_to || user.pennkey
       bib_data = HashWithIndifferentAccess.new({
-        proxied_for: deliver_to || user.pennkey,
         title: bib_item['bib_data']['title'],
         volume: section_volume,
         issue: section_issue,
@@ -136,7 +136,7 @@ class LocalRequest
         comments: comments,
         sid: ''
       })
-      Illiad.scandelivery_request_body user, bib_data
+      Illiad.scandelivery_request_body username, bib_data
     when 'pickup'
       Illiad.book_request_body user, to_h, delivery_method
     end
@@ -145,6 +145,16 @@ class LocalRequest
   # @return [TrueClass, FalseClass]
   def scandeliver_request?
     delivery_method == 'scandeliver'
+  end
+
+  # @param [String] pennkey
+  def deliver_to=(pennkey)
+    return unless pennkey.present?
+
+    @deliver_to = pennkey
+    @recipient_user = AlmaUser.new pennkey
+  rescue Alma::User::ResponseError => e
+    @recipient_user = nil
   end
 
   private
@@ -162,7 +172,7 @@ class LocalRequest
   end
 
   def deliver_to_pennkey_exists
-    AlmaUser.new deliver_to
+    recipient_user.present?
   rescue Alma::User::ResponseError
     errors.add(:deliver_to, I18n.t('forms.local_request.messages.invalid_deliver_to'))
   end

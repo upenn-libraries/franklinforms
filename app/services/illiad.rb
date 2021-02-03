@@ -367,17 +367,16 @@ class Illiad
     end
     request_data = case params[:deliverytype].downcase
                    when 'book'
-                     book_request_body user, bib_data, delivery_option
+                     book_request_body user.data['proxied_for'], bib_data, delivery_option
                    when 'scandelivery'
-                     scandelivery_request_body user, bib_data
+                     scandelivery_request_body user.data['proxied_for'], bib_data
                    else
-                     other_request_body user, bib_data
+                     other_request_body user.data['proxied_for'], bib_data
                    end
     api.transaction request_data
   end
 
-  def self.book_request_body(user, bib_data, delivery_option)
-    username = user.is_a?(AlmaUser) ? user.pennkey : user.data['proxied_for']
+  def self.book_request_body(username, bib_data, delivery_option)
     # TODO: validate delivery_option here?
     { Username: username,
       ProcessType: 'Borrowing', # I think this is correct (DocDel, Lending are other options)
@@ -394,8 +393,7 @@ class Illiad
       ItemInfo1: delivery_option }
   end
 
-  def self.scandelivery_request_body(user, bib_data)
-    username = user.is_a?(AlmaUser) ? user.pennkey : user.data['proxied_for']
+  def self.scandelivery_request_body(username, bib_data)
     { Username: username,
       ProcessType: 'Borrowing', # I think this is correct (DocDel, Lending are other options)
       PhotoJournalTitle: bib_data['title'],
@@ -413,8 +411,8 @@ class Illiad
     }
   end
 
-  def self.other_request_body(user, bib_data)
-    { Username: user.data['proxied_for'],
+  def self.other_request_body(username, bib_data)
+    { Username: username,
       ProcessType: 'Borrowing', # I think this is correct (DocDel, Lending are other options)
       PhotoJournalTitle: bib_data['journal'],
       PhotoJournalVolume: bib_data['volume'],
