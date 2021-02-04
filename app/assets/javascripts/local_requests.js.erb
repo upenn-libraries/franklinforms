@@ -116,7 +116,8 @@ $(document).on('click', '.item-select-radio', function() {
     deliverySelect.innerHTML = '';
     var deliveryOptions = this.getAttribute('data-delivery').split(":")
     deliveryOptions.forEach(function(option) {
-        var optionText = deliveryOptionLabel(option);
+        var optionLabel = deliveryOptionLabel(option);
+        var optionText = optionLabel; // TODO: add delivery estimate here?
         var optionElement = document.createElement('option');
         optionElement.text = optionText;
         optionElement.value = option;

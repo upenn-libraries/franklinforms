@@ -4,8 +4,10 @@
   <% if @record.one_item? %>
     <%= render 'item_info_single', form: form %>
   <% elsif @record.items&.any? %>
+    <h3>Select an Volume/Version/Issue/Item</h3>
     <%= render 'item_info_multiple', form: form %>
   <% else %>
+    <h3>Select an Volume/Version/Issue/Item</h3>
     <%= render 'item_info_holdings', form: form %>
   <% end %>
 </section>
