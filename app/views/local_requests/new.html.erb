@@ -1,5 +1,8 @@
 <% @page_title = t('forms.local_request.heading') %>
 <h1><%= t('forms.local_request.heading') %></h1>
+<p>
+  You may want to <%= franklin_online_search_link(@record.bib_data['title']) %>
+</p>
 <%= bootstrap_form_for(@local_request) do |form| %>
   <%= form.hidden_field :mms_id, value: @record.mms_id %>
   <div class="row">

@@ -40,6 +40,15 @@ module LocalRequestsHelper
     true unless record.items.first.checkoutable?
   end
 
+  # Link to Franklin search for a title string with the Online facet set
+  # @param [String] title
+  # @return [ActiveSupport::SafeBuffer]
+  def franklin_online_search_link(title)
+    title_escaped = URI.escape title
+    link_to 'Search Franklin for Online availability',
+            "https://franklin.library.upenn.edu/catalog?utf8=%E2%9C%93&f%5Baccess_f%5D%5B%5D=Online&op=AND&sort=score+desc&search_field=keyword&q=#{title_escaped}"
+  end
+
   def test_link_element(label, mms_id, additional_params = {})
     params = { mms_id: mms_id }.merge! additional_params
     link_to(label, new_local_requests_path(params)) + ' / ' +
