@@ -4,7 +4,7 @@ class LocalRequest
   class RequestFailed < StandardError; end
 
   attr_accessor :delivery_method, :comments, :pickup_location
-  attr_accessor :user, :requestor_email
+  attr_accessor :user
   attr_accessor :section_title, :section_author, :section_pages, :section_volume,
                 :section_issue
   attr_accessor :item_pid, :mms_id, :holding_id
@@ -12,7 +12,7 @@ class LocalRequest
 
   attr_reader :status, :deliver_to, :recipient_user
 
-  validates_presence_of :requestor_email, :delivery_method
+  validates_presence_of :delivery_method
   validates_presence_of :bib_item, message: I18n.t('forms.local_request.messages.bib_item_validation')
   validates_inclusion_of :delivery_method, in: :delivery_options, if: :bib_item_present?
   validates_presence_of :section_title, :section_author, if: :scandeliver_request?
@@ -26,7 +26,6 @@ class LocalRequest
     self.user = user
     data = params[:local_request] || params
     self.mms_id = data[:mms_id]
-    self.requestor_email = data[:requestor_email]
     self.comments = data[:comments]
     # NOTE: In COVID times, pickup location is always VanP
     # self.pickup_location = data[:pickup_location] || 'VanPeltLib'
@@ -55,14 +54,6 @@ class LocalRequest
     raise ArgumentError, e.message
   end
 
-  def requestor_affiliation
-    user.organization
-  end
-
-  def requestor_name
-    user.name
-  end
-
   # @return [Symbol]
   def target_system
     if delivery_method.in? %w[booksbymail scandeliver]
@@ -75,9 +66,6 @@ class LocalRequest
   # @return [Hash{Symbol->String}]
   def to_h
     data = {
-      requestor_name: requestor_name,
-      requestor_email: requestor_email,
-      requestor_affiliation: requestor_affiliation,
       mms_id: mms_id,
       holding_id: holding_id,
       item_pid: item_pid,
