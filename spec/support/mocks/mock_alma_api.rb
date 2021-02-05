@@ -74,6 +74,30 @@ module MockAlmaApi
     )
   end
 
+  def stub_large_bib_get
+    stub(
+      :get,
+      "#{Alma.configuration.region}/almaws/v1/bibs/9999",
+      'alma/large_bib_get.json'
+    )
+  end
+
+  def stub_large_bib_items_get_full
+    stub(
+      :get,
+      "#{Alma.configuration.region}/almaws/v1/bibs/9999/holdings/ALL/items?limit=100",
+      'alma/large_bib_items_get_full.json'
+    )
+  end
+
+  def stub_large_bib_items_get_partial
+    stub(
+      :get,
+      "#{Alma.configuration.region}/almaws/v1/bibs/9999/holdings/ALL/items?offset=101&limit=100",
+      'alma/large_bib_items_get_partial.json'
+    )
+  end
+
   private
 
   # @param [Symbol] http_method
