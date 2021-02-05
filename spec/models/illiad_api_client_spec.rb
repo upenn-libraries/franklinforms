@@ -21,7 +21,7 @@ RSpec.describe IlliadApiClient, type: :model do
       end
       it 'returns a transaction number' do
         stub_transaction_post_success
-        body = Illiad.book_request_body user, bib_data_book, 'booksbymail'
+        body = Illiad.book_request_body user.data['proxied_for'], bib_data_book, 'booksbymail'
         response = api.transaction body
         expect(response).to eq '123456'
       end

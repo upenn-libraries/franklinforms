@@ -12,11 +12,6 @@ RSpec.describe LocalRequest, type: :model do
   context 'validations' do
     before { stub_item_get_success }
     let(:request) { LocalRequest.new(user, item_identifiers) }
-    it 'requires a requestor_email value to be present' do
-      request.valid?
-      expect(request.errors.details).to have_key :requestor_email
-      expect(request.errors.details[:requestor_email].first[:error]).to eq :blank
-    end
     it 'requires a delivery_method value to be present' do
       request.valid?
       expect(request.errors.details).to have_key :delivery_method
