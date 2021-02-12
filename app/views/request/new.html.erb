@@ -4,10 +4,11 @@
 <% original_item_count = @record.items.count %>
 
 <%# filter items %>
+<%# items = @record.items  %>
 <% items = @record.items.select(&:checkoutable?).select { |i| i.description.present? } %>
 
 <%# sort items %>
-<% items = items.sort_by { |item| [item.item_data['chronology_i'], item.item_data['chronology_j']] } %>
+<%# items = items.sort_by { |item| [item.item_data['chronology_i'], item.item_data['chronology_j']] } %>
 
 
 <h1>New Patron Request</h1>
@@ -36,13 +37,20 @@
 
   <h3>Item Selection Needed</h3>
 
-  <% items_for_select = items.map { |i| [i.label_for_select, i.pid] } %>
+  <%# items_for_select = items.map { |i| [i.label_for_select, i.pid] } %>
 
-  <%= select_tag :item_pid, options_for_select(items_for_select), class: 'chosen-select' %>
-
-  <hr>
-
-  <%= select_tag :item_pid, options_for_select(items_for_select), class: 'select2-bs' %>
+  <%= bootstrap_form_tag url: create_request_path do %>
+    <%= hidden_field_tag :mms_id, value: @record.mms_id %>
+    <%= select(:item_pid, {}, {}, {}, class: 'select2-bs') do %>
+      <% items.each do |i| %>
+        <%= content_tag :option, i.label_for_select, value: i.pid,
+                        data: { 'delivery-options': i.delivery_options.join(':'),
+                                'volume': i.volume, 'issue': i.issue,
+                                'year': i.pub_year, 'month': i.pub_month } %>
+      <% end %>
+    <% end %>
+    <%= submit_tag 'Submit Request' %>
+  <% end %>
 
   <hr>
 
@@ -51,8 +59,10 @@
   <table class="table table-compact">
     <thead>
       <tr>
-        <th>location name</th>
+        <th>radio label</th>
+        <th>select label</th>
         <th>item description</th>
+        <th>location name</th>
         <th>item physical material type desc</th>
         <th>enumeration a</th>
         <th>enumeration b</th>
@@ -60,16 +70,17 @@
         <th>chronology i</th>
         <th>chronology j</th>
         <th>chronology k</th>
+        <th>checkoutable?</th>
         <th>user due date policy</th>
-        <th>radio label</th>
-        <th>select label</th>
       </tr>
     </thead>
     <tbody>
     <% items.each do |i| %>
       <tr>
-        <td><%= i.location_name %></td>
+        <td><%= i.label_for_radio_button %></td>
+        <td><%= i.label_for_select %></td>
         <td><%= i.description %></td>
+        <td><%= i.location_name %></td>
         <td><%= i.physical_material_type['desc'] %></td>
         <td><%= i.item_data['enumeration_a'] %></td>
         <td><%= i.item_data['enumeration_b'] %></td>
@@ -77,9 +88,8 @@
         <td><%= i.item_data['chronology_i'] %></td>
         <td><%= i.item_data['chronology_j'] %></td>
         <td><%= i.item_data['chronology_k'] %></td>
+        <td><%= i.checkoutable? %></td>
         <td><%= i.user_due_date_policy %></td>
-        <td><%= i.label_for_radio_button %></td>
-        <td><%= i.label_for_select %></td>
       </tr>
     <% end %>
     </tbody>

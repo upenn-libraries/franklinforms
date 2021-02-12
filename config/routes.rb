@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   scope :forms, path: 'forms' do
     get '/request/new', to: 'request#new', as: :new_request
+    post '/request/create', to: 'request#create', as: :create_request
 
     resource :local_requests, only: %i[new create show] do
       collection do

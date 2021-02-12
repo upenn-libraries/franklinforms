@@ -71,9 +71,8 @@ class Alma::BibItem
   # @return [String]
   def label_for_select
     label_info = [
+      description,
       physical_material_type['desc'],
-      enumeration,
-      chronology,
       public_note,
       user_policy_display(user_due_date_policy),
       location_name
@@ -81,29 +80,29 @@ class Alma::BibItem
     label_info.reject(&:blank?).join(' - ')
   end
 
-  def enumeration
-    enum_a = item_data['enumeration_a']
-    enum_b = item_data['enumeration_b']
-    "#{enum_a} #{enum_b}".strip.gsub('v.', 'Volume ').gsub('no.', 'Number ').gsub('pt.', 'Part ')
+  def volume
+    item_data['enumeration_a']
   end
 
-  def chronology
-    chron_a = item_data['chronology_i']
-    chron_b = item_data['chronology_j']
-    chron_c = item_data['chronology_k']
-    "#{chron_a} #{chron_b} #{chron_c}".strip
+  def issue
+    item_data['enumeration_b']
   end
 
+  def pub_year
+    item_data['chronology_i']
+  end
+
+  def pub_month
+    item_data['chronology_j']
+  end
+
+  # TODO: improve these
   def improved_description
     og_description = description
-    gsubd_desc = og_description.gsub('v.', 'Volume ').gsub('no.', 'Number ').gsub('pt.', 'Part ')
-    issue = item_data['enumeration_a']&.gsub('v.', '')
-    volume = item_data['enumeration_b']&.gsub('no.', '')
-    year = item_data['chronology_i']
-    month = item_data['chronology_j'] || 1
-    day = item_data['chronology_k'] || 1
-
-    "#{physical_material_type['desc']} #{issue} - Volume #{volume}. #{month} #{year}"
+    og_description
+      .sub('v.', 'Volume ')
+      .sub('no.', 'Number ')
+      .sub('pt.', 'Part ')
   end
 
   # @param [String] raw_policy
