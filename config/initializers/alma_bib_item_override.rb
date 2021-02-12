@@ -1,8 +1,8 @@
 # TODO: push these up to the Alma gem? Some of these are Penn-specific, others are not
 class Alma::BibItem
-  ETAS_TEMPORARY_LOCATION = 'Van Pelt - Non Circulating'
-  PHYSICAL_ITEM_DELIVERY_OPTIONS = [:pickup, :booksbymail, :scandeliver]
-  RESTRICTED_ITEM_DELIVERY_OPTIONS = [:scandeliver]
+  ETAS_TEMPORARY_LOCATION = 'Van Pelt - Non Circulating'.freeze
+  PHYSICAL_ITEM_DELIVERY_OPTIONS = %i[pickup booksbymail scandeliver].freeze
+  RESTRICTED_ITEM_DELIVERY_OPTIONS = [:scandeliver].freeze
 
   # @return [String]
   def pid
@@ -65,6 +65,45 @@ class Alma::BibItem
       user_policy_display(user_due_date_policy)
     ]
     label_info.reject(&:blank?).join(' - ')
+  end
+
+  # Label text for Item radio button
+  # @return [String]
+  def label_for_select
+    label_info = [
+      physical_material_type['desc'],
+      enumeration,
+      chronology,
+      public_note,
+      user_policy_display(user_due_date_policy),
+      location_name
+    ]
+    label_info.reject(&:blank?).join(' - ')
+  end
+
+  def enumeration
+    enum_a = item_data['enumeration_a']
+    enum_b = item_data['enumeration_b']
+    "#{enum_a} #{enum_b}".strip.gsub('v.', 'Volume ').gsub('no.', 'Number ').gsub('pt.', 'Part ')
+  end
+
+  def chronology
+    chron_a = item_data['chronology_i']
+    chron_b = item_data['chronology_j']
+    chron_c = item_data['chronology_k']
+    "#{chron_a} #{chron_b} #{chron_c}".strip
+  end
+
+  def improved_description
+    og_description = description
+    gsubd_desc = og_description.gsub('v.', 'Volume ').gsub('no.', 'Number ').gsub('pt.', 'Part ')
+    issue = item_data['enumeration_a']&.gsub('v.', '')
+    volume = item_data['enumeration_b']&.gsub('no.', '')
+    year = item_data['chronology_i']
+    month = item_data['chronology_j'] || 1
+    day = item_data['chronology_k'] || 1
+
+    "#{physical_material_type['desc']} #{issue} - Volume #{volume}. #{month} #{year}"
   end
 
   # @param [String] raw_policy

@@ -1,0 +1,90 @@
+<% @page_title = 'Patron Request - Penn Libraries' %>
+<% bib = @record.bib_object %>
+
+<% original_item_count = @record.items.count %>
+
+<%# filter items %>
+<% items = @record.items.select(&:checkoutable?).select { |i| i.description.present? } %>
+
+<%# sort items %>
+<% items = items.sort_by { |item| [item.item_data['chronology_i'], item.item_data['chronology_j']] } %>
+
+
+<h1>New Patron Request</h1>
+
+<p>
+  You may want to <%= franklin_online_search_link(bib['title']) %>
+</p>
+
+<p>Title: <%= bib['title'] %></p>
+<p>Author: <%= bib['author'] %></p>
+
+<h2>Items</h2>
+
+<p>Total Items for Display: <%= items.count %></p>
+<p>Items not displayed: <%= original_item_count - items.count %></p>
+
+<% if items.one? %>
+
+  <h3>Single Item Case</h3>
+
+  <p>Item Available? <%= items.first.checkoutable? %></p>
+
+  <p>Available Delivery Methods: <%= items.first.delivery_options %></p>
+
+<% else %>
+
+  <h3>Item Selection Needed</h3>
+
+  <% items_for_select = items.map { |i| [i.label_for_select, i.pid] } %>
+
+  <%= select_tag :item_pid, options_for_select(items_for_select), class: 'chosen-select' %>
+
+  <hr>
+
+  <%= select_tag :item_pid, options_for_select(items_for_select), class: 'select2-bs' %>
+
+  <hr>
+
+  <h3>Item Detail Table (dev research only)</h3>
+
+  <table class="table table-compact">
+    <thead>
+      <tr>
+        <th>location name</th>
+        <th>item description</th>
+        <th>item physical material type desc</th>
+        <th>enumeration a</th>
+        <th>enumeration b</th>
+        <th>enumeration c</th>
+        <th>chronology i</th>
+        <th>chronology j</th>
+        <th>chronology k</th>
+        <th>user due date policy</th>
+        <th>radio label</th>
+        <th>select label</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% items.each do |i| %>
+      <tr>
+        <td><%= i.location_name %></td>
+        <td><%= i.description %></td>
+        <td><%= i.physical_material_type['desc'] %></td>
+        <td><%= i.item_data['enumeration_a'] %></td>
+        <td><%= i.item_data['enumeration_b'] %></td>
+        <td><%= i.item_data['enumeration_c'] %></td>
+        <td><%= i.item_data['chronology_i'] %></td>
+        <td><%= i.item_data['chronology_j'] %></td>
+        <td><%= i.item_data['chronology_k'] %></td>
+        <td><%= i.user_due_date_policy %></td>
+        <td><%= i.label_for_radio_button %></td>
+        <td><%= i.label_for_select %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+
+<% end %>
+
+<p>Submit Request</p>

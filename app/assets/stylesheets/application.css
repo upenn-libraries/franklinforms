@@ -15,4 +15,6 @@
  *= require upenn
  *= require forms
  *= require chosen
+ *= require select2
+ *= require select2-bootstrap
 */

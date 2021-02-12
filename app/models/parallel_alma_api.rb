@@ -6,7 +6,8 @@ class ParallelAlmaApi
 
   attr_reader :mms_id, :total_items, :bib_object
 
-  def initialize(mms_id)
+  def initialize(mms_id, alma_username = nil)
+    @alma_username = alma_username
     @mms_id = mms_id
     response = api_get_request "#{BASE_URL}/v1/bibs/#{mms_id}"
     raise StandardError unless response.success?

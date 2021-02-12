@@ -12,14 +12,18 @@ Rails.application.routes.draw do
   get 'forms/:id' => 'form#view', as: 'form'
   post 'forms/:id' => 'form#submit'
 
-  resource :local_requests, only: [:new, :create, :show] do
-    collection do
-      get 'test'
-    end
-  end
+  scope :forms, path: 'forms' do
+    get '/request/new', to: 'request#new', as: :new_request
 
-  get '/alma/:mms_id/holding/:holding_id/items',
-      to: 'holding_items#index', format: :json
+    resource :local_requests, only: %i[new create show] do
+      collection do
+        get 'test'
+      end
+    end
+
+    get '/alma/:mms_id/holding/:holding_id/items',
+        to: 'holding_items#index', format: :json
+  end
 
   #get '*path' => redirect('/')
 end

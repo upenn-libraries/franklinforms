@@ -15,10 +15,17 @@
 //= require chosen-jquery
 //= require_tree .
 //= require bootstrap
+//= require select2-full
 
 $(document).ready(function() {
+    // CHOSEN
    $('.chosen-select').chosen({
        allow_single_deselect: true,
-       width: '100%'
+       // width: '100%'
    });
+
+    // SELECT2
+    $( ".select2-bs" ).select2({
+        theme: "bootstrap"
+    });
 });
