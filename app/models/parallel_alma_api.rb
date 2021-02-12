@@ -4,15 +4,19 @@ class ParallelAlmaApi
   APIKEY = ENV['ALMA_API_KEY']
   BASE_URL = ENV['ALMA_API_BASE_URL']
 
+  # minimize API requests overall for now, but a lower number may give better
+  # overall performance?
+  ITEMS_PER_REQUEST = 100
+
   attr_reader :mms_id, :total_items, :bib_object
 
   def initialize(mms_id, alma_username = nil)
     @alma_username = alma_username
     @mms_id = mms_id
-    response = api_get_request "#{BASE_URL}/v1/bibs/#{mms_id}"
-    raise StandardError unless response.success?
+    availability_response = Alma::Bib.get_availability(Array.wrap(@mms_id))
+    @total_items = availability_response.total_items
 
-    @bib_object = Alma::Bib.new Oj.load response.body
+    @bib_object = Alma::Bib.new availability_response.bib_data
   end
 
   def items
@@ -21,50 +25,37 @@ class ParallelAlmaApi
 
   private
 
-  # Run first item get query, across ALL holdings
-  # If the total count is larger than the returned number of items,
-  # queue additional requests to pull entire set of items, running requests
-  # in parallel.
   # @return [Array<Alma::BibItem>]
   def retrieve_items
-    first_response = api_get_request items_url(limit: 100)
-    raise StandardError unless first_response.success?
-
-    first_parsed_response = Oj.load first_response.body
-    @total_items = first_parsed_response['total_record_count']
-    items_data = if first_parsed_response['item'].length < @total_items
-                   complete_item_responses(first_parsed_response)
-                 else
-                   first_parsed_response['item']
-                 end
-    items_data.map do |item_data|
-      Alma::BibItem.new item_data
-    end
-  end
-
-  # @param [Hash] first_response
-  # @return [Array]
-  def complete_item_responses(first_response)
+    requests_needed = (@total_items / ITEMS_PER_REQUEST) + 1
     hydra = Typhoeus::Hydra.hydra
-    additional_calls_needed = ((@total_items - first_response['item'].length) / 100) + 1
-    additional_requests = (1..additional_calls_needed).map do |call_num|
-      url = items_url(limit: 100, offset: (100 * call_num) + 1)
-      request = Typhoeus::Request.new url, headers: request_headers
+    requests = (1..requests_needed).map do |request_number|
+      request_url = items_url limit: ITEMS_PER_REQUEST,
+                              offset: offset_for(request_number),
+                              username: @alma_username
+      request = Typhoeus::Request.new request_url, headers: request_headers
       hydra.queue request
       request
     end
-    hydra.run
-    additional_requests.map do |request|
+    hydra.run # runs all requests in parallel
+    requests.map do |request|
       return nil unless request.response.success?
 
       parsed_response = Oj.load request.response.body
-      parsed_response['item']
-    end.prepend(first_response['item']).compact.flatten
+      parsed_response['item']&.map { |item_data| Alma::BibItem.new item_data }
+    end.compact.flatten
+  end
+
+  # @param [Fixnum] request_number
+  # @return [Fixnum]
+  def offset_for(request_number)
+    return 0 if request_number == 1
+
+    (ITEMS_PER_REQUEST * (request_number - 1)) + 1
   end
 
   def items_url(options = {})
-    minimal_url = "#{BASE_URL}/v1/bibs/#{@mms_id}/holdings/ALL/items"
-    minimal_url += '?' if options.any?
+    minimal_url = "#{BASE_URL}/v1/bibs/#{@mms_id}/holdings/ALL/items?order_by=description"
     minimal_url += "&user_id=#{options[:username]}" if options[:username].present?
     minimal_url += "&offset=#{options[:offset]}" if options[:offset].present?
     minimal_url += "&limit=#{options[:limit]}" if options[:limit].present?
