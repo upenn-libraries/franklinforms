@@ -10,69 +10,79 @@
 <%# sort items %>
 <%# items = items.sort_by { |item| [item.item_data['chronology_i'], item.item_data['chronology_j']] } %>
 
+<div class="container">
+  <h1>New Patron Request</h1>
+  <p>
+    You may want to <%= franklin_online_search_link(bib['title']) %>
+  </p>
+  <dl>
+    <dt>Title</dt>
+    <dd><%= bib['title'] %></dd>
+    <dt>Author</dt>
+    <dd><%= bib['author'] %></dd>
+  </dl>
+  <!-- Item Selection -->
+  <%= form_tag create_request_path, method: :post do %>
+    <%= hidden_field_tag :mms_id, @record.mms_id, id: 'mms_id' %>
+    <%= hidden_field_tag :holding_id, items.first.holding_data['holding_id'], id: 'holding_id' %>
+    <% if items.one? %>
+      <p>Available for <%= item.delivery_options %></p>
+    <%# elsif items.identical_copies? %>
+    <% elsif items.count <= 10 %>
+      <ol>
+        <% items.each do |i| %>
+          <li><a href="#"><%= i.label_for_select %></a></li>
+        <% end %>
+      </ol>
+    <% else %>
+      <div class="form-group">
+        <label for="item_pid_select"><%= items.first.physical_material_type['desc'] %></label>
+        <%= select(:item_pid, :select, {}, {}, class: 'select2-bs', id: 'item_pid') do %>
+          <% items.each do |i| %>
+            <%= content_tag :option, i.label_for_select, value: i.pid, selected: items.first.pid,
+                            data: { 'delivery-options': i.delivery_options.join(':'),
+                                    'volume': i.volume, 'issue': i.issue,
+                                    'year': i.pub_year, 'month': i.pub_month } %>
+          <% end %>
+      </div>
 
-<h1>New Patron Request</h1>
-
-<p>
-  You may want to <%= franklin_online_search_link(bib['title']) %>
-</p>
-
-<p>Title: <%= bib['title'] %></p>
-<p>Author: <%= bib['author'] %></p>
-
-<h2>Items</h2>
-
-<p>Total Items for Display: <%= items.count %></p>
-<p>Items not displayed: <%= original_item_count - items.count %></p>
-
-<% if items.one? %>
-
-  <h3>Single Item Case</h3>
-
-  <p>Item Available? <%= items.first.checkoutable? %></p>
-
-  <p>Available Delivery Methods: <%= items.first.delivery_options %></p>
-
-<% else %>
-
-  <h3>Item Selection Needed</h3>
-
-  <%# items_for_select = items.map { |i| [i.label_for_select, i.pid] } %>
-
-  <%= bootstrap_form_tag url: create_request_path do %>
-    <%= hidden_field_tag :mms_id, value: @record.mms_id %>
-    <%= select(:item_pid, {}, {}, {}, class: 'select2-bs') do %>
-      <% items.each do |i| %>
-        <%= content_tag :option, i.label_for_select, value: i.pid,
-                        data: { 'delivery-options': i.delivery_options.join(':'),
-                                'volume': i.volume, 'issue': i.issue,
-                                'year': i.pub_year, 'month': i.pub_month } %>
       <% end %>
     <% end %>
-    <%= submit_tag 'Submit Request' %>
+    <div class="form-group">
+      <label for="delivery_method_select">Delivery Method</label>
+      <%= select(:delivery_method, :select, items.first.delivery_options, {}, { id: 'delivery_method', class: 'form-control' }) %>
+    </div>
+    <hr>
+    <button id="submit-confirm-button" type="button" class="btn btn-primary" data-toggle="modal">Submit</button>
   <% end %>
+</div>
 
-  <hr>
+<h3>Item Detail Table (dev research only)</h3>
 
-  <h3>Item Detail Table (dev research only)</h3>
+<a href="#" class="show-dev-details">toggle</a>
+
+<div class="dev-details">
+
+  <p>Total Items for Display: <%= items.count %></p>
+  <p>Items not displayed: <%= original_item_count - items.count %></p>
 
   <table class="table table-compact">
     <thead>
-      <tr>
-        <th>radio label</th>
-        <th>select label</th>
-        <th>item description</th>
-        <th>location name</th>
-        <th>item physical material type desc</th>
-        <th>enumeration a</th>
-        <th>enumeration b</th>
-        <th>enumeration c</th>
-        <th>chronology i</th>
-        <th>chronology j</th>
-        <th>chronology k</th>
-        <th>checkoutable?</th>
-        <th>user due date policy</th>
-      </tr>
+    <tr>
+      <th>radio label</th>
+      <th>select label</th>
+      <th>item description</th>
+      <th>location name</th>
+      <th>item physical material type desc</th>
+      <th>enumeration a</th>
+      <th>enumeration b</th>
+      <th>enumeration c</th>
+      <th>chronology i</th>
+      <th>chronology j</th>
+      <th>chronology k</th>
+      <th>checkoutable?</th>
+      <th>user due date policy</th>
+    </tr>
     </thead>
     <tbody>
     <% items.each do |i| %>
@@ -94,7 +104,10 @@
     <% end %>
     </tbody>
   </table>
+</div>
 
-<% end %>
-
-<p>Submit Request</p>
+<div class="modal fade" id="confirm-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

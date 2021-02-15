@@ -26,6 +26,7 @@ $(document).ready(function() {
 
     // SELECT2
     $( ".select2-bs" ).select2({
-        theme: "bootstrap"
+        theme: "bootstrap",
+        width: "100%"
     });
 });

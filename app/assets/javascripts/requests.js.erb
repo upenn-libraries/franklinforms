@@ -1,0 +1,19 @@
+$(document).ready(function() {
+    var $details = $(".dev-details");
+    $details.hide();
+   $(".show-dev-details").click(function() {
+       $(".dev-details").toggle();
+   });
+
+   $("#submit-confirm-button").click(function() {
+       var form_params = {
+           mms_id: document.getElementById("mms_id").value,
+           holding_id: document.getElementById("holding_id").value,
+           item_pid: document.getElementById("item_pid").value,
+           delivery: document.getElementById("delivery_method").value
+       }
+      $("#confirm-modal").modal({
+          remote: '/forms/request/confirm' + '?' + $.param(form_params)
+      });
+   });
+});
