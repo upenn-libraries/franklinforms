@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Get all Items from the Alma API for a record without waiting too much
 class ParallelAlmaApi
   APIKEY = ENV['ALMA_API_KEY']
   BASE_URL = ENV['ALMA_API_BASE_URL']
@@ -10,15 +11,21 @@ class ParallelAlmaApi
 
   attr_reader :mms_id, :total_items, :bib_object
 
+  # Initializes object and pulls availability and bib info for given mms_id
+  # Optionally, user-specific data can be returned with Items by passing an Alma
+  # username on initialization
+  # @param [String] mms_id
+  # @param [String, nil] alma_username
   def initialize(mms_id, alma_username = nil)
     @alma_username = alma_username
     @mms_id = mms_id
     availability_response = Alma::Bib.get_availability(Array.wrap(@mms_id))
     @total_items = availability_response.total_items
-
     @bib_object = Alma::Bib.new availability_response.bib_data
   end
 
+  # Grabs all Items for @mms_id and returns them as Alma::BibItems
+  # @return [Array<Alma::BibItem>]
   def items
     @items ||= retrieve_items
   end
@@ -54,6 +61,8 @@ class ParallelAlmaApi
     (ITEMS_PER_REQUEST * (request_number - 1)) + 1
   end
 
+  # @param [Hash] options
+  # @return [String (frozen)]
   def items_url(options = {})
     minimal_url = "#{BASE_URL}/v1/bibs/#{@mms_id}/holdings/ALL/items?order_by=description"
     minimal_url += "&user_id=#{options[:username]}" if options[:username].present?
@@ -62,10 +71,13 @@ class ParallelAlmaApi
     minimal_url
   end
 
+  # @param [String] url
+  # @param [Hash] headers
   def api_get_request(url, headers = request_headers)
     Typhoeus.get url, headers: headers
   end
 
+  # @return [Hash{Symbol->String (frozen)}]
   def request_headers
     { "Authorization": "apikey #{APIKEY}",
       "Accept": 'application/json',
