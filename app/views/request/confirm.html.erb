@@ -1,13 +1,40 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <h4 class="modal-title" id="exampleModalLabel">Problem</h4>
+  <h4 class="modal-title" id="exampleModalLabel">Confirm Request</h4>
 </div>
+<%= form_tag(create_request_path, method: :post) do %>
 <div class="modal-body">
-  <p>Your item/delivery selection is valid</p>
-  <p>Maybe you need to add some ScanDeliver details?</p>
-  <p>Also, are you sure you're eligible for BBM?</p>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-default" data-dismiss="modal">Go Back</button>
-  <button type="button" class="btn btn-primary">Submit Request</button>
-</div>
+  <h3>
+    Your Request Details
+  </h3>
+  <%= hidden_field_tag :mms_id, @item['bib_data']['mms_id'] %>
+  <%= hidden_field_tag :holding_id, @item['holding_data']['holding_id'] %>
+  <%= hidden_field_tag :item_pid, @item['item_data']['pid'] %>
+  <%= hidden_field_tag :delivery_method, params[:delivery_method] %>
+
+  <dl>
+    <dt>Title</dt>
+    <dd><%= @item['bib_data']['title'] %></dd>
+    <dt>Author</dt>
+    <dd><%= @item['bib_data']['author'] %></dd>
+    <dt><%= @item.physical_material_type['desc'] %></dt>
+    <dt><%= @item.description %></dt>
+  </dl>
+
+  <% case params[:delivery_method].to_sym %>
+    <% when :pickup %>
+      <%= render 'request/confirmations/pickup' %>
+    <% when :booksbymail %>
+      <%= render 'request/confirmations/bbm' %>
+    <% when :scandelivery %>
+      <%= render 'request/confirmations/scandelivery' %>
+    <% else %>
+      <p>There was a problem</p>
+    <% end %>
+    <%= text_area_tag :comments %>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Go Back</button>
+      <%= submit_tag 'Submit Request', class: 'btn btn-default' %>
+    </div>
+<% end %>

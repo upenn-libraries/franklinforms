@@ -32,7 +32,19 @@ class RequestController < ApplicationController
   end
 
   # submit the request
-  def create; end
+  def create
+    request = LocalRequest.new @user, params
+    if request.valid?
+      submission = RequestSubmissionService.submit request
+      if submission[:status] == :success
+        render plain: "Submission Successful: #{submission[:message]}"
+      else
+        render plain: "Submission Failed: #{submission[:message]}"
+      end
+    else
+      render plain: "Submission Invalid: #{pp request.errors}"
+    end
+  end
 
   # show confirmation
   def show; end
@@ -44,7 +56,7 @@ class RequestController < ApplicationController
 
   # @param [Alma::BibItem] item
   def validate_request_for(item, params)
-    item.delivery_options.include? params[:delivery].to_sym
+    item.delivery_options.include? params[:delivery_method].to_sym
   end
 
   # @return [TrueClass, FalseClass]

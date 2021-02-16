@@ -54,6 +54,7 @@ class AlmaApiClient
       # 60331 Failed to create request.
       # 401652 General Error - An error has occurred while processing the request.
     else
+      # TODO: get confirmation code/request id
       true
       # hooray!
     end
