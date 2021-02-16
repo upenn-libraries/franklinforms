@@ -6,11 +6,16 @@ $(document).ready(function() {
    });
 
    $("#submit-confirm-button").click(function() {
+       var item_select = document.getElementById("item_pid");
+       var selected_option = $("#item_pid option:selected");
        var form_params = {
            mms_id: document.getElementById("mms_id").value,
            holding_id: document.getElementById("holding_id").value,
-           item_pid: document.getElementById("item_pid").value,
-           delivery_method: document.getElementById("delivery_method").value
+           item_pid: item_select.value,
+           delivery_method: document.getElementById("delivery_method").value,
+           issue: selected_option.data('issue'),
+           volume: selected_option.data('volume'),
+           year: selected_option.data('year')
        }
       $("#confirm-modal").modal({
           remote: '/forms/request/confirm' + '?' + $.param(form_params)

@@ -64,7 +64,7 @@ class ParallelAlmaApi
   # @param [Hash] options
   # @return [String (frozen)]
   def items_url(options = {})
-    minimal_url = "#{BASE_URL}/v1/bibs/#{@mms_id}/holdings/ALL/items?order_by=description"
+    minimal_url = "#{BASE_URL}/v1/bibs/#{@mms_id}/holdings/ALL/items?order_by=description&direction=asc"
     minimal_url += "&user_id=#{options[:username]}" if options[:username].present?
     minimal_url += "&offset=#{options[:offset]}" if options[:offset].present?
     minimal_url += "&limit=#{options[:limit]}" if options[:limit].present?

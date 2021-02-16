@@ -25,11 +25,11 @@
 </div>
 <div class="form-group">
   <%= label_tag :section_volume, 'Section Volume' %>
-  <%= text_field_tag :section_volume %>
+  <%= text_field_tag :section_volume, params[:volume] %>
 </div>
 <div class="form-group">
   <%= label_tag :section_issue, 'Section Issue' %>
-  <%= text_field_tag :section_issue %>
+  <%= text_field_tag :section_issue, params[:issue] %>
 </div>
 
 <a href="#" id="toggle-proxy-input">Proxy?</a>

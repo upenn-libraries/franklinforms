@@ -5,7 +5,7 @@
 
 <%# filter items %>
 <%# items = @record.items  %>
-<% items = @record.items.select(&:checkoutable?).select { |i| i.description.present? } %>
+<% items = @record.items.select(&:checkoutable?) %>
 
 <%# sort items %>
 <%# items = items.sort_by { |item| [item.item_data['chronology_i'], item.item_data['chronology_j']] } %>
@@ -26,8 +26,8 @@
     <%= hidden_field_tag :mms_id, @record.mms_id, id: 'mms_id' %>
     <%= hidden_field_tag :holding_id, items.first.holding_data['holding_id'], id: 'holding_id' %>
     <% if items.one? %>
-      <p>Available for <%= item.delivery_options %></p>
-    <%# elsif items.identical_copies? %>
+      <%= hidden_field_tag :item_pid, items.first.pid, id: 'item_pid' %>
+      <%# elsif items.identical_copies? %>
     <% elsif items.count <= 10 %>
       <ol>
         <% items.each do |i| %>
