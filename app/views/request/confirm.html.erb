@@ -2,7 +2,7 @@
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
   <h4 class="modal-title" id="exampleModalLabel">Confirm Request</h4>
 </div>
-<%= form_tag(create_request_path, method: :post) do %>
+<%= bootstrap_form_tag(url: create_request_path, method: :post) do %>
 <div class="modal-body">
   <h3>
     Your Request Details
@@ -22,19 +22,22 @@
   </dl>
 
   <% case params[:delivery_method].to_sym %>
-    <% when :pickup %>
-      <%= render 'request/confirmations/pickup' %>
-    <% when :booksbymail %>
-      <%= render 'request/confirmations/bbm' %>
-    <% when :scandelivery %>
-      <%= render 'request/confirmations/scandelivery' %>
-    <% else %>
-      <p>There was a problem</p>
-    <% end %>
-    <%= text_area_tag :comments %>
+  <% when :pickup %>
+    <%= render 'request/confirmations/pickup' %>
+  <% when :booksbymail %>
+    <%= render 'request/confirmations/bbm' %>
+  <% when :scandeliver %>
+    <%= render 'request/confirmations/scandeliver' %>
+  <% else %>
+    <p>There was a problem</p>
+  <% end %>
+    <div class="form-group">
+      <%= label_tag :comments, 'Comments' %>
+      <%= text_area_tag :comments %>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">Go Back</button>
-      <%= submit_tag 'Submit Request', class: 'btn btn-default' %>
-    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Go Back</button>
+    <%= submit_tag 'Submit Request', class: 'btn btn-primary' %>
+  </div>
 <% end %>

@@ -1,0 +1,42 @@
+<h3>
+  Delivery
+</h3>
+
+<dl>
+  <dt>Method</dt>
+  <dd>Electronic Delivery</dd>
+</dl>
+
+<div class="alert alert-warning">
+  Entire works cannot be delivered electronically....
+</div>
+
+<div class="form-group">
+  <%= label_tag :section_title, 'Section Title' %>
+  <%= text_field_tag :section_title %>
+</div>
+<div class="form-group">
+  <%= label_tag :section_author, 'Section Author' %>
+  <%= text_field_tag :section_author %>
+</div>
+<div class="form-group">
+  <%= label_tag :section_pages, 'Section Pages' %>
+  <%= text_field_tag :section_pages %>
+</div>
+<div class="form-group">
+  <%= label_tag :section_volume, 'Section Volume' %>
+  <%= text_field_tag :section_volume %>
+</div>
+<div class="form-group">
+  <%= label_tag :section_issue, 'Section Issue' %>
+  <%= text_field_tag :section_issue %>
+</div>
+
+<a href="#" id="toggle-proxy-input">Proxy?</a>
+
+<div class="proxy-input">
+  <div class="form-group hidden">
+    <%= label_tag :deliver_to, 'Deliver To' %>
+    <%= text_field_tag :deliver_to %>
+  </div>
+</div>
