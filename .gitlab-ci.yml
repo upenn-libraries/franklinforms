@@ -65,8 +65,7 @@ trivy_container_scanning:
   stage: sast
   extends:
     - .trivy_container_scanning
-  variables:
-    ALLOW_FAIL: "true"
+  allow_failure: true
   tags:
     - build
 
