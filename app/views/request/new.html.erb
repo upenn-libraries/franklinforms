@@ -5,10 +5,10 @@
 
 <%# filter items %>
 <%# items = @record.items  %>
-<% items = @record.items.select(&:checkoutable?) %>
+<%# items = @record.items.select(&:checkoutable?) %>
 
 <%# sort items %>
-<% items = items.sort_by { |item| [item.item_data['description'], item.item_data['chronology_j']] } %>
+<% items = @record.items.sort_by { |item| [item.item_data['description'], item.item_data['chronology_j']] } %>
 
 <div class="container">
 
@@ -37,7 +37,7 @@
                    { class: 'select2-bs', id: 'item_pid' }) do %>
         <option value=""></option>
         <% items.each do |i| %>
-          <%= content_tag :option, i.label_for_select, value: i.pid, selected: items.first.pid,
+          <%= content_tag :option, i.label_for_select, value: i.pid,
                           data: { 'delivery': i.delivery_options.join(':'),
                                   'volume': i.volume, 'issue': i.issue,
                                   'year': i.pub_year, 'month': i.pub_month } %>
@@ -46,7 +46,7 @@
     <% end %>
 
       <%= f.select :delivery_method, new_delivery_options_for_select(@record),
-                     { class: 'select2-bs', prompt: placeholder_for_delivery_select(@record) } %>
+                     { class: 'select2-bs', prompt: new_placeholder_for_delivery_select(@record) } %>
 
     <%= f.submit 'Submit', id: 'submit-confirm-button', class: 'btn btn-primary', data: { toggle: 'modal'} %>
   <% end %>

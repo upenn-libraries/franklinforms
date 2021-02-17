@@ -20,7 +20,7 @@ class ParallelAlmaApi
     @alma_username = alma_username
     @mms_id = mms_id
     availability_response = Alma::Bib.get_availability(Array.wrap(@mms_id))
-    @total_items = availability_response.total_items
+    @total_items = availability_response.total_items # TODO: this can be _wrong_! no total_items are set or counted if the availability is 'check_holdings'
     @bib_object = Alma::Bib.new availability_response.bib_data
   end
 

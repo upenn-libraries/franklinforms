@@ -3,7 +3,7 @@ module LocalRequestsHelper
   # in form select helper
   # @param [AlmaRecord] record
   def delivery_options_for_select(record)
-    if record.items.one?
+    if record.one_item?
       record.items.first.delivery_options
         .map do |option|
         [I18n.t("forms.local_request.types.#{option}"), option]
@@ -15,12 +15,31 @@ module LocalRequestsHelper
   end
 
   def new_delivery_options_for_select(record)
-    options_for_select delivery_options_for_select record
+    options = if record.items.one?
+                record.items.first.delivery_options
+                      .map do |option|
+                  [I18n.t("forms.local_request.types.#{option}"), option]
+                end
+              else
+                # JS will handle
+                []
+              end
+    options_for_select options
   end
 
   # Return placeholder for delivery options select
   # @param [AlmaRecord] record
   def placeholder_for_delivery_select(record)
+    if record.one_item?
+      t('forms.local_request.messages.select_delivery_option')
+    else
+      t('forms.local_request.messages.select_an_item')
+    end
+  end
+
+  # Return placeholder for delivery options select
+  # @param [AlmaRecord] record
+  def new_placeholder_for_delivery_select(record)
     if record.items.one?
       t('forms.local_request.messages.select_delivery_option')
     else

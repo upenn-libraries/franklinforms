@@ -29,7 +29,7 @@ function addItemRadio(container, item) {
 
 // calculate URL for grabbing item metadata from local API endpoint
 function holdingUrl(mms_id, holding_id) {
-    return "/alma/" + mms_id + "/holding/" + holding_id + "/items"
+    return "/forms/alma/" + mms_id + "/holding/" + holding_id + "/items"
 }
 
 // return label (from Rails' I18n config files) for delivery options select
@@ -65,7 +65,7 @@ function scanFieldsDisplay(value) {
 
 // show or hide the ScanDeliver form fields
 function toggleScanFields(value) {
-    section = document.getElementById('digital-request-details');
+    var section = document.getElementById('digital-request-details');
     section.style.display = scanFieldsDisplay(value);
 }
 
