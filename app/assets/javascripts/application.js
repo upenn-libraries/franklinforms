@@ -23,10 +23,4 @@ $(document).ready(function() {
        allow_single_deselect: true,
        // width: '100%'
    });
-
-    // SELECT2
-    $( ".select2-bs" ).select2({
-        theme: "bootstrap",
-        width: "100%"
-    });
 });

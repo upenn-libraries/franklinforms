@@ -3,7 +3,7 @@ module LocalRequestsHelper
   # in form select helper
   # @param [AlmaRecord] record
   def delivery_options_for_select(record)
-    if record.one_item?
+    if record.items.one?
       record.items.first.delivery_options
         .map do |option|
         [I18n.t("forms.local_request.types.#{option}"), option]
@@ -14,10 +14,14 @@ module LocalRequestsHelper
     end
   end
 
+  def new_delivery_options_for_select(record)
+    options_for_select delivery_options_for_select record
+  end
+
   # Return placeholder for delivery options select
   # @param [AlmaRecord] record
   def placeholder_for_delivery_select(record)
-    if record.one_item?
+    if record.items.one?
       t('forms.local_request.messages.select_delivery_option')
     else
       t('forms.local_request.messages.select_an_item')
@@ -44,7 +48,7 @@ module LocalRequestsHelper
   # @param [String] title
   # @return [ActiveSupport::SafeBuffer]
   def franklin_online_search_link(title)
-    title_escaped = URI.escape title
+    title_escaped = CGI.escape title
     link_to 'Search Franklin for Online availability',
             "https://franklin.library.upenn.edu/catalog?utf8=%E2%9C%93&f%5Baccess_f%5D%5B%5D=Online&op=AND&sort=score+desc&search_field=keyword&q=#{title_escaped}"
   end

@@ -1,24 +1,53 @@
 $(document).ready(function() {
+
+    var $item_select = $("#item_pid");
+    $item_select.select2({
+        theme: "bootstrap",
+        placeholder: "Make a selection, or start typing to find one",
+        width: "100%"
+    });
+
+    // show stage2 in modal
+    $("#submit-confirm-button").click(function(e) {
+        e.preventDefault();
+        var selectedOption = $("#item_pid option:selected");
+        var form_params = {
+            mms_id: document.getElementById("mms_id").value,
+            holding_id: document.getElementById("holding_id").value,
+            item_pid: $item_select.val(),
+            delivery_method: document.getElementById("delivery_method").value,
+            issue: selectedOption.data('issue'),
+            volume: selectedOption.data('volume'),
+            year: selectedOption.data('year')
+        }
+        $("#confirm-modal").modal({
+           remote: '/forms/request/confirm' + '?' + $.param(form_params)
+        });
+    });
+
     var $details = $(".dev-details");
     $details.hide();
-   $(".show-dev-details").click(function() {
-       $(".dev-details").toggle();
-   });
+    $(".show-dev-details").click(function() {
+        $(".dev-details").toggle();
+    });
+});
 
-   $("#submit-confirm-button").click(function() {
-       var item_select = document.getElementById("item_pid");
-       var selected_option = $("#item_pid option:selected");
-       var form_params = {
-           mms_id: document.getElementById("mms_id").value,
-           holding_id: document.getElementById("holding_id").value,
-           item_pid: item_select.value,
-           delivery_method: document.getElementById("delivery_method").value,
-           issue: selected_option.data('issue'),
-           volume: selected_option.data('volume'),
-           year: selected_option.data('year')
-       }
-      $("#confirm-modal").modal({
-          remote: '/forms/request/confirm' + '?' + $.param(form_params)
-      });
-   });
+$(document).on('change', '#item_pid', function(e) {
+    var deliverySelect = document.getElementById('delivery_method');
+    deliverySelect.innerHTML = ''
+    var selectedOption = $("#item_pid option:selected");
+    var deliveryOptions = selectedOption.data('delivery').split(":");
+    deliveryOptions.forEach(function(option) {
+        var optionText = deliveryOptionLabel(option);
+        var optionElement = document.createElement('option');
+        optionElement.text = optionText;
+        optionElement.value = option;
+        deliverySelect.appendChild(optionElement);
+    });
+
+    // set holding ID if radio has holding-id data attrib
+    var holdingIdInput = document.getElementById("holding_id");
+    if(holdingIdInput) {
+        holdingIdInput.value = selectedOption.data('holding-id');
+    }
 });
