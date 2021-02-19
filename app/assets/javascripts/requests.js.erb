@@ -32,16 +32,12 @@ $(document).ready(function() {
     });
 });
 
+// clear 'confirm request' boostrap modal when changing delivery method
 function clearBootstrapModal() {
     var $confirm_modal = $('#confirm-modal');
     $confirm_modal.removeData('bs.modal');
     $confirm_modal.find('.modal-content').html('');
 }
-
-// clear modal content if item or delivery method changes
-// FIXME: this wasn't working as expected when the event is a form
-// element change - it was showing the old content until the new content
-// request had finished. clearing content on modal hide
 $(document).on('change', '#delivery_method', function(e) {
     clearBootstrapModal();
 });
@@ -49,21 +45,25 @@ $(document).on('change', '#delivery_method', function(e) {
 // update delivery options if item selection changes
 $(document).on('change', '#item_pid', function(e) {
     var deliverySelect = document.getElementById('delivery_method');
+    var selectedDeliveryOption = deliverySelect.options[deliverySelect.selectedIndex]
     deliverySelect.innerHTML = ''
-    var selectedOption = $("#item_pid option:selected");
-    var deliveryOptions = selectedOption.data('delivery').split(":");
+    var selectedItemOption = $("#item_pid option:selected");
+    var deliveryOptions = selectedItemOption.data('delivery').split(":");
     deliveryOptions.forEach(function(option) {
         var optionText = deliveryOptionLabel(option);
         var optionElement = document.createElement('option');
         optionElement.text = optionText;
         optionElement.value = option;
+        if(optionElement.value === selectedDeliveryOption.value) {
+            optionElement.selected = true;
+        }
         deliverySelect.appendChild(optionElement);
     });
 
-    // set holding ID if radio has holding-id data attrib
+    // set holding ID if option has holding-id data attrib
     var holdingIdInput = document.getElementById("holding_id");
     if(holdingIdInput) {
-        holdingIdInput.value = selectedOption.data('holding-id');
+        holdingIdInput.value = selectedItemOption.data('holding-id');
     }
     clearBootstrapModal();
 });
