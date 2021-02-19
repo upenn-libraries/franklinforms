@@ -39,6 +39,7 @@
         <% items.each do |i| %>
           <%= content_tag :option, i.label_for_select, value: i.pid,
                           data: { 'delivery': i.delivery_options.join(':'),
+                                  'holding-id': i.holding_data['holding_id'],
                                   'volume': i.volume, 'issue': i.issue,
                                   'year': i.pub_year, 'month': i.pub_month } %>
         <% end %>
