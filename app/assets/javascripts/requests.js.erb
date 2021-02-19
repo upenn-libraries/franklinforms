@@ -51,3 +51,12 @@ $(document).on('change', '#item_pid', function(e) {
         holdingIdInput.value = selectedOption.data('holding-id');
     }
 });
+
+$(document).on('click', '#confirm_submit_button', function(e) {
+    var bbm_validation = document.getElementById('bbm_validation_checkbox')
+    if(bbm_validation.validity.valueMissing){
+        bbm_validation.setCustomValidity('You must be a registered Books by Mail user to submit this request');
+    } else{
+        bbm_validation.setCustomValidity('');
+    }
+});
