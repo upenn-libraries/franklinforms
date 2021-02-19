@@ -32,6 +32,21 @@ $(document).ready(function() {
     });
 });
 
+function clearBootstrapModal() {
+    var $confirm_modal = $('#confirm-modal');
+    $confirm_modal.removeData('bs.modal');
+    $confirm_modal.find('.modal-content').html('');
+}
+
+// clear modal content if item or delivery method changes
+// FIXME: this wasn't working as expected when the event is a form
+// element change - it was showing the old content until the new content
+// request had finished. clearing content on modal hide
+$(document).on('change', '#delivery_method', function(e) {
+    clearBootstrapModal();
+});
+
+// update delivery options if item selection changes
 $(document).on('change', '#item_pid', function(e) {
     var deliverySelect = document.getElementById('delivery_method');
     deliverySelect.innerHTML = ''
@@ -50,10 +65,11 @@ $(document).on('change', '#item_pid', function(e) {
     if(holdingIdInput) {
         holdingIdInput.value = selectedOption.data('holding-id');
     }
+    clearBootstrapModal();
 });
 
 $(document).on('click', '#confirm_submit_button', function(e) {
-    var bbm_validation = document.getElementById('bbm_validation_checkbox')
+    var bbm_validation = document.getElementById('bbm_validation_checkbox');
     if(bbm_validation.validity.valueMissing){
         bbm_validation.setCustomValidity('You must be a registered Books by Mail user to submit this request');
     } else{
