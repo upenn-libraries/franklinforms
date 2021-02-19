@@ -1,43 +1,25 @@
 <div class="modal-header">
   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-  <h4 class="modal-title" id="exampleModalLabel">Confirm Request</h4>
+  <h4 class="modal-title" id="exampleModalLabel"><%= modal_title(params[:delivery_method]) %></h4>
 </div>
-<%= bootstrap_form_tag(url: create_request_path, method: :post) do %>
+<%= bootstrap_form_tag(url: create_request_path, method: :post) do |f| %>
 <div class="modal-body">
-  <h3>
-    Your Request Details
-  </h3>
-  <%= hidden_field_tag :mms_id, @item['bib_data']['mms_id'] %>
-  <%= hidden_field_tag :holding_id, @item['holding_data']['holding_id'] %>
-  <%= hidden_field_tag :item_pid, @item['item_data']['pid'] %>
-  <%= hidden_field_tag :delivery_method, params[:delivery_method] %>
-
-  <dl>
-    <dt>Title</dt>
-    <dd><%= @item['bib_data']['title'] %></dd>
-    <dt>Author</dt>
-    <dd><%= @item['bib_data']['author'] %></dd>
-    <dt><%= @item.physical_material_type['desc'] %></dt>
-    <dt><%= @item.description %></dt>
-  </dl>
+  <%= render 'request_hidden_fields', f: f %>
 
   <% case params[:delivery_method].to_sym %>
   <% when :pickup %>
-    <%= render 'request/confirmations/pickup' %>
+    <%= render 'request/confirmations/pickup', f: f %>
   <% when :booksbymail %>
-    <%= render 'request/confirmations/bbm' %>
+    <%= render 'request/confirmations/bbm', f: f %>
   <% when :scandeliver %>
-    <%= render 'request/confirmations/scandeliver' %>
+    <%= render 'request/confirmations/scandeliver', f: f %>
   <% else %>
-    <p>There was a problem</p>
+    <p>Invalid Delivery Method</p>
   <% end %>
-    <div class="form-group">
-      <%= label_tag :comments, 'Comments' %>
-      <%= text_area_tag :comments %>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Go Back</button>
-    <%= submit_tag 'Submit Request', class: 'btn btn-primary' %>
-  </div>
+  <%= f.text_area :comments %>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal">Go Back</button>
+  <%= f.submit 'Submit Request', class: 'btn btn-primary' %>
+</div>
 <% end %>

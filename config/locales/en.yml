@@ -31,7 +31,7 @@ en:
       delivery_messages:
         bbm_html: "<strong>IMPORTANT!</strong> Users must <a href='https://upenn.libwizard.com/f/books-by-mail'>register for Books by Mail</a> before submitting requests. Please do not submit Books by Mail requests without registering. These requests will be canceled."
         pap_html: "The <a href='https://guides.library.upenn.edu/circulation/PickUpatPenn'>PickUp@Penn service</a> currently only provides pickup at Van Pelt-Dietrich Library Center, Ground Floor."
-        digi_html: "Delivery via your ILL account, etc."
+        digi_html: "We are unable to scan entire works. Please specify chapter or article title and author information..."
       types:
         booksbymail: "Books by Mail"
         scandeliver: "Request Digital Delivery"
@@ -72,4 +72,4 @@ en:
         section_author: "Author(s) of article or chapter to be digitized."
         section_pages: "Page range of the article or chapter to be digitized."
         section_volume: "Volume containing article or chapter for digitization."
-        section_issue: "Issue containing article for digitization."
+        section_issue: "Issue containing article or chapter for digitization."

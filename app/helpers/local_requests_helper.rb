@@ -1,4 +1,18 @@
 module LocalRequestsHelper
+  # @param [String] delviery_method
+  def modal_title(delviery_method)
+    case delviery_method.to_sym
+    when :pickup
+      'Confirm Pickup@Penn Request'
+    when :scandeliver
+      'Confirm Scan and Deliver Request'
+    when :bbm
+      'Confirm Books by Mail Request'
+    else
+      'Confirm Request'
+    end
+  end
+
   # Return delivery option information in array format for use
   # in form select helper
   # @param [AlmaRecord] record

@@ -1,10 +1,5 @@
-<h3>
-  Delivery
-</h3>
+<div class="alert alert-info">
+  <%= t('forms.local_request.delivery_messages.pap_html') %>
+</div>
 
-<dl>
-  <dt>Method</dt>
-  <dd>PickUp@Penn</dd>
-  <dt>Pickup Location</dt>
-  <dd>Van Pelt Library</dd>
-</dl>
+<%= render 'item_static_controls', item: @item, f: f %>

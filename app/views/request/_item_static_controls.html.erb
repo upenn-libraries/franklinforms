@@ -1,0 +1,9 @@
+<%= f.static_control 'Title' do %>
+  <%= item['bib_data']['title'] %>
+<% end %>
+<%= f.static_control 'Author' do %>
+  <%= item['bib_data']['author'] %>
+<% end %>
+<%= f.static_control "#{@item.physical_material_type['desc'] } Description" do %>
+  <%= item.description %>
+<% end %>

@@ -1,17 +1,12 @@
-<h3>
-  Delivery
-</h3>
-
-<dl>
-  <dt>Method</dt>
-  <dd>Books by Mail</dd>
-</dl>
-
-<div class="alert alert-warning">
-  Books by Mail requires registration! Please confirm you are a registered Books by Mail user by checking the box below.
+<div class="alert alert-info">
+  <%= t('forms.local_request.delivery_messages.bbm_html') %>
 </div>
 
-<div class="form-group">
-  <%= label_tag :bbm_confirm, 'Yes, I am registered for the Books by Mail service' %>
-  <%= check_box :bbm_confirm, :registered %>
-</div>
+<%= render 'item_static_controls', item: @item, f: f %>
+
+<%= f.form_group :bbm_confirm do %>
+  <%= f.check_box :bbm_confirm,
+                  id: 'bbm_validation_checkbox',
+                  label: 'I am a registered Books by Mail user',
+                  required: true %>
+<% end %>
