@@ -1,14 +1,14 @@
 <% @page_title = 'Request From Penn Libraries' %>
-<% bib = @record.bib_object %>
+<% bib = @items.first['bib_data'] %>
 
-<% original_item_count = @record.items.count %>
+<% original_item_count = @items.total_count %>
 
 <%# filter items %>
 <%# items = @record.items  %>
 <%# items = @record.items.select(&:checkoutable?) %>
 
 <%# sort items %>
-<% items = @record.items.sort_by { |item| [item.item_data['description'], item.item_data['chronology_j']] } %>
+<% items = @items.sort_by { |item| [item.item_data['description'], item.item_data['chronology_j']] } %>
 
 <div class="container">
 
@@ -26,7 +26,7 @@
       <%= bib['author'] %>
     <% end %>
 
-    <%= f.hidden_field :mms_id, value: @record.mms_id, id: 'mms_id' %>
+    <%= f.hidden_field :mms_id, value: bib['mms_id'], id: 'mms_id' %>
     <%= f.hidden_field :holding_id, value: items.first.holding_data['holding_id'], id: 'holding_id' %>
 
     <% if items.one? %>
@@ -46,8 +46,8 @@
       <% end %>
     <% end %>
 
-      <%= f.select :delivery_method, new_delivery_options_for_select(@record),
-                     { class: 'select2-bs', prompt: new_placeholder_for_delivery_select(@record) } %>
+      <%= f.select :delivery_method, new_delivery_options_for_select(@items),
+                     { class: 'select2-bs', prompt: new_placeholder_for_delivery_select(@items) } %>
 
     <%= f.submit 'Submit', id: 'submit-confirm-button', class: 'btn btn-primary', data: { toggle: 'modal'} %>
   <% end %>

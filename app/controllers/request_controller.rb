@@ -4,24 +4,23 @@
 class RequestController < ApplicationController
   include AlmaUserLookup
 
-  rescue_from AlmaApiClient::Timeout do |exception|
+  rescue_from TurboAlmaApi::Client::Timeout do |exception|
     redirect(exception.message)
   end
 
   # show the form
   def new
-    @record = if params[:mms_id]
-                # local request case...
-                ParallelAlmaApi.new params[:mms_id], @user.pennkey
-              else
-                # any other case - e.g., OpenURL params for ILL/Resource Sharing request
-                nil
-              end
+    @items = if params[:mms_id]
+               TurboAlmaApi::Client.all_items_for(params[:mms_id].to_s,
+                                                  @user.pennkey)
+             else
+               nil
+             end
 
   end
 
   def confirm
-    @item = AlmaApiClient.new.find_item_for(
+    @item = TurboAlmaApi::Client.item_for(
       mms_id: params[:mms_id], holding_id: params[:holding_id], item_pid: params[:item_pid]
     ) # TODO: rescue
     if validate_request_for @item, params
@@ -54,7 +53,7 @@ class RequestController < ApplicationController
 
   private
 
-  # @param [Alma::BibItem] item
+  # @param [PennItem] item
   def validate_request_for(item, params)
     item.delivery_options.include? params[:delivery_method].to_sym
   end

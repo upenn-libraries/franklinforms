@@ -28,10 +28,10 @@ module LocalRequestsHelper
     end
   end
 
-  def new_delivery_options_for_select(record)
-    options = if record.items.one?
-                record.items.first.delivery_options
-                      .map do |option|
+  def new_delivery_options_for_select(item_set)
+    options = if item_set.total_count == 1
+                item_set.first.delivery_options
+                        .map do |option|
                   [I18n.t("forms.local_request.types.#{option}"), option]
                 end
               else
@@ -52,9 +52,9 @@ module LocalRequestsHelper
   end
 
   # Return placeholder for delivery options select
-  # @param [AlmaRecord] record
-  def new_placeholder_for_delivery_select(record)
-    if record.items.one?
+  # @param [BibSet] record
+  def new_placeholder_for_delivery_select(item_set)
+    if item_set.total_count == 1
       t('forms.local_request.messages.select_delivery_option')
     else
       t('forms.local_request.messages.select_an_item')
