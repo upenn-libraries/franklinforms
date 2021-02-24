@@ -3,10 +3,6 @@
 
 <% original_item_count = @items.total_count %>
 
-<%# filter items %>
-<%# items = @record.items  %>
-<%# items = @record.items.select(&:checkoutable?) %>
-
 <%# sort items %>
 <% items = @items.sort_by { |item| [item.item_data['description'], item.item_data['chronology_j']] } %>
 

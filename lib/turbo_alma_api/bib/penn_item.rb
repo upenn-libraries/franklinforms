@@ -2,16 +2,11 @@
 
 module TurboAlmaApi
   module Bib
-    # sprinkle additional and Penn-specific behavior into Alma::BibItem
-    class PennItem < DelegateClass(Alma::BibItem)
+    # sprinkle additional and Penn-specific behavior on top of Alma::BibItem
+    class PennItem < Alma::BibItem
       ETAS_TEMPORARY_LOCATION = 'Van Pelt - Non Circulating'
       PHYSICAL_ITEM_DELIVERY_OPTIONS = %i[pickup booksbymail scandeliver].freeze
       RESTRICTED_ITEM_DELIVERY_OPTIONS = [:scandeliver].freeze
-
-      def initialize(data)
-        obj = Alma::BibItem.new data
-        super(obj)
-      end
 
       def identifiers
         { item_pid: pid,
@@ -143,7 +138,7 @@ module TurboAlmaApi
           label: label_for_radio_button,
           delivery_options: delivery_options,
           checkoutable: checkoutable?,
-          etas_restricted: etas_restricted?,
+          etas_restricted: etas_restricted?
         }
       end
     end

@@ -3,17 +3,16 @@
 module TurboAlmaApi
   module Bib
     # Represent a set of Items built from API response
-    class PennBibSet
-      include Enumerable
+    class PennItemSet
       extend ::Forwardable
 
-      def_delegators :@items, :each, :length, :[], :first, :sort_by
-
-      # minimize API requests overall for now, but a lower number may give better
-      # overall performance?
+      # minimize API requests overall for now, but a lower number may give
+      # better overall performance?
       ITEMS_PER_REQUEST = 100
 
       attr_accessor :mms_id, :alma_username, :total_count
+
+      def_delegators :@items, :each, :length, :[], :first, :sort_by
 
       # @param [String] mms_id
       # @param [String, nil] username
