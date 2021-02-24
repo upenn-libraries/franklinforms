@@ -8,7 +8,7 @@ class LocalRequestsController < ApplicationController
   before_action :set_user
   before_action :set_request, except: :test
 
-  rescue_from AlmaApiClient::Timeout do |exception|
+  rescue_from TurboAlmaApi::Client::Timeout do |exception|
     redirect(exception.message)
   end
 
