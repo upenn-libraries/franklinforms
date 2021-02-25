@@ -25,7 +25,7 @@
     <%= f.hidden_field :mms_id, value: bib['mms_id'], id: 'mms_id' %>
     <%= f.hidden_field :holding_id, value: items.first.holding_data['holding_id'], id: 'holding_id' %>
 
-    <% if items.one? %>
+    <% if items.length == 1 %>
       <%= f.hidden_field :item_pid, value: items.first.pid, id: 'item_pid' %>
     <% else %>
       <%= f.select(:item_pid, '',
@@ -42,8 +42,8 @@
       <% end %>
     <% end %>
 
-      <%= f.select :delivery_method, new_delivery_options_for_select(@items),
-                     { class: '', prompt: new_placeholder_for_delivery_select(@items) }, { disabled: true } %>
+    <%= f.select :delivery_method, new_delivery_options_for_select(@items),
+                 { class: '', prompt: new_placeholder_for_delivery_select(@items) }, { disabled: (@items.length > 1) } %>
 
     <%= f.submit 'Submit', id: 'submit-confirm-button', class: 'btn btn-primary', data: { toggle: 'modal'} %>
   <% end %>
