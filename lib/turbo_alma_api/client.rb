@@ -25,11 +25,12 @@ module TurboAlmaApi
     # @return [TurboAlmaApi::Bib::PennItem]
     # @param [Hash] identifiers
     def self.item_for(identifiers)
-      unless all_identifiers_set?(identifiers)
+      unless identifiers[:mms_id].present? && identifiers[:holding_id].present? && identifiers[:item_pid].present?
         raise ArgumentError, 'Insufficient identifiers set'
       end
 
-      response = api_get_request item_url(identifiers)
+      item_url = "#{BASE_URL}/v1/bibs/#{identifiers[:mms_id]}/holdings/#{identifiers[:holding_id]}/items/#{identifiers[:item_pid]}"
+      response = api_get_request item_url
       parsed_response = Oj.load response.body
       raise ItemNotFound, "Item can't be found for: #{identifiers[:item_pid]}" if parsed_response['errorsExist']
 
@@ -45,7 +46,8 @@ module TurboAlmaApi
       body = { request_type: 'HOLD', pickup_location_type: 'LIBRARY',
                pickup_location_library: request.pickup_location,
                comment: request.comments }
-      response = Typhoeus.post request_url(request.mms_id, request.holding_id, request.item_pid),
+      request_url = "#{BASE_URL}/v1/bibs/#{request.mms_id}/holdings/#{request.holding_id}/items/#{request.item_pid}/requests"
+      response = Typhoeus.post request_url,
                                headers: DEFAULT_REQUEST_HEADERS,
                                params: query,
                                body: body
@@ -69,27 +71,12 @@ module TurboAlmaApi
       end
     end
 
+    # Perform a get request with the usual Alma API request headers
+    # @param [String] url
+    # @param [Hash] headers
     def self.api_get_request(url, headers = {})
       headers.merge! DEFAULT_REQUEST_HEADERS
       Typhoeus.get url, headers: headers
-    end
-
-    # Check if identifiers are sufficient to attempt an item lookup
-    # @param [Hash] identifiers
-    # @return [TrueClass, FalseClass]
-    def self.all_identifiers_set?(identifiers)
-      identifiers[:mms_id].present? &&
-        identifiers[:holding_id].present? &&
-        identifiers[:item_pid].present?
-    end
-
-    def self.request_url(mms_id, holding_id, item_id)
-      "#{BASE_URL}/v1/bibs/#{mms_id}/holdings/#{holding_id}/items/#{item_id}/requests"
-    end
-
-    # @param [Hash] identifiers
-    def self.item_url(identifiers)
-      "#{BASE_URL}/v1/bibs/#{identifiers[:mms_id]}/holdings/#{identifiers[:holding_id]}/items/#{identifiers[:item_pid]}"
     end
   end
 end
