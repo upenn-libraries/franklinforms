@@ -3,8 +3,10 @@ $(document).ready(function() {
     var $item_select = $("#item_pid");
     $item_select.select2({
         theme: "bootstrap",
-        placeholder: "Make a selection, or start typing to find one",
+        placeholder: "Click here to make a selection",
         width: "100%"
+    }).on('select2:open', function(e){
+        $('.select2-search__field').attr('placeholder', 'Start typing to filter the list');
     });
 
     // show stage2 in modal
@@ -45,6 +47,7 @@ $(document).on('change', '#delivery_method', function(e) {
 // update delivery options if item selection changes
 $(document).on('change', '#item_pid', function(e) {
     var deliverySelect = document.getElementById('delivery_method');
+    deliverySelect.disabled = false;
     var selectedDeliveryOption = deliverySelect.options[deliverySelect.selectedIndex]
     deliverySelect.innerHTML = ''
     var selectedItemOption = $("#item_pid option:selected");

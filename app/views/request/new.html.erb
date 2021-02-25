@@ -43,7 +43,7 @@
     <% end %>
 
       <%= f.select :delivery_method, new_delivery_options_for_select(@items),
-                     { class: 'select2-bs', prompt: new_placeholder_for_delivery_select(@items) } %>
+                     { class: '', prompt: new_placeholder_for_delivery_select(@items) }, { disabled: true } %>
 
     <%= f.submit 'Submit', id: 'submit-confirm-button', class: 'btn btn-primary', data: { toggle: 'modal'} %>
   <% end %>
