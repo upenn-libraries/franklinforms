@@ -23,6 +23,9 @@ module FranklinForms
     config.action_dispatch.ip_spoofing_check = false
     config.assets.prefix = '/redir/assets'
 
+    # load stuff from lib
+    config.autoload_paths << Rails.root.join('lib')
+
     unless Rails.env.development?
       config.action_mailer.delivery_method = :smtp
       config.action_mailer.smtp_settings = {

@@ -20,7 +20,7 @@ class AlmaRecord
                   end
     @items = lookup_items_for(holding_ids, user_id) if should_prefetch_items?
   rescue Net::OpenTimeout => e
-    raise AlmaApiClient::Timeout, "Problem with Alma API: #{e.message}"
+    raise TurboAlmaApi::Client::Timeout, "Problem with Alma API: #{e.message}"
   end
 
   # Is there only one Item?
@@ -35,8 +35,8 @@ class AlmaRecord
   # TODO: Can't retrieve more than 100 without adding pagination
   # @param [Array<String>] holding_ids
   def lookup_items_for(holding_ids, user_id)
-    holding_ids.map do |holding_id|
-      Alma::BibItem.find(
+    items = holding_ids.map do |holding_id|
+      TurboAlmaApi::Bib::PennItem.find(
         mms_id,
         holding_id: holding_id,
         user_id: user_id,
@@ -44,8 +44,10 @@ class AlmaRecord
         limit: 100
       )
     end.map(&:items).flatten
+    # ugly
+    items.map { |bib_item| TurboAlmaApi::Bib::PennItem.new(bib_item.item) }
   rescue Net::OpenTimeout => e
-    raise AlmaApiClient::Timeout, "Problem with Alma API: #{e.message}"
+    raise TurboAlmaApi::Client::Timeout, "Problem with Alma API: #{e.message}"
   end
 
   # Turn Alma's holdings data hash into AlmaHoldings
