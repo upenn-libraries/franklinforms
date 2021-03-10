@@ -49,7 +49,7 @@ class LocalRequest
   # TODO: handle no item_pid case
   # @return [Alma::BibItem]
   def bib_item
-    @bib_item ||= AlmaApiClient.new.find_item_for identifiers
+    @bib_item ||= TurboAlmaApi::Client.item_for identifiers
   rescue StandardError => e
     raise ArgumentError, e.message
   end

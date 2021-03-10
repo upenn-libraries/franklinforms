@@ -45,7 +45,7 @@ module MockAlmaApi
   def stub_item_get_success
     stub(
       :get,
-      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/3456?apikey=test-alma-apikey&format=json",
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/2345/items/3456",
       'alma/item_get_success.json'
     )
   end
@@ -82,10 +82,26 @@ module MockAlmaApi
     )
   end
 
+  def stub_turbo_item_get_canary
+    stub(
+      :get,
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/ALL/items?direction=asc&limit=1&order_by=description",
+      'alma/turbo_item_get_canary.json'
+    )
+  end
+
+  def stub_turbo_item_get_full
+    stub(
+      :get,
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/ALL/items?direction=asc&limit=100&offset=0&order_by=description",
+      'alma/turbo_item_get_full.json'
+    )
+  end
+
   def stub_large_bib_items_get_full
     stub(
       :get,
-      "#{Alma.configuration.region}/almaws/v1/bibs/9999/holdings/ALL/items?limit=100",
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/ALL/items?limit=100",
       'alma/large_bib_items_get_full.json'
     )
   end
@@ -93,7 +109,7 @@ module MockAlmaApi
   def stub_large_bib_items_get_partial
     stub(
       :get,
-      "#{Alma.configuration.region}/almaws/v1/bibs/9999/holdings/ALL/items?offset=101&limit=100",
+      "#{Alma.configuration.region}/almaws/v1/bibs/1234/holdings/ALL/items?offset=101&limit=100",
       'alma/large_bib_items_get_partial.json'
     )
   end
