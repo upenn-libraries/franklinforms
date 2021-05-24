@@ -8,6 +8,7 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 
 RUN apt-get update && apt-get install -qq -y --no-install-recommends \
     libaio1 \
+    shared-mime-info \
     unzip && \
     chmod +x /usr/local/bin/docker-entrypoint && \
     rm -f /etc/service/nginx/down /etc/nginx/sites-enabled/default && \
