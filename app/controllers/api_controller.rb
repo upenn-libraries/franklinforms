@@ -10,8 +10,12 @@ class ApiController < ApplicationController
   def user_info
     pennkey = params[:id].downcase
     if valid_pennkey? pennkey
-      data = PennCommunity.getUser(params[:id])
-      render json: data
+      if ENV.fetch('ENABLE_USERINFO_ENDPOINT', false)
+        data = PennCommunity.getUser(params[:id])
+        render json: data
+      else
+        head :ok
+      end
     else
       head :bad_request
     end
