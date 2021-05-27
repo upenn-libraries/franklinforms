@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'forms/:id' => 'form#view', as: 'form'
   post 'forms/:id' => 'form#submit'
 
+  get 'forms/api/user/:id/info', to: 'api#user_info'
 
   #get '*path' => redirect('/')
 end
