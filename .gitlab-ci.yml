@@ -1,87 +1,298 @@
 include:
   - project: "devops/gitlab/ci-templates/docker"
-    ref: "master"
-    file: ".build_docker_image.yml"
-  - project: "devops/gitlab/ci-templates/docker"
-    ref: "master"
-    file: ".push_docker_image.yml"
-  - project: "devops/gitlab/ci-templates/docker"
-    ref: "master"
-    file: ".remove_docker_image.yml"
+    ref: "multistage"
+    file:
+      - ".build_docker_image.yml"
+      - ".push_docker_image.yml"
+      - ".remove_docker_image.yml"
+      - ".remove_docker_image_from_registry.yml"
   - project: "devops/gitlab/ci-templates/ruby"
-    ref: "master"
+    ref: "sans-dind"
     file: ".rspec.yml"
   - project: "devops/gitlab/ci-templates/general"
-    ref: "master"
+    ref: "external-service"
     file: ".smoke_test.yml"
   - project: "devops/gitlab/ci-templates/sast"
     ref: "master"
-    file: ".shiftleft_container_scanning.yml"
-  - project: "devops/gitlab/ci-templates/sast"
-    ref: "master"
-    file: ".trivy_container_scanning.yml"
+    file:
+      - ".shiftleft_container_scanning.yml"
+      - ".trivy_container_scanning.yml"
   - template: "Workflows/MergeRequest-Pipelines.gitlab-ci.yml"
 
 stages:
-  - .pre
-  - test
-  - sast
-  - push
-  - .post
+  - build:base
+  - push_tmp:base
+  - build:dev
+  - push_tmp:dev
+  - test:dev
+  - build:prod
+  - push_tmp:prod
+  - sast:prod
+  - remove_tmp:dev
+  - remove_tmp:prod
+  - remove_tmp:base
+  - push:base
+  - push:dev
+  - push:prod
+  - remove:base
+  - remove:dev
+  - remove:prod
 
-build_image:
-  stage: .pre
+# -- Start - Build and push base image
+build_base_image:
+  stage: build:base
   extends:
     - .build_docker_image
+  variables:
+    DOCKER_TARGET: "base"
+  tags:
+    - build
+
+push_tmp_base_image_to_registry:
+  stage: push_tmp:base
+  extends:
+    - .push_docker_image
+  needs:
+    - build_base_image
+  variables:
+    DOCKER_TARGET: "base"
+    IMAGE_TAGS: ${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}
+  tags:
+    - build
+# -- End - Build and push base image
+
+# -- Start - build, push temp dev image, and test dev image
+build_dev_image:
+  stage: build:dev
+  extends:
+    - .build_docker_image
+  variables:
+    BASE_IMAGE_CACHE_TAG: ${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-base
+    DOCKER_BUILD_ARGS: "--build-arg RAILS_ENV=development"
+    DOCKER_TARGET: "development"
+  needs:
+    - push_tmp_base_image_to_registry
+  tags:
+    - build
+
+push_tmp_dev_image_to_registry:
+  stage: push_tmp:dev
+  extends:
+    - .push_docker_image
+  needs:
+    - build_dev_image
+  variables:
+    DOCKER_TARGET: "development"
+    IMAGE_TAGS: ${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}
   tags:
     - build
 
 rspec_test:
-  stage: test
+  stage: test:dev
+  image: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-development
+  needs:
+    - push_tmp_dev_image_to_registry
   extends:
     - .rspec
+  script:
+    - bundle exec rake spec
   variables:
-    RSPEC_TEST_DOCKER_ENV_VARS: "-e SECRET_KEY_BASE=x -e ALMA_API_KEY=${ALMA_API_KEY}"
+    ALMA_API_KEY: ${ALMA_API_KEY}
+    SECRET_KEY_BASE: "x"
   tags:
     - build
 
 smoke_test:
-  stage: test
+  stage: test:dev
+  services:
+    - name: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-development
+      alias: smoketest
+  needs:
+    - push_tmp_dev_image_to_registry
   extends:
     - .smoke_test
   variables:
+    SMOKE_TEST_PORT: 3000
     SMOKE_TEST_URL_PATH: "/redir/help"
-    SMOKE_TEST_DOCKER_ENV_VARS: "-e SECRET_KEY_BASE=x"
+  tags:
+    - build
+# -- End - build, push temp dev image, and test dev image
+
+# -- Start - build, push temp prod image, and test prod image
+build_prod_image:
+  stage: build:prod
+  extends:
+    - .build_docker_image
+  variables:
+    BASE_IMAGE_CACHE_TAG: ${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-base
+    DOCKER_BUILD_ARGS: "--build-arg RAILS_ENV=production"
+    DOCKER_TARGET: "production"
+  needs:
+    - rspec_test
+    - smoke_test
+  tags:
+    - build
+
+push_tmp_prod_image_to_registry:
+  stage: push_tmp:prod
+  extends:
+    - .push_docker_image
+  needs:
+    - build_prod_image
+  variables:
+    DOCKER_TARGET: "production"
+    IMAGE_TAGS: ${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}
   tags:
     - build
 
 shiftleft_container_scanning:
-  stage: sast
+  stage: sast:prod
   extends:
     - .shiftleft_container_scanning
+  needs:
+    - push_tmp_prod_image_to_registry
   tags:
     - build
 
 trivy_container_scanning:
-  stage: sast
+  stage: sast:prod
   extends:
     - .trivy_container_scanning
-  allow_failure: true
+  before_script:
+    - apk add --no-cache docker
+  needs:
+    - push_tmp_prod_image_to_registry
+  variables:
+    CI_IMAGE_NAME: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-production
   tags:
     - build
+  allow_failure: true
+# -- End - build, push temp prod image, and test prod image
 
-push_image_to_registry:
-  stage: push
+# -- Start - Remove temp images from registry
+remove_tmp_dev_image_from_registry:
+  stage: remove_tmp:dev
+  extends:
+    - .remove_docker_image_from_registry
+  variables:
+    IMAGE_TAG: ${CI_PROJECT_PATH}:${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-development
+  rules:
+    - when: always
+  needs:
+    - rspec_test
+    - smoke_test
+  tags:
+    - build
+  allow_failure: true
+
+remove_tmp_prod_image_from_registry:
+  stage: remove_tmp:prod
+  extends:
+    - .remove_docker_image_from_registry
+  variables:
+    IMAGE_TAG: ${CI_PROJECT_PATH}:${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-production
+  rules:
+    - when: always
+  needs:
+    - shiftleft_container_scanning
+    - trivy_container_scanning
+  tags:
+    - build
+  allow_failure: true
+
+remove_tmp_base_image_from_registry:
+  stage: remove_tmp:base
+  extends:
+    - .remove_docker_image_from_registry
+  variables:
+    IMAGE_TAG: ${CI_PROJECT_PATH}:${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-base
+  rules:
+    - when: always
+  needs:
+    - build_dev_image
+    - build_prod_image
+  tags:
+    - build
+  allow_failure: true
+# -- End - Remove temp images from registry
+
+# -- Start - push final images to registry
+push_base_image_to_registry:
+  stage: push:base
   extends:
     - .push_docker_image
+  needs:
+    - remove_tmp_base_image_from_registry
+  variables:
+    DOCKER_TARGET: "base"
   tags:
     - build
 
-remove_image:
-  stage: .post
+push_dev_image_to_registry:
+  stage: push:dev
+  extends:
+    - .push_docker_image
+  needs:
+    - remove_tmp_dev_image_from_registry
+    - rspec_test
+    - smoke_test
+  variables:
+    DOCKER_TARGET: "development"
+  tags:
+    - build
+
+push_prod_image_to_registry:
+  stage: push:prod
+  extends:
+    - .push_docker_image
+  needs:
+    - remove_tmp_prod_image_from_registry
+    - shiftleft_container_scanning
+    - trivy_container_scanning
+  variables:
+    DOCKER_TARGET: "production"
+    TAG_IMAGE_WITH_TARGET: "false"
+  tags:
+    - build
+# -- End - push final images to registry
+
+# -- Start - remove images passed through pipeline
+remove_base_image:
+  stage: remove:base
   extends:
     - .remove_docker_image
+  needs:
+    - push_base_image_to_registry
+  variables:
+    IMAGE_TAGS: ${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-base
   rules:
     - when: always
   tags:
     - build
+
+remove_dev_image:
+  stage: remove:dev
+  extends:
+    - .remove_docker_image
+  needs:
+    - push_dev_image_to_registry
+  variables:
+    IMAGE_TAGS: ${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-development
+  rules:
+    - when: always
+  tags:
+    - build
+
+remove_prod_image:
+  stage: remove:prod
+  extends:
+    - .remove_docker_image
+  needs:
+    - push_prod_image_to_registry
+  variables:
+    IMAGE_TAGS: ${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}-production
+  rules:
+    - when: always
+  tags:
+    - build
+# -- End - remove images passed through pipeline
