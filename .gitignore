@@ -36,3 +36,6 @@ securestart.sh
 
 # Ignore test results
 /test-results
+
+# Ignore development bundle files
+vendor/bundle

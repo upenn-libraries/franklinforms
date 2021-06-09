@@ -1,15 +1,18 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  web:
-    build: .
-    image: franklinforms
-    container_name: franklinforms
+  app:
+    build:
+      args:
+        RAILS_ENV: production
+      context: .
+      target: production
     env_file:
-      - '.env'
-    environment:
-      RAILS_ENV: production
-      PASSENGER_APP_ENV: production
+      - ".env"
+
+  nginx:
+    image: gitlab.library.upenn.edu/franklin/franklinforms-nginx:aee188f1
     ports:
-      - '80:80'
-      - '443:443'
+      - "80:80"
+    depends_on:
+      - app

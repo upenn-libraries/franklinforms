@@ -1,0 +1,12 @@
+.bundle
+.circleci
+.git
+.gitleaks.toml
+.gitlab-ci.yml
+
+Dockerfile
+docker-compose.dev.yml
+docker-compose.yml
+
+tmp
+vendor/bundle
