@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Franklinforms API', type: :request do
   context 'without auth token' do
     it 'returns an unauthorized status' do
