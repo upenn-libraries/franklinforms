@@ -1,4 +1,4 @@
-require 'rails_helper'
+# frozen_string_literal: true
 
 RSpec.feature 'Form rendering and submission', type: :feature do
   let(:book_params) do
