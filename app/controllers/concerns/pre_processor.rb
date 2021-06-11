@@ -49,7 +49,11 @@ module PreProcessor
         user.data['proxied_for'] = username
         user.data['proxied_by'] = ''
       else
-        Illiad.getIlliadUserInfo(user, params)
+        if params[:use_api]
+          Illiad.hydrate_user_with_illiad_info_api(user, params)
+        else
+          Illiad.getIlliadUserInfo(user, params)
+        end
       end
 
       # Show ILL "Blocked" page if user has blocked status flags

@@ -19,11 +19,20 @@ module PostProcessor
     when 'resourcesharing'
     when 'ill'
       if user.data['illiadrecord'] == 'new'
-        Illiad.addIlliadUser(user)
+        if params[:use_api]
+          Illiad.add_illiad_user_api user
+        else
+          Illiad.addIlliadUser(user)
+        end
       elsif user.data['illiadrecord'] == 'modify'
         Illiad.updateIlliadUser(user)
       end
-      txnumber = Illiad.submit(user, bib, values)
+      txnumber = if params[:use_api]
+                   response = Illiad.api_submit user, bib, values
+                   response[:confirmation_number]
+                 else
+                   Illiad.submit(user, bib, values)
+                 end
       FormMailer.confirm_illiad_email(user, bib, txnumber, values).deliver_now
     when 'booksbymail'
       FormMailer.confirm_booksbymail_email(user, bib, values).deliver_now

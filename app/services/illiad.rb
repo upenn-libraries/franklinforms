@@ -94,6 +94,55 @@ class Illiad
 
   end
 
+  def self.hydrate_user_with_illiad_info_api(user, params)
+
+    illiad_user = IlliadApiClient.new.get_user userinfo['proxied_for']
+
+    userinfo = user.data
+
+    result = {
+      'emailaddress' => illiad_user['EMailAddress'],
+      'phone' => illiad_user['Phone'],
+      'department' => illiad_user['Department'],
+      'nvtgc' => illiad_user['NVTGC'],
+      'address' => illiad_user['Address'],
+      'address2' => illiad_user['Address2'],
+      'status' => illiad_user['Status'],
+      'cleared' => illiad_user['Cleared']
+    }
+
+    userinfo['emailAddr'] = params['email'].presence || result['emailaddress'] || userinfo['email'] || ''
+    # CHECK FOR INVALID EMAIL ADDRESS
+
+    userinfo['phone'] = result['phone'] || ''
+    userinfo['cleared'] = result['cleared'] || ''
+    userinfo['delivery'] = ''
+
+    ill_office = getILLOffice(userinfo)
+
+    if result['status'].nil?
+      userinfo['illiadrecord'] = 'new'
+      userinfo['illoffice'] = ill_office
+      #userinfo['delivery'] = getDeliveryAddr(userinfo) || ''
+    elsif userinfo['dept'] != result['department'] ||
+      userinfo['illoffice'] != result['nvtgc'] ||
+      userinfo['status'] != result['status'] ||
+      userinfo['emailAddr'] != result['emailaddress'] ||
+      userinfo['phone'] != result['phone']
+      userinfo['illiadrecord'] = 'modify'
+      userinfo['dept'] = result['department']
+      userinfo['illoffice'] = result['nvtgc'] || ill_office
+      userinfo['delivery'] = result['address'] || userinfo['delivery']
+      userinfo['status'] = result['status'] || userinfo['status']
+    else
+      userinfo['illiadrecord'] = 'nochange'
+    end
+
+    userinfo['illoffice_name'] = @illoffices[userinfo['illoffice']]
+
+    userinfo
+  end
+
   # queries DB
   def self.getIlliadUserInfo(user, params)
 
@@ -297,47 +346,17 @@ class Illiad
     # tl;dr: don't change the hashed password value used here or you'll break everything
 
     query = %Q{INSERT INTO #{tablename}
-                 (username,
-lastname,
-firstname,
-ssn,
-status,
-emailaddress,
-phone,
-department,
-nvtgc,
-password,
-notificationmethod,
- deliverymethod,
- loandeliverymethod,
- cleared,
- web,
- address,
- authtype,
- articlebillingcategory,
- loanbillingcategory
-)
-                 VALUES
-                 (
-'#{username}',
- '#{db.escape userinfo['last_name']}',
- '#{db.escape userinfo['first_name']}',
- '#{db.escape userinfo['penn_id']}',
- '#{db.escape userinfo['status']}',
- '#{db.escape userinfo['emailAddr']}',
- '#{db.escape userinfo['phone']}',
- '#{db.escape department}',
- '#{db.escape userinfo['illoffice']}',
- '#{ENV['ILLIAD_USER_PASSWORD_HASH']}',
- 'Electronic',
- 'Mail to Address',
-'Hold for Pickup',
-'Yes',
- 'Yes',
- '#{db.escape userinfo['delivery']}',
- 'Default',
- 'Exempt',
- 'Exempt' )
+               (username, lastname, firstname, ssn, status, emailaddress, phone, department,
+                nvtgc, password, notificationmethod, deliverymethod, loandeliverymethod,
+                cleared, web, address, authtype, articlebillingcategory, loanbillingcategory)
+               VALUES
+               ('#{username}', '#{db.escape userinfo['last_name']}', '#{db.escape userinfo['first_name']}',
+                '#{db.escape userinfo['penn_id']}', '#{db.escape userinfo['status']}',
+                '#{db.escape userinfo['emailAddr']}', '#{db.escape userinfo['phone']}',
+                '#{db.escape department}', '#{db.escape userinfo['illoffice']}',
+                '#{ENV['ILLIAD_USER_PASSWORD_HASH']}', 'Electronic', 'Mail to Address',
+                'Hold for Pickup', 'Yes', 'Yes', '#{db.escape userinfo['delivery']}',
+                'Default', 'Exempt', 'Exempt' )
     }
 
     result = db.execute(query).do

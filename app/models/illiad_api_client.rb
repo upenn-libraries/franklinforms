@@ -42,7 +42,7 @@ class IlliadApiClient
     { title:
         (transaction_data[:LoanTitle] || transaction_data[:PhotoJournalTitle]),
       confirmation_number:
-        parsed_response['TransactionNumber'].to_s.prepend('ILLIAD') }
+        parsed_response['TransactionNumber'] }
   end
 
   # Get user info from Illiad
