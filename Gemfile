@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gem 'alma'
 gem 'blacklight'
-gem 'bootstrap_form'
 gem 'bootstrap-sass', '~> 3.4.0', '>= 3.4.1'
+gem 'bootstrap_form'
 gem 'coffee-rails'
 gem 'dbi'
 gem 'honeybadger', '~> 4.0'
@@ -12,6 +14,7 @@ gem 'jbuilder'
 gem 'jquery-rails'
 gem 'net-ldap'
 gem 'nokogiri', '~> 1.10.0', '>= 1.10.4'
+gem 'oj'
 gem 'puma', '~> 3.0'
 gem 'rails', '~> 5.2'
 gem 'rails-dbi'
@@ -35,4 +38,3 @@ end
 group :test do
   gem 'webmock'
 end
-

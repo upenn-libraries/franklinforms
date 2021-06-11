@@ -1,49 +1,76 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe IlliadApi, type: :model do
-  include IlliadApiMocks
-  let(:api) { IlliadApi.new }
+RSpec.describe IlliadApiClient, type: :model do
+  include MockIlliadApi
+  let(:api) { described_class.new }
   context 'api book request submit' do
-    let(:user) do
-      OpenStruct.new data: { 'proxied_for' => 'testuser' }
+    context 'success' do
+      let(:transaction_body) do
+        { 'Username' => 'testuser',
+          'ProcessType' => 'Borrowing',
+          'LoanAuthor' => 'Test Author',
+          'LoanTitle' => 'Test Title' }
+      end
+      it 'returns a transaction number' do
+        stub_transaction_post_success
+        response = api.transaction transaction_body
+        expect(response[:confirmation_number]).to eq 'ILLIAD123456'
+      end
     end
-    let(:bib_data_book) do
-      {
-        'author' => 'B Franklin',
-        'booktitle' => 'Autobiography',
-        'publisher' => 'Penn Press',
-        'place' => 'Philadelphia, PA',
-        'year' => '2020'
-      }
-    end
-    it 'returns a transaction number' do
-      mock_book_transaction
-      body = Illiad.book_request_body user, bib_data_book, 'test'
-      response = api.transaction body
-      expect(response).to eq '123456'
+    context 'failure' do
+      it 'fails' do
+        stub_transaction_post_failure
+        body = 'invalid-body'
+        expect do
+          api.transaction body
+        end.to raise_error IlliadApiClient::RequestFailed
+      end
     end
   end
   context 'user' do
-    let(:user_info) do
-      {
-        'Username' => 'testuser',
-        'LastName' => 'User',
-        'FirstName' => 'Test',
-        'EMailAddress' => 'testuser@upenn.edu'
-      }
-    end
     context 'lookup' do
-      it 'returns user info' do
-        mock_get_user_transaction
-        response = api.get_user 'testuser'
-        expect(response&.keys).to include :username, :emailaddress
+      context 'success' do
+        it 'returns user info' do
+          stub_illiad_user_get_success
+          response = api.get_user 'testuser'
+          expect(response&.keys).to include 'UserName', 'EMailAddress'
+        end
+      end
+      context 'failure' do
+        it 'raises an exception' do
+          stub_illiad_user_get_failure
+          expect(api.get_user('irrealuser')).to be_nil
+        end
       end
     end
     context 'create' do
-      it 'returns newly created user info' do
-        mock_create_user_transaction
-        response = api.create_user user_info
-        expect(response&.dig(:username)).to eq 'testuser'
+      context 'success' do
+        let(:user_info) do
+          { 'Username' => 'testuser',
+            'LastName' => 'User',
+            'FirstName' => 'Test',
+            'EMailAddress' => 'testuser@upenn.edu',
+            'NVTGC' => 'VPL' }
+        end
+        it 'returns newly created user info' do
+          stub_illiad_user_post_success
+          response = api.create_user user_info
+          expect(response&.dig(:username)).to eq 'testuser'
+        end
+      end
+      context 'failure' do
+        it 'raises an InvalidRequest exception if user data is invalid' do
+          expect { api.create_user({}) }
+            .to raise_error IlliadApiClient::InvalidRequest
+        end
+        it 'raises an InvalidRequest exception if response code indicates
+            invalidity' do
+          stub_illiad_user_post_failure
+          expect { api.create_user({ "Username": 'test' }) }
+            .to raise_error IlliadApiClient::InvalidRequest
+        end
       end
     end
   end
