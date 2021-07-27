@@ -315,12 +315,15 @@ class Illiad
                   when 'bbm'
                     # explicit BBM case (user clicked 'Books by Mail' in Franklin)
                     'Books by Mail'
-                  when 'Books by Mail', 'Van Pelt Library'
-                    params[:deliverytype]
                   else
-                    ''
+                    # User has selected a pickup location - send it in the Item Info 1 field
+                    # after validation TODO: make validation less ugly
+                    if ILL_PICKUP_LOCATIONS.collect { |loc| loc[1] || loc[0] }.include? params[:pickup_location]
+                      params[:pickup_location]
+                    end
                   end
 
+    # TODO: should BBM prefix be applied to ILL Book requests where Books by Mail ahs been chosen?
     # if the request is explicitly BBM, and we're sure its a 'book' request, prepend the BBM
     if params[:deliverytype] == 'bbm' && params[:requesttype].downcase == 'book'
       bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
