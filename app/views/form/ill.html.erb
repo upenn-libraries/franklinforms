@@ -20,7 +20,7 @@
 
   <div class="section">
     <div class="section-heading">
-      <h1>Requestor information</h1>
+      <h2>Requestor information</h2>
     </div>
     <div class='section-body'>
       <%= f.static_control(label: 'Name') { user.name } %>
@@ -33,7 +33,7 @@
   <div class="section">
     <% if explicit_bbm? %>
     <div class="section-heading">
-      <h1>Delivery Method: Books by Mail</h1>
+      <h2>Delivery Method: Books by Mail</h2>
     </div>
 
     <div class="section-body">
@@ -47,7 +47,7 @@
     </div>
     <% else %>
     <div class="section-heading">
-      <h1>Delivery Method</h1>
+      <h2>Delivery Method</h2>
     </div>
 
     <div class="section-body">
@@ -62,7 +62,7 @@
   </div>
   <div class="section">
     <div class="section-heading">
-      <h1>Bibliographic information for the item requested</h1>
+      <h2>Bibliographic information for the item requested</h2>
     </div>
     <div class="section-body">
       <% if book_request?(record) %>

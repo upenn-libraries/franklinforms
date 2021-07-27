@@ -71,3 +71,16 @@ function update_title() {
       break;
   }
 }
+
+$(document).ready(function() {
+    $('.delivery-radio').change(function() {
+        var $locSelect = $('#pickup_location');
+        if(this.value === 'bbm') {
+            $locSelect.val('');
+            $locSelect.attr('disabled', true);
+        } else if(this.value === 'pap') {
+            $locSelect.attr('disabled', false);
+            $locSelect.attr('required', true);
+        }
+    })
+});

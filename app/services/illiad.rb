@@ -2,7 +2,19 @@ class Illiad
 
   # These options are used by Illiad rules to properly route requests.
   # Do not alter them without first consulting ILL staff.
-  ILL_PICKUP_OPTIONS = [['Van Pelt Library'], ['Books by Mail']]
+  # TODO: use a short code value, i.e., bbm?
+  ILL_PICKUP_LOCATIONS = [
+    ['Van Pelt Library'],
+    ['Annenberg Library'],
+    # ['Biomedical Library],
+    ['Chemistry Library'],
+    ['Dental Medicine Library'],
+    ['Fisher Fine Arts Library'],
+    ['Library at the Katz Center'],
+    ['Math/Physics/Astronomy Library'],
+    ['Museum Library'],
+    ['Veterinary Medicine Library']
+  ].freeze
 
   @illoffices = Hash.new() { 'Van Pelt Library' }
   @illoffices['BIOMED'] = 'Biomedical Library'
