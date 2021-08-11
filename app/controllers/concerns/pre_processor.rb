@@ -2,10 +2,12 @@ module PreProcessor
   include ActionView::Helpers::UrlHelper
   include ApplicationHelper
   def pre_process(form_id, params)
-    username = if Rails.env.development?
-                 ENV['DEVELOPMENT_USERNAME']
-               else
+    username = if Rails.env.production?
                  request.headers['HTTP_REMOTE_USER']&.split('@')&.first || ''
+               elsif Rails.env.test?
+                 'testuser'
+               else
+                 ENV['DEVELOPMENT_USERNAME']
                end
     case form_id
       when 'fixit', 'enhanced', 'course', 'booksbymail', 'inprocess', 'onorder', 'booksbymail'

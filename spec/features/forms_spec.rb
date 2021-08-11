@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.feature 'Form rendering and submission', type: :feature do
+  include AlmaUserStubs
   let(:book_params) do
     {
       rfe_dat: '729064964',
@@ -27,6 +28,9 @@ RSpec.feature 'Form rendering and submission', type: :feature do
     }
   end
   context 'for ILL' do
+    before do
+      stub_alma_non_facex_user
+    end
     scenario 'the form is rendered as expected using param data' do
       visit form_path({ id: 'ill', requesttype: 'ScanDelivery' }.merge(book_params))
       expect(page).to have_text 'Bibliographic information for the item requested'
@@ -35,6 +39,9 @@ RSpec.feature 'Form rendering and submission', type: :feature do
     end
   end
   context 'for cataloging errors' do
+    before do
+      stub_alma_non_facex_user
+    end
     let(:cataloging_params) do
       {
         bibid: '9954537543503681', rfr_id: 'info:sid/primo.exlibrisgroup.com'
@@ -47,6 +54,9 @@ RSpec.feature 'Form rendering and submission', type: :feature do
     end
   end
   context 'for FacultyEXPRESS' do
+    before do
+      stub_alma_facex_user
+    end
     scenario 'the form is rendered as expected using param data' do
       visit form_path({ id: 'ill', requesttype: 'book' }.merge(book_params))
       expect(page).to have_text 'Bibliographic information for the item requested'
@@ -55,6 +65,9 @@ RSpec.feature 'Form rendering and submission', type: :feature do
     end
   end
   context 'for Books by mail' do
+    before do
+      stub_alma_non_facex_user
+    end
     let(:bbm_params) do
       { bibid: '9954537543503681' }
     end
