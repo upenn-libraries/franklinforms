@@ -41,7 +41,7 @@ rspec_test:
   extends:
     - .rspec
   variables:
-    RSPEC_TEST_DOCKER_ENV_VARS: "-e SECRET_KEY_BASE=x -e ALMA_API_KEY=${ALMA_API_KEY}"
+    RSPEC_TEST_DOCKER_ENV_VARS: "-e SECRET_KEY_BASE=x -e ALMA_API_KEY=${ALMA_API_KEY} -e ALMA_API_BASE_URL=https://api-na.hosted.exlibrisgroup.com/almaws"
   tags:
     - build
 
