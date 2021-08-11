@@ -133,7 +133,7 @@ class FormMailer < ApplicationMailer
       @reqtype = 'Interlibrary Loan'
 
       @addldeliveryinfo = <<~MSG
-        Your request has been sent to Interlibrary Loan. Delivery times vary depending upon lender location.
+        Delivery times vary depending upon lender location.
       MSG
     end
 

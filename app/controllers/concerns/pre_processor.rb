@@ -1,5 +1,6 @@
 module PreProcessor
   include ActionView::Helpers::UrlHelper
+  include ApplicationHelper
   def pre_process(form_id, params)
     username = if Rails.env.development?
                  ENV['DEVELOPMENT_USERNAME']
@@ -69,9 +70,7 @@ module PreProcessor
       end
 
       # Return variables for form partial rendering
-      return { record: record, user: user, params: params,
-               explicit_bbm: params[:deliverytype] == 'bbm',
-               book_request: record['requesttype']&.downcase == 'book'}
+      return { record: record, user: user, params: params }
     else
       raise ArgumentError, "PreProcessor encountered un-configured form_id: #{form_id}"
     end

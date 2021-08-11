@@ -1,8 +1,8 @@
-<%= f.text_field(:booktitle, label: 'Title', value: record['booktitle']) %>
-<%= f.text_field(:author, label: 'Author', value: record['author']) %>
+<%= f.text_field(:booktitle, label: 'Title', value: record['booktitle'], required: true) %>
+<%= f.text_field(:author, label: 'Author', value: record['author'], required: true) %>
 <%= f.text_field(:edition, label: 'Edition', value: record['edition']) %>
 <%= f.text_field(:publisher, label: 'Publisher', value: record['publisher']) %>
 <%= f.text_field(:place, label: 'Place of Publication', value: record['place']) %>
-<%= f.text_field(:year, label: 'Year of Publication', value: record['year']) %>
+<%= f.text_field(:year, label: 'Year of Publication', value: record['year'], required: true) %>
 <%= f.text_field(:isbn, label: 'ISBN', value: record['isbn']) %>
 <%= f.text_field(:source, label: 'Citation Source', value: record['sid']) %>

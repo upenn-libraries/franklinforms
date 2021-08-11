@@ -36,7 +36,7 @@ class FormController < ApplicationController
   def aeon
     openurl_params = Aeon::getOpenUrlParams(params[:bibid])
     addl_params = Aeon::getAdditionalParams(params[:bibid], params[:hldid])
-    redirect_to 'https://aeon.library.upenn.edu/OpenURL?' + openurl_params.merge(addl_params).to_query
+    redirect_to 'https://aeon.library.upenn.edu/logon?Action=10&Form=30&' + openurl_params.merge(addl_params).to_query
   end
 
   def ares
