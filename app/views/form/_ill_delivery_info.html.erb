@@ -1,27 +1,11 @@
 <% if book_request?(record) %>
-  <div id="delivery-details-area" style="margin-left: 10px;">
-    <div class="radio">
-      <label>
-        <input type="radio" name="delivery" id="pap-delivery-radio" class="delivery-radio" value="pap" checked>
-        <%= t('forms.ill.fields.pickup_delivery') %>
-      </label>
-      <div class="pap-location-select-area form-group" style="margin: 15px 0;">
-        <%= select_tag(:pickup_location,
-                       options_for_select(Illiad::ILL_PICKUP_LOCATIONS),
-                       { label: t('forms.ill.fields.pickup_location'),
-                         prompt: t('forms.ill.messages.delivery_options_blank'),
-                         class: 'form-control'
-                       }) %>
-      </div>
-    </div>
-    <hr>
-    <div class="radio">
-      <label>
-        <input type="radio" name="delivery" id="bbm-delivery-radio" class="delivery-radio" value="bbm">
-        <%= t('forms.ill.fields.mail_delivery') %>
-      </label>
-    </div>
-  </div>
+<div id="delivery-details-area" style="margin-left: 10px;">
+  <%# if user.faculty_express? %>
+    <%#= render 'facex_delivery_options', user: user %>
+  <%# else %>
+    <%= render 'delivery_options' %>
+  <%# end %>
+</div>
 <% else %>
   <%# ScanDeliver or Article case %>
   <%= t('forms.ill.fields.web_delivery') %>

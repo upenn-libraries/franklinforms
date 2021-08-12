@@ -54,7 +54,7 @@
       <div class="form-group">
         <div class="col-sm-12 col-md-12">
           <%# render ILL delivery info (ScanDeliver, Article or Book) %>
-          <%= render partial: 'ill_delivery_info', locals: { f: f, record: record } %>
+          <%= render partial: 'ill_delivery_info', locals: { f: f, record: record, user: user } %>
         </div>
       </div>
     </div>
@@ -73,7 +73,7 @@
         <%= render partial: "form/ill/article", locals: { f: f, record: record} %>
       <% end %>
       <%= f.text_area(:comments, label: 'Comments<br />(max 256 chars)'.html_safe, maxlength: 256) %>
-      <%= f.submit('Submit Request', id: 'submit', data: { disable_with: false }) %>  
+      <%= f.submit('Submit Request', id: 'submit', class: 'btn btn-primary', data: { disable_with: false }) %>
     </div>
   </div>
 <% end %>

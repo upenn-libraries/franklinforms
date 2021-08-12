@@ -73,14 +73,46 @@ function update_title() {
 }
 
 $(document).ready(function() {
-    $('.delivery-radio').change(function() {
-        var $locSelect = $('#pickup_location');
-        if(this.value === 'bbm') {
-            $locSelect.val('');
-            $locSelect.attr('disabled', true);
-        } else if(this.value === 'pap') {
-            $locSelect.attr('disabled', false);
-            $locSelect.attr('required', true);
+    var $deliveryRadio = $('.delivery-radio');
+    var $deliverySelect = $('#delivery_method');
+    var $locSelect = $('#pickup_location');
+    $deliveryRadio.change(function() {
+        if($deliverySelect.length > 0) {
+            if(this.value === 'delivery') {
+                $locSelect.val('');
+                $deliverySelect.attr('disabled', false);
+                $deliverySelect.attr('required', true);
+                $locSelect.attr('disabled', true);
+                $locSelect.attr('required', false);
+            } else if(this.value === 'pickup') {
+                $locSelect.attr('disabled', false);
+                $locSelect.attr('required', true);
+                $deliverySelect.val('');
+                $deliverySelect.attr('disabled', true);
+                $deliverySelect.attr('required', false);
+                $facexAddressAlert.hide();
+                $facexBbmAlert.hide();
+            }
+        } else {
+            if (this.value === 'bbm') {
+                $locSelect.val('');
+                $locSelect.attr('disabled', true);
+            } else if (this.value === 'pap') {
+                $locSelect.attr('disabled', false);
+                $locSelect.attr('required', true);
+            }
         }
-    })
+    });
+
+    var $facexAddressAlert = $('#facex-address-alert');
+    var $facexBbmAlert = $('#facex-bbm-alert');
+    $deliverySelect.change(function() {
+       if(this.value === 'office') {
+           $facexAddressAlert.show();
+           $facexBbmAlert.hide();
+       } else if(this.value === 'bbm') {
+           $facexAddressAlert.hide();
+           $facexBbmAlert.show();
+       }
+    });
 });

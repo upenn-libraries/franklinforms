@@ -14,8 +14,17 @@ en:
         limitation_html: "<strong>NOTE:</strong> Please request only <strong>ONE Article or Book Chapter</strong> per request form. We are not able to supply scans of entire books or journal volumes."
         delivery_options_blank: "Please select a location for pickup"
         delivery_address_note_html: "If your departmental address is wrong, please email us at %{mail_link}"
+    facex:
+      labels:
+        delivery_method: 'Delivery Method'
+        delivery_method_prompt: 'Please select a delivery method'
+        address: 'Your Office Delivery address is:'
+      messages:
+        address_help_html: 'If this is not your preferred delivery address, please contact <a href="mailto:pld@pobox.upenn.edu">Faculty Express</a>'
+        no_address_html: 'You do not have a preferred Faculty Express delivery address. Please set one up by contacting <a href="mailto:pld@pobox.upenn.edu">Faculty Express</a>'
     bbm:
       messages:
+        bbm_notice_html: '<a href="" target="_blank">Registration is required</a> to use Books by Mail.'
         delivery_address_note_html: "<h3>This item will be delivered to your Books by Mail address</h3>"
         registration_html: "<span class='bold'>NOTE:</span> <span class='red'>Registration is required</span> (click %{registration_link} to register) to use Books by Mail. Requests made prior to registration will be cancelled."
     help:

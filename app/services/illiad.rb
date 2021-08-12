@@ -16,6 +16,11 @@ class Illiad
     ['Veterinary Medicine Library', 'Veterinary Library']
   ].freeze
 
+  ILL_FACEX_DELIVERY_OPTIONS = [
+    ['Office Delivery', 'office'],
+    ['Books by Mail', 'bbm']
+  ].freeze
+
   @illoffices = Hash.new() { 'Van Pelt Library' }
   @illoffices['BIOMED'] = 'Biomedical Library'
   @illoffices['DENTAL'] = 'Dental Medicine Library'
