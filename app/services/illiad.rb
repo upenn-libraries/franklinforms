@@ -7,12 +7,13 @@ class Illiad
     ['Van Pelt Library'],
     ['Annenberg Library'],
     # ['Biotech Commons'],
-    ['Chemistry Library'],
+    # ['Chemistry Library'],
     ['Dental Medicine Library', 'Dental Library'],
     ['Fisher Fine Arts Library', 'Fine Arts Library'],
     ['Library at the Katz Center', 'Katz Library'],
-    ['Math/Physics/Astronomy Library'],
+    # ['Math/Physics/Astronomy Library'],
     ['Museum Library'],
+    ['New Bolton Center'],
     ['Veterinary Medicine Library', 'Veterinary Library']
   ].freeze
 

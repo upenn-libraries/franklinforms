@@ -29,11 +29,9 @@ class User
       if resp.success?
         JSON.parse(resp.body).dig('user_group', 'value') == ALMA_FACEX_GROUP_VALUE
       else
-        Honeybadger.notify "Alma user API error: (URL: #{url} Resp: #{resp.body})"
         false
       end
     rescue StandardError => _e
-      Honeybadger.notify "Alma user API error: (URL: #{url} Resp: #{resp.body})"
       false
     end
   end
