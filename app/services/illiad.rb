@@ -2,7 +2,6 @@ class Illiad
 
   # These options are used by Illiad rules to properly route requests.
   # Do not alter them without first consulting ILL staff.
-  # TODO: use a short code value, i.e., bbm?
   ILL_PICKUP_LOCATIONS = [
     ['Van Pelt Library'],
     ['Annenberg Library'],
@@ -226,7 +225,7 @@ class Illiad
     unless unescaped_username
       raise ArgumentError, "addIlliadUser called with no username available! user_info: #{userinfo}"
     end
-    
+
     username = db.escape unescaped_username # throws exception if #escape is sent nil
 
     # Very Important Note
@@ -317,20 +316,26 @@ class Illiad
     # deliverytype either comes from Franklin as 'bbm' param
     # or is set by the Delivery Options drop down in the book request version
     # of the ILL form. we ship this to ILLiad via the item_info_1 field
-    item_info_1 = case params[:deliverytype]
-                  when 'bbm'
-                    # explicit BBM case (user clicked 'Books by Mail' in Franklin)
+    item_info_1 = if (params[:deliverytype] == 'bbm' || params[:delivery] == 'bbm') ||
+                     (params[:receipt_method] == 'delivery' && params[:delivery_selection] == 'bbm')
+                    # explicit BBM case (user clicked 'Books by Mail' in Franklin) OR
+                    # BBM was chosen as ILL delivery option
                     'Books by Mail'
                   else
+                    # FacEx Office Delivery case - send nothing in ItemInfo1
+                    if params[:receipt_method] == 'delivery' && params[:delivery_selection] == 'office'
+                      return nil
+                    end
+
                     # User has selected a pickup location - send it in the Item Info 1 field
-                    # after validation TODO: make validation less ugly
+                    # after validation
                     if ILL_PICKUP_LOCATIONS.collect { |loc| loc[1] || loc[0] }.include? params[:pickup_location]
                       params[:pickup_location]
                     end
                   end
 
-    # TODO: should BBM prefix be applied to ILL Book requests where Books by Mail ahs been chosen?
     # if the request is explicitly BBM, and we're sure its a 'book' request, prepend the BBM
+    # We *don't* want to set this when an ILL request is chosen by the user to be delivered via "Books by Mail"
     if params[:deliverytype] == 'bbm' && params[:requesttype].downcase == 'book'
       bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
     end

@@ -74,7 +74,7 @@ function update_title() {
 
 $(document).ready(function() {
     var $deliveryRadio = $('.delivery-radio');
-    var $deliverySelect = $('#delivery_method');
+    var $deliverySelect = $('#delivery_selection');
     var $locSelect = $('#pickup_location');
     $deliveryRadio.change(function() {
         if($deliverySelect.length > 0) {

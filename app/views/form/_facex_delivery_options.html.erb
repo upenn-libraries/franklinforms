@@ -1,10 +1,10 @@
 <div class="radio">
   <label>
-    <input type="radio" name="delivery" id="choose-delivery-radio" class="delivery-radio" value="delivery" checked />
+    <input type="radio" name="receipt_method" id="choose-delivery-radio" class="delivery-radio" value="delivery" checked />
     Delivery
   </label>
     <div class="delivery-method-select-area form-group" style="margin: 15px 0;">
-      <%= select_tag(:delivery_method,
+      <%= select_tag(:delivery_selection,
                      options_for_select(Illiad::ILL_FACEX_DELIVERY_OPTIONS),
                      { label: t('forms.facex.labels.delivery_method'),
                        prompt: t('forms.facex.labels.delivery_method_prompt'),
@@ -12,7 +12,7 @@
                        required: true
                      }) %>
     </div>
-    <div id="facex-address-alert" class="alert alert-info">
+    <div id="facex-address-alert" class="alert alert-warning" style="display: none;">
       <% if user.data.dig('delivery').present? %>
         <%# user has a ILL 'address' for their user %>
         <%= t('forms.facex.labels.address') %>
@@ -24,14 +24,14 @@
         <%= t('forms.facex.messages.no_address_html') %>
       <% end %>
     </div>
-    <div id="facex-bbm-alert" class="alert alert-info" style="display: none;">
+    <div id="facex-bbm-alert" class="alert alert-warning" style="display: none;">
       <%= t('forms.bbm.messages.bbm_notice_html') %>
     </div>
 </div>
 <hr>
 <div class="radio">
   <label>
-    <input type="radio" name="delivery" id="pickup-delivery-radio" class="delivery-radio" value="pickup">
+    <input type="radio" name="receipt_method" id="pickup-delivery-radio" class="delivery-radio" value="pickup">
     <%= t('forms.ill.fields.pickup_delivery') %>
   </label>
   <div class="pap-location-select-area form-group" style="margin: 15px 0;">
