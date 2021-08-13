@@ -17,7 +17,18 @@
         <%# user has a ILL 'address' for their user %>
         <%= t('forms.facex.labels.address') %>
         <address>
-          <%= user.data['delivery'] %>
+          <% office_address =
+               if user.data['delivery'].include? 'Books by Mail'
+                 # BBM address is appended - remove it for display
+                 has_bbm_address = true # TODO: this could be useful....
+                 parts = user.data['delivery'].split('/')
+                 part = parts.reject { |part| part.include? 'Books by Mail' }
+                 part[0]
+               else
+                 user.data['delivery']
+               end
+          %>
+          <%= office_address %>
         </address>
         <%= t('forms.facex.messages.address_help_html') %>
       <% else %>
