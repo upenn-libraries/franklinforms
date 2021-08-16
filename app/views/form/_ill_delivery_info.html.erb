@@ -1,13 +1,12 @@
 <% if book_request?(record) %>
-  <%= f.select(
-        :deliverytype,
-        options_for_select(Illiad::ILL_PICKUP_OPTIONS),
-        { label: t('forms.ill.fields.deliverytype'),
-          prompt: t('forms.ill.messages.delivery_options_blank') },
-        required: true
-      )
-  %>
+<div id="delivery-details-area" style="margin-left: 10px;">
+  <% if user.faculty_express? %>
+    <%= render 'facex_delivery_options', user: user %>
+  <% else %>
+    <%= render 'delivery_options' %>
+  <% end %>
+</div>
 <% else %>
   <%# ScanDeliver or Article case %>
-  Web Delivery
+  <%= t('forms.ill.fields.web_delivery') %>
 <% end %>

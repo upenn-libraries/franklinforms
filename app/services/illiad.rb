@@ -2,7 +2,24 @@ class Illiad
 
   # These options are used by Illiad rules to properly route requests.
   # Do not alter them without first consulting ILL staff.
-  ILL_PICKUP_OPTIONS = [['Van Pelt Library'], ['Books by Mail']]
+  ILL_PICKUP_LOCATIONS = [
+    ['Van Pelt Library'],
+    ['Annenberg Library'],
+    # ['Biotech Commons'],
+    # ['Chemistry Library'],
+    ['Dental Medicine Library', 'Dental Library'],
+    ['Fisher Fine Arts Library', 'Fine Arts Library'],
+    ['Library at the Katz Center', 'Katz Library'],
+    # ['Math/Physics/Astronomy Library'],
+    ['Museum Library'],
+    ['New Bolton Center'],
+    ['Veterinary Medicine Library', 'Veterinary Library']
+  ].freeze
+
+  ILL_FACEX_DELIVERY_OPTIONS = [
+    ['Office Delivery', 'office'],
+    ['Books by Mail', 'bbm']
+  ].freeze
 
   @illoffices = Hash.new() { 'Van Pelt Library' }
   @illoffices['BIOMED'] = 'Biomedical Library'
@@ -208,7 +225,7 @@ class Illiad
     unless unescaped_username
       raise ArgumentError, "addIlliadUser called with no username available! user_info: #{userinfo}"
     end
-    
+
     username = db.escape unescaped_username # throws exception if #escape is sent nil
 
     # Very Important Note
@@ -299,17 +316,26 @@ class Illiad
     # deliverytype either comes from Franklin as 'bbm' param
     # or is set by the Delivery Options drop down in the book request version
     # of the ILL form. we ship this to ILLiad via the item_info_1 field
-    item_info_1 = case params[:deliverytype]
-                  when 'bbm'
-                    # explicit BBM case (user clicked 'Books by Mail' in Franklin)
+    item_info_1 = if (params[:deliverytype] == 'bbm' || params[:delivery] == 'bbm') ||
+                     (params[:receipt_method] == 'delivery' && params[:delivery_selection] == 'bbm')
+                    # explicit BBM case (user clicked 'Books by Mail' in Franklin) OR
+                    # BBM was chosen as ILL delivery option
                     'Books by Mail'
-                  when 'Books by Mail', 'Van Pelt Library'
-                    params[:deliverytype]
                   else
-                    ''
+                    # FacEx Office Delivery case - send nothing in ItemInfo1
+                    if params[:receipt_method] == 'delivery' && params[:delivery_selection] == 'office'
+                      return nil
+                    end
+
+                    # User has selected a pickup location - send it in the Item Info 1 field
+                    # after validation
+                    if ILL_PICKUP_LOCATIONS.collect { |loc| loc[1] || loc[0] }.include? params[:pickup_location]
+                      params[:pickup_location]
+                    end
                   end
 
     # if the request is explicitly BBM, and we're sure its a 'book' request, prepend the BBM
+    # We *don't* want to set this when an ILL request is chosen by the user to be delivered via "Books by Mail"
     if params[:deliverytype] == 'bbm' && params[:requesttype].downcase == 'book'
       bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
     end

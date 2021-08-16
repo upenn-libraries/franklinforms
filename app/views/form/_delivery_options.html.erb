@@ -1,0 +1,22 @@
+<div class="radio">
+  <label>
+    <input type="radio" name="delivery" id="pap-delivery-radio" class="delivery-radio" value="pap" checked>
+    <%= t('forms.ill.fields.pickup_delivery') %>
+  </label>
+  <div class="pap-location-select-area form-group" style="margin: 15px 0;">
+    <%= select_tag(:pickup_location,
+                   options_for_select(Illiad::ILL_PICKUP_LOCATIONS),
+                   { label: t('forms.ill.fields.pickup_location'),
+                     prompt: t('forms.ill.messages.delivery_options_blank'),
+                     class: 'form-control'
+                   }) %>
+  </div>
+</div>
+<hr>
+<div class="radio">
+  <label>
+    <input type="radio" name="delivery" id="bbm-delivery-radio" class="delivery-radio" value="bbm">
+    <%= t('forms.ill.fields.mail_delivery') %> <br>
+    <%= t('forms.bbm.messages.bbm_notice_html') %>
+  </label>
+</div>

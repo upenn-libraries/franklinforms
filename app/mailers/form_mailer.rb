@@ -113,8 +113,9 @@ class FormMailer < ApplicationMailer
     @name = "#{userinfo['first_name']} #{userinfo['last_name']}"
     @author = bib['author']
     @transactionnumber = txnumber
+    @pickup_location = values[:pickup_location]
 
-    if(userinfo['status']) == 'StandingFaculty'
+    if (userinfo['status']) == 'StandingFaculty'
       @from = 'pld@pobox.upenn.edu'
       @reqtype = 'FacultyEXPRESS'
       @addldeliveryinfo = 'Your request has been sent.'

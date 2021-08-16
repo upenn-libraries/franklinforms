@@ -13,4 +13,8 @@ Date: <%= @date %>
 Edition: <%= @edition %>
 Request: <%= @transactionnumber %>
 
+<% if @pickup_location.present? %>
+Pickup location: <%= @pickup_location %>
+<% end %>
+
 If you have any questions, please reply to this email.
