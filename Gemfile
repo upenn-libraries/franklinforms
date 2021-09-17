@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gem 'alma'
 gem 'blacklight'
-gem 'bootstrap_form'
 gem 'bootstrap-sass', '~> 3.4.0', '>= 3.4.1'
+gem 'bootstrap_form'
 gem 'coffee-rails'
 gem 'dbi'
 gem 'honeybadger', '~> 4.0'
@@ -21,7 +23,6 @@ gem 'tzinfo-data'
 gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
-  gem 'better_errors'
   gem 'binding_of_caller'
   gem 'byebug', platform: :mri
   gem 'capybara'
@@ -36,4 +37,3 @@ group :development do
   gem 'pry-byebug'
   gem 'pry-rails'
 end
-
