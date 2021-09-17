@@ -5,7 +5,7 @@ class Illiad
   ILL_PICKUP_LOCATIONS = [
     ['Van Pelt Library'],
     ['Annenberg Library'],
-    # ['Biotech Commons'],
+    ['Biotech Commons'],
     ['Chemistry Library'],
     ['Dental Medicine Library', 'Dental Library'],
     ['Fisher Fine Arts Library', 'Fine Arts Library'],
