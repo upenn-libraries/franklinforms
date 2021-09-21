@@ -4,12 +4,12 @@ class Illiad
   # Do not alter them without first consulting ILL staff.
   ILL_PICKUP_LOCATIONS = [
     ['Van Pelt Library'],
-    # ['Lockers at Van Pelt Library', 'Lockers at Van Pelt'],
+    ['Lockers at Van Pelt Library', 'Lockers at Van Pelt'],
     ['Annenberg Library'],
     ['Biotech Commons'],
     ['Chemistry Library'],
     ['Dental Medicine Library', 'Dental Library'],
-    # ['Lockers at Dental Medicine Library', 'Lockers at Dental'],
+    ['Lockers at Dental Medicine Library', 'Lockers at Dental'],
     ['Fisher Fine Arts Library', 'Fine Arts Library'],
     ['Library at the Katz Center', 'Katz Library'],
     ['Math/Physics/Astronomy Library'],
