@@ -301,7 +301,11 @@ class Illiad
     end
 
     if userinfo['proxied_by'] != userinfo['proxied_for']
-      bib_data['comments'] += '  Proxied by ' + userinfo['proxied_by']
+      bib_data['comments'] += "\nProxied by #{userinfo['proxied_by']}"
+    end
+
+    if (params[:receipt_method] == 'delivery' && params[:delivery_selection] == 'bbm') && userinfo['status'] == User::FACEX_STATUS
+      bib_data['comments'] += "\nDelivery Choice: Faculty Express patron requests BBM/UPS delivery for this loan"
     end
 
     illserver = "https://#{ENV['ILLIAD_DBHOST']}/illiad/illiad.dll"
