@@ -1,4 +1,4 @@
-<%= f.text_field(:journal, label: 'Journal/Book Title', value: record['title']) %>
+<%= f.text_field(:journal, label: 'Journal/Book Title', value: record['title'], required: true) %>
 <%= f.text_field(:chaptitle, label: 'Article/Chapter Title', value: record['chaptitle'] || record['article'], required: true) %>
 <%= f.text_field(:author, label: 'Article/Chapter Author', value: record['author'], required: true) %>
 <%= f.text_field(:rftdate, label: 'Issue Date', value: record['rftdate'], required: true) %>

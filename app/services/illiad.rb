@@ -404,8 +404,8 @@ class Illiad
               PhotoArticleTitle: bib_data['article'],
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
-	      CitedIn: bib_data['sid'],
-	      SubmitButton: 'Submit Request'}
+              CitedIn: bib_data['sid'],
+              SubmitButton: 'Submit Request'}
     end
 
     if Rails.env.development?
