@@ -1,5 +1,7 @@
 class Illiad
 
+  class IlliadValidationError < StandardError; end
+
   # These options are used by Illiad rules to properly route requests.
   # Do not alter them without first consulting ILL staff.
   ILL_PICKUP_LOCATIONS = [
@@ -382,8 +384,8 @@ class Illiad
               PhotoArticleTitle: bib_data['chaptitle'],
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
-	      CitedIn: bib_data['sid'],
-	      SubmitButton: 'Submit Request'}
+              CitedIn: bib_data['sid'],
+              SubmitButton: 'Submit Request'}
     else
       illiadreqtype = 'ArticleRequest'
       illiadreqtype = 'BookChapterRequest' unless bib_data['requesttype'].index('chapter').nil?
@@ -404,8 +406,8 @@ class Illiad
               PhotoArticleTitle: bib_data['article'],
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
-	      CitedIn: bib_data['sid'],
-	      SubmitButton: 'Submit Request'}
+              CitedIn: bib_data['sid'],
+              SubmitButton: 'Submit Request'}
     end
 
     if Rails.env.development?
@@ -416,8 +418,20 @@ class Illiad
         #/<span class="statusError">(.*)<\/span>/.match(res).nil? should be true unless error with values POSTed to ILLiad
         txnumber = /Transaction Number (\d+)\<\/span>/.match(res)[1]
       rescue NoMethodError => e
-        raise StandardError,
-              "Failed to get txnumber on Illiad submission. Illiad response: #{res}. Original exception: #{e.message}"
+
+        if txnumber.blank?
+          # look for a statusError
+          illiad_response_page = Nokogiri::HTML res
+          status_errors = illiad_response_page.css('.statusError')
+        end
+
+        if status_errors&.present?
+          raise IlliadValidationError,
+                "Validation errors in Illiad transaction: #{status_errors.map(&:content).join(', ')}"
+        else
+          raise StandardError,
+                "Failed to get txnumber on Illiad submission. Illiad response: #{res}. Original exception: #{e.message}"
+        end
       end
     end
 
