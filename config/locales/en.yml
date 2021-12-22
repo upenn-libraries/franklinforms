@@ -24,7 +24,7 @@ en:
         no_address_html: 'You do not have a preferred Faculty Express delivery address. Please set one up by contacting <a href="mailto:pld@pobox.upenn.edu">Faculty Express</a>'
     bbm:
       messages:
-        bbm_notice_html: '<a href="" target="_blank">Registration is required</a> to use Books by Mail.'
+        bbm_notice_html: '<a href="https://upenn.libwizard.com/f/books-by-mail" target="_blank">Registration is required</a> to use Books by Mail.'
         delivery_address_note_html: "<h3>This item will be delivered to your Books by Mail address</h3>"
         registration_html: "<span class='bold'>NOTE:</span> <span class='red'>Registration is required</span> (click %{registration_link} to register) to use Books by Mail. Requests made prior to registration will be cancelled."
     help:
