@@ -13,11 +13,11 @@ class Illiad
     ['Dental Medicine Library', 'Dental Library'],
     ['Lockers at Dental Medicine Library', 'Lockers at Dental'],
     ['Fisher Fine Arts Library', 'Fine Arts Library'],
-    ['Library at the Katz Center', 'Katz Library'],
+    # ['Library at the Katz Center', 'Katz Library'],
     ['Math/Physics/Astronomy Library'],
     ['Museum Library'],
     ['New Bolton Center'],
-    ['Pennsylvania Hospital Library' ,'PA Hospital Library'],
+    ['Pennsylvania Hospital Library', 'PA Hospital Library'],
     ['Veterinary Medicine Library', 'Veterinary Library']
   ].freeze
 
