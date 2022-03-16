@@ -24,6 +24,11 @@ module PostProcessor
         Illiad.updateIlliadUser(user)
       end
       txnumber = Illiad.submit(user, bib, values)
+      if txnumber.blank?
+        Honeybadger.notify("No txnumber for request from user: #{user} with values #{values}")
+        redirect_to ill_problem_path
+        return
+      end
       FormMailer.confirm_illiad_email(user, bib, txnumber, values).deliver_now
     when 'booksbymail'
       FormMailer.confirm_booksbymail_email(user, bib, values).deliver_now
