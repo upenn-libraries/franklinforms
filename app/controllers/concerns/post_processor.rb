@@ -25,7 +25,7 @@ module PostProcessor
       end
       txnumber = Illiad.submit(user, bib, values)
       if txnumber.blank?
-        Honeybadger.notify("No txnumber for request from user: #{user} with values #{values}")
+        Honeybadger.notify("No txnumber for request from user: #{user.data['emailAddr']} with values #{values}")
         redirect_to ill_problem_path
         return
       end
