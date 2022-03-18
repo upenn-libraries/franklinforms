@@ -16,7 +16,7 @@ class FormController < ApplicationController
   def submit
     locals = pre_process(params[:id], params)
     post_process(params[:id], locals)
-    render :confirmation
+    render :confirmation unless performed?
   end
 
   def redir
