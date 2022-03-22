@@ -333,7 +333,7 @@ class Illiad
                   else
                     # FacEx Office Delivery case - send nothing in ItemInfo1
                     if params[:receipt_method] == 'delivery' && params[:delivery_selection] == 'office'
-                      return nil
+                      nil
                     end
 
                     # User has selected a pickup location - send it in the Item Info 1 field
