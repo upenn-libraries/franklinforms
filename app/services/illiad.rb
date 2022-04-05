@@ -52,28 +52,28 @@ class Illiad
       end
     end
 
-    bib_data['chaptitle'] = params['chaptitle'].presence;
-    bib_data['booktitle'] = params['title'].presence     || params['Book'].presence        || params['bookTitle'].presence || params['booktitle'].presence || params['rft.title'].presence || '';
-    bib_data['edition']   = params['edition'].presence   || params['rft.edition'].presence || '';
-    bib_data['publisher'] = params['publisher'].presence || params['Publisher'].presence   || params['rft.pub'].presence   || '';
-    bib_data['place']     = params['place'].presence     || params['PubliPlace'].presence  || params['rft.place'].presence || '';
-    bib_data['an']        = params['AN'].presence        || '';
-    bib_data['py']        = params['PY'].presence        || '';
-    bib_data['pb']        = params['PB'].presence        || '';
-    bib_data['journal']   = params['Journal'].presence   || params['journal'].presence     || params['rft.btitle'].presence || params['rft.jtitle'].presence || params['rft.title'].presence || params['title'].presence || '';
-    bib_data['article']   = params['Article'].presence   || params['article'].presence     || params['atitle'].presence     || params['rft.atitle'].presence || '';
-    bib_data['pmonth']    = params['pmonth'].presence    || params['rft.month'].presence   ||'';
-    bib_data['rftdate']   = params['rftdate'].presence   || params['rft.date'].presence;
-    bib_data['year']      = params['Year'].presence      || params['year'].presence || params['rft.year'] || params['rft.pubyear'].presence || params['rft.pubdate'].presence;
-    bib_data['volume']    = params['Volume'].presence    || params['volume'].presence      || params['rft.volume'].presence || '';
-    bib_data['issue']     = params['Issue'].presence     || params['issue'].presence       || params['rft.issue'].presence  || '';
-    bib_data['issn']      = params['issn'].presence      || params['ISSN'].presence        || params['rft.issn'].presence   ||'';
-    bib_data['isbn']      = params['isbn'].presence      || params['ISBN'].presence        || params['rft.isbn'].presence   || '';
-    bib_data['sid']       = params['sid'].presence       || params['rfr_id'].presence      || '';
-    bib_data['pid']       = params['pid'].presence       || '';
-    bib_data['source']    = params['source'].presence    || 'direct';
-    bib_data['comments']  = params['UserId'].presence    || params['comments'].presence    || '';
-    bib_data['bibid']     = params['record_id'].presence || params['id'].presence          || params['bibid'].presence      || '';
+    bib_data['chaptitle'] = params['chaptitle'].presence
+    bib_data['booktitle'] = params['title'].presence     || params['Book'].presence        || params['bookTitle'].presence || params['booktitle'].presence || params['rft.title'].presence || ''
+    bib_data['edition']   = params['edition'].presence   || params['rft.edition'].presence || ''
+    bib_data['publisher'] = params['publisher'].presence || params['Publisher'].presence   || params['rft.pub'].presence   || ''
+    bib_data['place']     = params['place'].presence     || params['PubliPlace'].presence  || params['rft.place'].presence || ''
+    bib_data['an']        = params['AN'].presence        || ''
+    bib_data['py']        = params['PY'].presence        || ''
+    bib_data['pb']        = params['PB'].presence        || ''
+    bib_data['journal']   = params['Journal'].presence   || params['journal'].presence     || params['rft.btitle'].presence || params['rft.jtitle'].presence || params['rft.title'].presence || params['title'].presence || ''
+    bib_data['article']   = params['Article'].presence   || params['article'].presence     || params['atitle'].presence     || params['rft.atitle'].presence || ''
+    bib_data['pmonth']    = params['pmonth'].presence    || params['rft.month'].presence   ||''
+    bib_data['rftdate']   = params['rftdate'].presence   || params['rft.date'].presence
+    bib_data['year']      = params['Year'].presence      || params['year'].presence || params['rft.year'] || params['rft.pubyear'].presence || params['rft.pubdate'].presence
+    bib_data['volume']    = params['Volume'].presence    || params['volume'].presence      || params['rft.volume'].presence || ''
+    bib_data['issue']     = params['Issue'].presence     || params['issue'].presence       || params['rft.issue'].presence  || ''
+    bib_data['issn']      = params['issn'].presence      || params['ISSN'].presence        || params['rft.issn'].presence   ||''
+    bib_data['isbn']      = params['isbn'].presence      || params['ISBN'].presence        || params['rft.isbn'].presence   || ''
+    bib_data['sid']       = params['sid'].presence       || params['rfr_id'].presence      || ''
+    bib_data['pid']       = params['pid'].presence       || ''
+    bib_data['source']    = params['source'].presence    || 'direct'
+    bib_data['comments']  = params['UserId'].presence    || params['comments'].presence    || ''
+    bib_data['bibid']     = params['record_id'].presence || params['id'].presence          || params['bibid'].presence      || ''
 
     # Handles IDs coming like pmid:numbersgohere
     unless params['rft_id'].presence.nil?
@@ -84,6 +84,13 @@ class Illiad
     # *** Relais/BD sends dates through as rft.date but it may be a book request ***
     if(bib_data['sid'] == 'BD' && bib_data['requesttype'] == 'Book')
       bib_data['year'] = params['date'].presence || bib_data['rftdate']
+    end
+
+    # if rftdate is not ONLY a year it probably should be - Illiad likes it that way
+    # use the 'year' field if present - per Lapis/MK 4/2022
+    if (bib_data['rftdate']&.length != 4) && bib_data['year'].present?
+      year = bib_data['year'].gsub(/\D/, '')
+      bib_data['rftdate'] = year
     end
 
     ## Lookup record in Alma on submit?

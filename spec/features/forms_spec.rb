@@ -37,6 +37,49 @@ RSpec.feature 'Form rendering and submission', type: :feature do
       expect(page).to have_field 'Journal/Book Title', with: 'Phenomenology of perception /'
       expect(page).to have_field 'ISBN/ISSN', with: '0415834333'
     end
+    context 'problematic date parsing' do
+      let(:problematic_pubmed_article_params) do
+        {
+          'rft.epage': '139',
+          'rft.volume': '39',
+          'rft.stitle': 'Hospitalpractice.',
+          'rft.issue_start': '3',
+          'rft.place': 'Minneapolis',
+          'rft.aufirst': 'Catherine C',
+          'rft.genre': 'article',
+          'rft.normalized_eissn': '2154-8331',
+          'rft.normalized_issn': '2154-8331',
+          'rft.doi': '10.3810%2Fhp.2011.08.588',
+          'rft.year': '2011.',
+          rft_id: 'pmid%3A21881400',
+          'rft.issue': '3',
+          'rft.aulast': 'Cibulskis',
+          'rft.object_type': 'JOURNAL',
+          'rft.auinit': 'CC',
+          'rft.date': '20118',
+          ctx_id: '36662190890003681',
+          'rft.title': 'Hospital+practice.',
+          'rft.pub': 'McGraw-Hill+Healthcare+Publications%2C',
+          'rft.jtitle': 'Hospital+practice.',
+          'rft.spage': '128',
+          'rft.oclcnum': '10716242',
+          'rft.issn': '2154-8331',
+          'rft.mms_id': '99144333503681',
+          'rft.month': '8',
+          rfr_id: 'Entrez%3APubMed',
+          'rft.pmid': '21881400',
+          'rft.publisher': 'McGraw-Hill+Healthcare+Publications%2C',
+          'rft.au': 'Cibulskis%2C+Catherine+C',
+          'rft.pubdate': '1995-',
+          'rft.atitle': 'Care+transitions+from+inpatient+to+outpatient+settings%3A+ongoing+challenges+and+emerging+best+practices.',
+          'rft.eissn': '2154-8331'
+        }
+      end
+      scenario 'the book form prepopulates the correct date' do
+        visit form_path({ id: 'ill' }.merge(problematic_pubmed_article_params))
+        expect(page).to have_field 'Publication Date', with: '2011'
+      end
+    end
   end
   context 'for cataloging errors' do
     before do
