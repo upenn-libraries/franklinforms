@@ -50,7 +50,7 @@ RSpec.feature 'Form rendering and submission', type: :feature do
           'rft.normalized_eissn': '2154-8331',
           'rft.normalized_issn': '2154-8331',
           'rft.doi': '10.3810%2Fhp.2011.08.588',
-          'rft.year': '2011',
+          'rft.year': '2011.',
           rft_id: 'pmid%3A21881400',
           'rft.issue': '3',
           'rft.aulast': 'Cibulskis',

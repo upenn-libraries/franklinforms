@@ -88,8 +88,9 @@ class Illiad
 
     # if rftdate is not ONLY a year it probably should be - Illiad likes it that way
     # use the 'year' field if present - per Lapis/MK 4/2022
-    if (bib_data['rftdate'].length != 4) && (bib_data['year'].length == 4)
-      bib_data['rftdate'] = bib_data['year']
+    if (bib_data['rftdate']&.length != 4) && bib_data['year'].present?
+      year = bib_data['year'].gsub(/\D/, '')
+      bib_data['rftdate'] = year
     end
 
     ## Lookup record in Alma on submit?
