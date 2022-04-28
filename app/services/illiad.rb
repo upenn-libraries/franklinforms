@@ -338,9 +338,9 @@ class Illiad
                     # BBM was chosen as ILL delivery option
                     'Books by Mail'
                   else
-                    # FacEx Office Delivery case - send nothing in ItemInfo1
+                    # FacEx Office Delivery case - send BBM in ItemInfo1 so the request is routed appropriately
                     if params[:receipt_method] == 'delivery' && params[:delivery_selection] == 'office'
-                      nil
+                      'Books by Mail'
                     end
 
                     # User has selected a pickup location - send it in the Item Info 1 field
