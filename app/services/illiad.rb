@@ -337,12 +337,10 @@ class Illiad
                     # explicit BBM case (user clicked 'Books by Mail' in Franklin) OR
                     # BBM was chosen as ILL delivery option
                     'Books by Mail'
-                  else
+                  elsif params[:receipt_method] == 'delivery' && params[:delivery_selection] == 'office'
                     # FacEx Office Delivery case - send BBM in ItemInfo1 so the request is routed appropriately
-                    if params[:receipt_method] == 'delivery' && params[:delivery_selection] == 'office'
-                      'Books by Mail'
-                    end
-
+                    'Books by Mail'
+                  else
                     # User has selected a pickup location - send it in the Item Info 1 field
                     # after validation
                     if ILL_PICKUP_LOCATIONS.collect { |loc| loc[1] || loc[0] }.include? params[:pickup_location]
