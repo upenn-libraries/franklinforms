@@ -19,6 +19,13 @@
     </div>
   </div>
   <div class="row">
+    <div class="col-md-12">
+      <div class="alert alert-warning">
+        <%= t('resourcesharing.bd_transition_banner_html') %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-sm-12 col-md-3">
       <div>Name: <%= user.name %></div>
       <div>Email: <%= user.data['email'] %></div>
@@ -43,7 +50,7 @@
             <li><%= link_to "View Current Requests", "https://atlas.library.upenn.edu/cgi-bin/forms/webdeliver?action=status" %></li>
           </ul>
         </li>
-        <li><%= link_to "Web Delivery", "http://hdl.library.upenn.edu/1017/125512/3" %>
+        <li><%= link_to "Web Delivery", "https://guides.library.upenn.edu/resourcesharing/requestscan" %>
           <ul>
             <li><%= link_to "ILL / Document Delivery Pickup", "https://atlas.library.upenn.edu/cgi-bin/forms/webdeliver?action=delivered" %></li>
           </ul>
