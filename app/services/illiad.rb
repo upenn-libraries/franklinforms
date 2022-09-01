@@ -86,32 +86,23 @@ class Illiad
       bib_data['year'] = params['date'].presence || bib_data['rftdate']
     end
 
-    # if rftdate is not ONLY a year it probably should be - Illiad likes it that way
-    # use the 'year' field if present - per Lapis/MK 4/2022
-    if (bib_data['rftdate']&.length != 4) && bib_data['year'].present?
-      year = bib_data['year'].gsub(/\D/, '')
-      bib_data['rftdate'] = year
-    end
-
-    ## Lookup record in Alma on submit?
-
     # *** Make the bookitem booktitle the journal title ***
-    bib_data['journal'] = params['bookTitle'].presence || bib_data['journal'] if bib_data['requesttype'] == 'bookitem';
+    bib_data['journal'] = params['bookTitle'].presence || bib_data['journal'] if bib_data['requesttype'] == 'bookitem'
 
     # *** scan delivery uses journal title || book title, which ever we have ***
     # *** we should only have one of them ***
     bib_data['title'] = bib_data['booktitle'].presence || bib_data['journal'].presence;
 
     # *** Make a non-inclusive page parameter ***
-    bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || '';
-    bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || '';
+    bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || ''
+    bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || ''
 
     if(!params['Pages'].presence.nil? && bib_data['spage'].empty?)
       bib_data['spage'], bib_data['epage'] = params['Pages'].split(/-/);
     end
 
     if(params['pages'].presence.nil?)
-      bib_data['pages'] = bib_data['spage'];
+      bib_data['pages'] = bib_data['spage']
       bib_data['pages'] += "-#{bib_data['epage']}" unless bib_data['epage'].empty?
     else
       bib_data['pages'] = params['pages'].presence
