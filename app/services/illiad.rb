@@ -75,11 +75,6 @@ class Illiad
     bib_data['comments']  = params['UserId'].presence    || params['comments'].presence    || ''
     bib_data['bibid']     = params['record_id'].presence || params['id'].presence          || params['bibid'].presence      || ''
 
-    # only take year from rftdate
-    if bib_data['rftdate'].present? && bib_data['rftdate'].length > 4
-      bib_data['rftdate'] = bib_data['rftdate'][0..3]
-    end
-
     # Handles IDs coming like pmid:numbersgohere
     unless params['rft_id'].presence.nil?
       parts = params['rft_id'].split(':')
