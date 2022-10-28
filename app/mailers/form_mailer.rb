@@ -103,11 +103,14 @@ class FormMailer < ApplicationMailer
     confirm_email(user, bib, values)
   end
 
+  # @param [User] user
+  # @param [Hash] bib
+  # @param [String] txnumber
+  # @param [Hash] values
   def confirm_illiad_email(user, bib, txnumber, values)
     userinfo = user.data
 
     @to = userinfo['emailAddr']
-    @from = ''
     @subject = 'Request Confirmation'
 
     @name = "#{userinfo['first_name']} #{userinfo['last_name']}"
@@ -120,19 +123,8 @@ class FormMailer < ApplicationMailer
       @reqtype = 'FacultyEXPRESS'
       @addldeliveryinfo = 'Your request has been sent.'
     else
-      @from = case userinfo['illoffice']
-      when 'BIOMED'
-        'bioill@pobox.upenn.edu'
-      when 'DENTAL'
-        'dentlib@pobox.upenn.edu'
-      when 'VET'
-        'vetlib@pobox.upenn.edu'
-      else
-        'interlib@pobox.upenn.edu'
-      end
-
+      @from = 'interlib@pobox.upenn.edu'
       @reqtype = 'Interlibrary Loan'
-
       @addldeliveryinfo = <<~MSG
         Delivery times vary depending upon lender location.
       MSG
