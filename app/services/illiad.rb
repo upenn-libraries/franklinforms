@@ -8,7 +8,7 @@ class Illiad
     ['Van Pelt Library'],
     ['Lockers at Van Pelt Library', 'Lockers at Van Pelt'],
     ['Annenberg Library'],
-    ['Biotech Commons'],
+    ['Holman Biotech Commons', 'Biotech Commons'],
     ['Chemistry Library'],
     ['Dental Medicine Library', 'Dental Library'],
     ['Lockers at Dental Medicine Library', 'Lockers at Dental'],
