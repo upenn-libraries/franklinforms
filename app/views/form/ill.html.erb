@@ -1,5 +1,11 @@
 <% 
-  reqtype = user.data['status'] == 'StandingFaculty' ? "FacultyEXPRESS" : "InterLibrary Loan"
+  reqtype = if borrowdirect_request?
+              'BorrowDirect'
+            elsif user.data['status'] == 'StandingFaculty'
+              "FacultyEXPRESS"
+            else
+              "InterLibrary Loan"
+            end
   @page_title = "#{reqtype} #{request_type(record)} Request"
 %>
 
@@ -65,7 +71,9 @@
       <h2>Bibliographic information for the item requested</h2>
     </div>
     <div class="section-body">
-      <% if book_request?(record) %>
+      <% if borrowdirect_request? %>
+        <%= render partial: 'form/ill/borrowdirect', locals: { f: f, record: record } %>
+      <% elsif book_request?(record) %>
         <%= render partial: "form/ill/book", locals: { f: f, record: record } %>
       <% elsif scandelivery_request?(record)  %>
         <%= render partial: "form/ill/scan", locals: { f: f, record: record } %>

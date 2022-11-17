@@ -67,7 +67,7 @@ module PreProcessor
       if record['author'].presence.nil? && !params['bibid'].presence.nil?
         result = Alma::Bib.resources.almaws_v1_bibs.mms_id.get(Alma::Bib.query_merge(:mms_id => params['bibid']))
         xml = Nokogiri::XML(result.to_xml)
-        author = xml.xpath('.//datafield[tag="700" or tag="710" or tag="711" or tag="720"][subfield/code="a"]/subfield/__content__/text()').to_a.join("; ");
+        author = xml.xpath('.//datafield[tag="700" or tag="710" or tag="711" or tag="720"][subfield/code="a"]/subfield/__content__/text()').to_a.join("; ")
         record['author'] = author.presence || "none specified"
       end
 

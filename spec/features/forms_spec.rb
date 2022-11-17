@@ -38,6 +38,15 @@ RSpec.feature 'Form rendering and submission', type: :feature do
       expect(page).to have_field 'ISBN/ISSN', with: '0415834333'
     end
   end
+  context 'for BorrowDirect' do
+    before do
+      stub_alma_non_facex_user
+    end
+    scenario 'the form is rendered with BorrowDirect hidden field' do
+      visit form_path({ id: 'ill', bd: 'true' }.merge(book_params))
+      expect(find('#borrowdirect', visible: false).value).to eq "1"
+    end
+  end
   context 'for cataloging errors' do
     before do
       stub_alma_non_facex_user
