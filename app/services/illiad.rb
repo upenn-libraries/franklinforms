@@ -345,6 +345,14 @@ class Illiad
       bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
     end
 
+    # ensure we properly push the 'bd' CitedIn value when the request originated from bd (it has a param of bd = true)
+    # this handles any case where the user overwrites the value in the "Cited In" text field in the form
+    cited_in = if params[:bd] == 'true'
+                 'bd'
+               else
+                 bib_data['sid']
+               end
+
     if bib_data['requesttype'].downcase == 'book'
       body = {ILLiadForm: 'LoanRequest',
               Username: userinfo['proxied_for'],
@@ -359,7 +367,7 @@ class Illiad
               ESPNumber: bib_data['pmid'],
               NotWantedAfter: '12/31/2010',
               Notes: bib_data['comments'],
-              CitedIn: bib_data['sid'],
+              CitedIn: cited_in,
               ItemInfo1: item_info_1,
               SubmitButton: 'Submit Request'}
     elsif bib_data['requesttype'] == 'ScanDelivery'
