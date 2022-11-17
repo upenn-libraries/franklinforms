@@ -345,9 +345,9 @@ class Illiad
       bib_data['booktitle'] = bib_data['booktitle'].prepend 'BBM '
     end
 
-    # ensure we properly push the 'bd' CitedIn value when the request originated from bd (it has a param of bd = true)
+    # ensure we properly push the 'bd' CitedIn value when the request originated from bd (it has the hidden field)
     # this handles any case where the user overwrites the value in the "Cited In" text field in the form
-    cited_in = if params[:bd] == 'true'
+    cited_in = if params[:borrowdirect] == '1'
                  'bd'
                else
                  bib_data['sid']
