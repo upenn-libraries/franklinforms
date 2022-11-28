@@ -145,8 +145,8 @@ class FormMailer < ApplicationMailer
 
         In order to expedite delivery, Interlibrary Loan requests may be filled using Borrow Direct, in which case you 
         will receive an additional Borrow Direct request confirmation email. Regardless of how the loan arrives, you 
-        will receive an email notification of its arrival, based on your choice of delivery option: pickup at Van Pelt 
-        Library, or mailed directly to you via Books by Mail.
+        will receive an email notification of its arrival, based on your choice of delivery option: pickup at the Penn 
+        library of your choice, or mailed directly to you via Books by Mail.
       MSG
       @title = bib['booktitle']
       @publisher = bib['publisher']

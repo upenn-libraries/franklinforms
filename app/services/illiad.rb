@@ -348,7 +348,7 @@ class Illiad
     # ensure we properly push the 'bd' CitedIn value when the request originated from bd (it has the hidden field)
     # this handles any case where the user overwrites the value in the "Cited In" text field in the form
     cited_in = if params[:borrowdirect] == '1'
-                 'bd'
+                 'bd-addon'
                else
                  bib_data['sid']
                end
