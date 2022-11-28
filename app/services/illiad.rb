@@ -82,7 +82,7 @@ class Illiad
     end
 
     # *** Relais/BD sends dates through as rft.date but it may be a book request ***
-    if(bib_data['sid'] == 'BD' && bib_data['requesttype'] == 'Book')
+    if((bib_data['sid'] == 'BD' || params[:bd] == 'true') && bib_data['requesttype'] == 'Book')
       bib_data['year'] = params['date'].presence || bib_data['rftdate']
     end
 
