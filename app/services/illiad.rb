@@ -41,7 +41,7 @@ class Illiad
     bib_data['author'] = params['Author'].presence || params['author'].presence || params['aau'].presence || params['au'].presence || params['rft.au'].presence || bib_data['author'].presence || ''
 
     # Use the book request form for unknown genre types
-    if (params['genre'].presence || params['rft.genre'].presence || '').downcase == 'unknown' then
+    if (params['genre'].presence || params['rft.genre'].presence || '').downcase == 'unknown'
       bib_data['requesttype'] = 'Book'
     else
       bib_data['requesttype'] = params['genre'].presence || params['Type'].presence || params['requesttype'].presence || params['rft.genre'].presence || 'Article'
@@ -82,7 +82,7 @@ class Illiad
     end
 
     # *** Relais/BD sends dates through as rft.date but it may be a book request ***
-    if((bib_data['sid'] == 'BD' || params[:bd] == 'true') && bib_data['requesttype'] == 'Book')
+    if (bib_data['sid'] == 'BD' || params[:bd] == 'true') && bib_data['requesttype'] == 'Book'
       bib_data['year'] = params['date'].presence || bib_data['rftdate']
     end
 
@@ -91,17 +91,17 @@ class Illiad
 
     # *** scan delivery uses journal title || book title, which ever we have ***
     # *** we should only have one of them ***
-    bib_data['title'] = bib_data['booktitle'].presence || bib_data['journal'].presence;
+    bib_data['title'] = bib_data['booktitle'].presence || bib_data['journal'].presence
 
     # *** Make a non-inclusive page parameter ***
     bib_data['spage'] = params['Spage'].presence || params['spage'].presence || params['rft.spage'].presence || ''
     bib_data['epage'] = params['Epage'].presence || params['epage'].presence || params['rft.epage'].presence || ''
 
-    if(!params['Pages'].presence.nil? && bib_data['spage'].empty?)
+    if !params['Pages'].presence.nil? && bib_data['spage'].empty?
       bib_data['spage'], bib_data['epage'] = params['Pages'].split(/-/);
     end
 
-    if(params['pages'].presence.nil?)
+    if params['pages'].presence.nil?
       bib_data['pages'] = bib_data['spage']
       bib_data['pages'] += "-#{bib_data['epage']}" unless bib_data['epage'].empty?
     else

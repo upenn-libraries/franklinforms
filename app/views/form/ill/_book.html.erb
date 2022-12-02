@@ -1,5 +1,5 @@
 <%= f.text_field(:booktitle, label: 'Title', value: record['booktitle'], required: true) %>
-<%= f.text_field(:author, label: 'Author', value: record['author'], required: true) %>
+<%= f.text_field(:author, label: 'Author', value: record['author'], required: !borrowdirect_request?) %>
 <%= f.text_field(:edition, label: 'Edition', value: record['edition']) %>
 <%= f.text_field(:publisher, label: 'Publisher', value: record['publisher']) %>
 <%= f.text_field(:place, label: 'Place of Publication', value: record['place']) %>
