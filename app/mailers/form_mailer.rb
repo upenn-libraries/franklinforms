@@ -143,8 +143,7 @@ class FormMailer < ApplicationMailer
       # append BD caveat to book requests
       @addldeliveryinfo += <<~MSG
 
-        You will receive an email notification of your loan’s arrival, when it is available for pickup at the Penn 
-        library of your choice, or mailed directly to you via Books by Mail (based on your choice of delivery option).
+        You will receive an email notification of your loan’s arrival, when it is available for pickup at the Penn library of your choice, or mailed directly to you via Books by Mail (based on your choice of delivery option).
       MSG
       @title = bib['booktitle']
       @publisher = bib['publisher']
