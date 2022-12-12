@@ -2,15 +2,28 @@
   reqtype = if borrowdirect_request?
               'BorrowDirect'
             elsif user.data['status'] == 'StandingFaculty'
-              "FacultyEXPRESS"
+              'FacultyEXPRESS'
             else
-              "InterLibrary Loan"
+              'InterLibrary Loan'
             end
   @page_title = "#{reqtype} #{request_type(record)} Request"
 %>
 
 <%= render 'limitation_warnings' if (article_request?(record) || scandelivery_request?(record)) %>
-<%= render partial: "form/proxy" %>
+
+
+<div class="section noborder">
+  <div class="row">
+    <div class="col-md-3">
+      <% if borrowdirect_request? %>
+        <%= image_tag 'bdlogo', class: 'img-responsive', alt: 'BorrowDirect logo' %>
+      <% end  %>
+    </div>
+    <div class="col-md-9">
+      <%= render partial: 'form/proxy' %>
+    </div>
+  </div>
+</div>
 
 <%= bootstrap_form_tag(
       layout: :horizontal,
@@ -20,9 +33,11 @@
 
   <%= f.hidden_field(:deliverytype, { id: 'deliverytype', value: params[:deliverytype] }) %>
   <%= f.hidden_field(:bibid, { id: 'bibid', value: record['bibid'] }) %>
-  <% request.query_parameters.reject { |k,_| ['utf8'].member?(k) }.each do |k,v| %>
+  <% request.query_parameters.reject { |k, _| ['utf8'].member?(k) }.each do |k, v| %>
     <%= f.hidden_field(k.to_sym, { name: k, value: v }) %>
   <% end %>
+
+
 
   <div class="section">
     <div class="section-heading">
