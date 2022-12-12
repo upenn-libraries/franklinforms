@@ -49,7 +49,7 @@ function form_validate(required) {
 
 function init_report_error_form() {
   // Hide holding form-group
-  $('select[name="[holding]"').parent().parent().hide();
+  $('select[name="[holding]"]').parent().parent().hide();
 }
 
 function update_title() {
@@ -59,20 +59,22 @@ function update_title() {
   switch(report_type) {
     case "fixopac":
       type_title_heading.text("Report cataloging error");
-      $('select[name="[holding]"').parent().parent().hide();
+      $('select[name="[holding]"]').parent().parent().hide();
       break;
     case "enhanced":
       type_title_heading.text("Request enhanced cataloging");
-      $('select[name="[holding]"').parent().parent().hide();
+      $('select[name="[holding]"]').parent().parent().hide();
       break;
     case "missing":
       type_title_heading.text("Report item missing");
-      $('select[name="[holding]"').parent().parent().show();
+      $('select[name="[holding]"]').parent().parent().show();
       break;
   }
 }
 
 $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+
     var $deliveryRadio = $('.delivery-radio');
     var $deliverySelect = $('#delivery_selection');
     var $locSelect = $('#pickup_location');

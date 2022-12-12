@@ -1,9 +1,9 @@
-<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-6 col-md-10', control_col: 'col-sm-6 col-md-2', method: 'GET' do |f| %>
-  <% request.query_parameters.reject {|k,v| ['upennproxyid', 'utf8'].member?(k)} .each do |k,v| %>
-    <%= f.hidden_field(k.to_sym, {name: k, value: v}) %>
+<%= bootstrap_form_tag layout: :horizontal, label_col: 'col-sm-4 col-md-8', control_col: 'col-sm-8 col-md-4', method: 'GET' do |f| %>
+  <% request.query_parameters.reject {|k, _v| %w[upennproxyid utf8].member?(k)}.each do |k, v| %>
+    <%= f.hidden_field(k.to_sym, { name: k, value: v }) %>
   <% end %>
-  <div class="section noborder">
-  <%= f.text_field(:upennproxyid, label: 'Act as a proxy for') %>
-  </div>
+  <% help = tag.span class: 'glyphicon glyphicon-question-sign',
+                     title: 'Type in the PennKey to act as a proxy. Hit the Enter button to reload request form under the proxy account.',
+                     data: { toggle: 'tooltip', placement: 'left' } %>
+  <%= f.text_field(:upennproxyid, label: help + ' Act as a proxy for') %>
 <% end %>
-
