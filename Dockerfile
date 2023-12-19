@@ -37,7 +37,7 @@ COPY webapp.conf /etc/nginx/sites-enabled/webapp.conf
 WORKDIR /home/app/webapp
 
 # Install gems, add application files, and precompile assets
-RUN gem install bundler && \
+RUN gem install bundler -v "<2.3" && \
     bundle install && \
     mv /tmp/app/* .
 
