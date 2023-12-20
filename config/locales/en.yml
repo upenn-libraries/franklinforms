@@ -1,7 +1,6 @@
 en:
   resourcesharing:
-    bd_transition_banner_html: 'Later this fall, BorrowDirect will be powered by new, easy-to-use software that allows for more robust searching. <a href="https://ivpluslibraries.org/2022/07/iplc-launches-new-resource-sharing-software/">Find more information</a>.'
-    holiday_downtime: 'There will be delays in resource sharing (BorrowDirect, EZBorrow, FacultyEXPRESS, Books by Mail, and all other interlibrary loan services) from Wednesday, December 20 to Tuesday, January 2 as we and many of our partner libraries close or operate with reduced hours. Requesting will remain open but requested items will be delayed during this time.'
+    holiday_downtime: 'There will be delays in resource sharing (BorrowDirect, EZBorrow, FacultyEXPRESS, Books by Mail, and all other interlibrary loan services) from Wednesday, December 20 to Tuesday, January 3 as we and many of our partner libraries close or operate with reduced hours. Requesting will remain open but requested items will be delayed during this time.'
   forms:
     common:
       fields:
