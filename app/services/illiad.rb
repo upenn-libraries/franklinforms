@@ -14,7 +14,7 @@ class Illiad
     ['Lockers at Dental Medicine Library', 'Lockers at Dental'],
     ['Fisher Fine Arts Library', 'Fine Arts Library'],
     ['Library at the Katz Center', 'Katz Library'],
-    ['Math/Physics/Astronomy Library'],
+    # ['Math/Physics/Astronomy Library'],
     ['Museum Library'],
     ['New Bolton Center'],
     ['Pennsylvania Hospital Library - 800 Spruce St.', 'PA Hospital Library'],
