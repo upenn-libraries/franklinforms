@@ -144,12 +144,13 @@ GEM
       railties (>= 3.0.0, < 7)
     method_source (0.8.2)
     mini_mime (1.1.1)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.8.5)
     minitest (5.14.4)
     multi_xml (0.6.0)
     nio4r (2.5.2)
-    nokogiri (1.10.10)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.15.5)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -161,6 +162,7 @@ GEM
       pry (>= 0.9.10)
     public_suffix (4.0.6)
     puma (3.12.6)
+    racc (1.7.3)
     rack (2.2.3)
     rack-contrib (2.2.0)
       rack (~> 2.0)
@@ -284,7 +286,7 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.1.0)
   meta_request
-  nokogiri (~> 1.10.0, >= 1.10.4)
+  nokogiri (~> 1.15.5)
   pry-byebug
   pry-rails
   puma (~> 3.0)
