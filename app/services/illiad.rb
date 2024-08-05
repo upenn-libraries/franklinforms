@@ -17,7 +17,7 @@ class Illiad
     ['Math/Physics/Astronomy Library'],
     ['Museum Library'],
     ['New Bolton Center'],
-    ['Pennsylvania Hospital Library - 800 Spruce St.', 'PA Hospital Library'],
+    ['Pennsylvania Hospital Library - PAH Staff Only', 'PA Hospital Library'],
     ['Veterinary Medicine Library', 'Veterinary Library']
   ].freeze
 
